@@ -1,0 +1,7 @@
+{
+  "appId": "io.singularity.c4nursery",
+  "appName": "C4 Nursery",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": { "allowMixedContent": false }
+}
