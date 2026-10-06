@@ -66,7 +66,7 @@ def _load_checkpoint(path):
     return schema,g,h,m,rs
 
 def open_organism(path):
-    global _runtime
+    global _runtime,_checkpoint_path,_h3,_manifest_meta,_last_saved_step
     if not _runtime_root: raise RuntimeError("RUNTIME_PACKAGE_NOT_INSTALLED")
     importlib.invalidate_caches()
     pkg=importlib.import_module("c4child")
@@ -75,7 +75,11 @@ def open_organism(path):
     _runtime=pkg.C4LivingRuntime(dialogue)
     if rs:
         _runtime.load_runtime_state(rs)
+    _checkpoint_path=path
+    _h3=h
+    _manifest_meta=dict(manifest or {})
     state=_runtime.runtime_state()
+    _last_saved_step=int(state.get("step",0)) if isinstance(state,dict) else 0
     return json.dumps({"running":True,"schema":schema,"manifestSchema":manifest.get("schema"),"state":state},ensure_ascii=False,default=str)
 
 def checkpoint():
@@ -92,19 +96,66 @@ def checkpoint():
     _last_saved_step=int(state.get("step",0))
     return json.dumps({"saved":True,"path":_checkpoint_path,"step":_last_saved_step})
 
+def _typed_runtime_call(type_,p):
+    generic=("handle_runtime_command","runtime_command")
+    targets=[_runtime,getattr(_runtime,"dialogue",None)]
+    last_type_error=None
+    for target in targets:
+        if target is None: continue
+        for name in generic:
+            fn=getattr(target,name,None)
+            if callable(fn):
+                try:
+                    out=fn(type_,p)
+                    return {"accepted":True,"result":out,"adapterMethod":name}
+                except TypeError as e:
+                    last_type_error=str(e)
+    names={
+        "BEGIN_SOURCE":("begin_source","source_begin"),
+        "APPEND_SOURCE":("append_source","source_append"),
+        "END_SOURCE":("end_source","source_end"),
+        "SENSORY_SESSION_START":("sensory_session_start","start_sensory_session"),
+        "SENSORY_FRAME":("sensory_frame","ingest_sensory_frame"),
+        "SENSORY_SESSION_STOP":("sensory_session_stop","stop_sensory_session"),
+        "ACTION_RECEIPT":("action_receipt","receive_action_receipt"),
+    }.get(type_,())
+    for target in targets:
+        if target is None: continue
+        for name in names:
+            fn=getattr(target,name,None)
+            if not callable(fn): continue
+            try:
+                out=fn(p)
+                return {"accepted":True,"result":out,"adapterMethod":name}
+            except TypeError as e:
+                last_type_error=str(e)
+                try:
+                    out=fn(**p)
+                    return {"accepted":True,"result":out,"adapterMethod":name}
+                except TypeError as e2:
+                    last_type_error=str(e2)
+    return {"accepted":False,"error":"RUNTIME_CAPABILITY_UNAVAILABLE","command":type_,"detail":last_type_error}
+
 def command(type_, payload_json):
     if _runtime is None: return json.dumps({"accepted":False,"error":"RUNTIME_NOT_RUNNING"})
     p=json.loads(payload_json or "{}")
     if type_=="USER_MESSAGE":
         out=_runtime.user_message(str(p.get("text","")))
-    elif type_=="TICK":
+        events=_runtime.poll(100)
+        return json.dumps({"accepted":True,"result":out,"events":events,"state":_runtime.runtime_state()},ensure_ascii=False,default=str)
+    if type_=="TICK":
         out=_runtime.tick(int(p.get("n",1)))
-    elif type_=="POLL":
+        events=_runtime.poll(100)
+        return json.dumps({"accepted":True,"result":out,"events":events,"state":_runtime.runtime_state()},ensure_ascii=False,default=str)
+    if type_=="POLL":
         out=_runtime.poll(int(p.get("limit",100)))
-    else:
-        return json.dumps({"accepted":False,"error":"PY_COMMAND_UNSUPPORTED"})
-    events=_runtime.poll(100) if type_!="POLL" else out
-    return json.dumps({"accepted":True,"result":out,"events":events,"state":_runtime.runtime_state()},ensure_ascii=False,default=str)
+        return json.dumps({"accepted":True,"result":out,"events":out,"state":_runtime.runtime_state()},ensure_ascii=False,default=str)
+    if type_ in ("BEGIN_SOURCE","APPEND_SOURCE","END_SOURCE","SENSORY_SESSION_START","SENSORY_FRAME","SENSORY_SESSION_STOP","ACTION_RECEIPT"):
+        r=_typed_runtime_call(type_,p)
+        r["events"]=_runtime.poll(100) if r.get("accepted") else []
+        r["state"]=_runtime.runtime_state()
+        return json.dumps(r,ensure_ascii=False,default=str)
+    return json.dumps({"accepted":False,"error":"PY_COMMAND_UNSUPPORTED","command":type_})
 
 def state():
     return json.dumps(_runtime.runtime_state() if _runtime else {"state":"STOPPED"},ensure_ascii=False,default=str)
