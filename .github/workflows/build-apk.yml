@@ -18,7 +18,14 @@ jobs:
       Path('/tmp/c4_ui.js').write_text(js)
       PY
       node --check /tmp/c4_ui.js
-   - run: gradle :app:assembleDebug --stacktrace
+   - run: gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
+   - name: Upload build log
+     if: always()
+     uses: actions/upload-artifact@v4
+     with:
+      name: C4-build-log
+      path: /tmp/gradle.log
+      if-no-files-found: ignore
    - name: Verify and stage APK
      shell: bash
      run: |
