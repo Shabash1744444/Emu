@@ -284,3 +284,28 @@ App-relevant audio state:
 - The core still explicitly does NOT claim a continuously connected microphone organ.
 
 This makes Nursery 0.45's live microphone/camera sensory bridge directly relevant: the body now provides a path toward the next genuine frontier, but no device compatibility or live-hearing claim is made until an exact G249-compatible runtime and organism accept SENSORY_* on hardware.
+
+
+## Core status update — 2026-10-06 / G260
+
+Current canonical core observed from the separate core repository:
+- generation: G260
+- organism: `child_g260_russian_discourse_transfer_green.c4m`
+- size: 1,534,757 bytes
+- SHA256: `cbb496c2eaca983a2a68c0e65106360a2442eb25293025931358fc3c157d286d`
+- regression: 254 passed / 9 unchanged missing-history FileNotFoundError cases
+- runtime changes in G260: 0
+
+Current core direction:
+- Russian-first deep language grounding;
+- source/speaker/quotation ownership;
+- condition/possibility/event separation;
+- deictic time;
+- indirect request/pragmatics;
+- SELF/reference safety;
+- Russian answer purity after foreign-teacher exposure.
+
+Body implication:
+Nursery remains language-agnostic at the physical sensor boundary, but current teaching/UI defaults should stay Russian-first unless the user intentionally opens another language lane.
+
+No claim is made that the 0.46 APK has physically booted G260. Exact G260 + compatible runtime remains a device integration gate.
