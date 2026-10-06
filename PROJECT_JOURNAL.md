@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-06 (CP166 / build #283 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-07 (CP167 / build #289 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -155,3 +155,31 @@ Build gate:
 - artifact ZIP SHA256: 5059a3e5c42323a24ef1bc652d95440bbac18134212c342994dadb28101fbb93
 - APK bytes: 33,814,442
 - APK SHA256: add064c1944125cf5e4a64dea6cc0140abfcbce80ea7cb0d6c87ea673007d3c3
+
+
+## 2026-10-07 — CP167 interaction hotfix
+Physical symptom from device: UI rendered but buttons did not respond.
+
+Root cause:
+- WebView JavaScript used the single-element helper $() for collection operations in several legacy paths.
+- Initial render called $('#dropTargets button').forEach(...), throwing at runtime before later click handlers were registered.
+- The same class of bug existed in room/game selectors and retinal preview collection handling.
+
+Fix:
+- converted all collection-intended selector calls to $$();
+- corrected retinal-grid collection handling;
+- added CI lint which rejects single-element $() used with collection methods.
+
+Build gate:
+- GitHub Actions run #289 SUCCESS.
+- JavaScript syntax PASS.
+- selector misuse lint PASS.
+- Python py_compile PASS.
+- Gradle assembleDebug PASS.
+- APK unzip integrity PASS.
+- artifact: C4-Nursery-0.47-interaction-hotfix
+- artifact ID: 11440789470
+- artifact ZIP bytes: 33,814,659
+- artifact ZIP SHA256: dc6a465913f6a5e2986a5e4af21b87c2f5545af55038131b09da04bd9ce24c3c
+- APK bytes: 33,814,226
+- APK SHA256: 0a3fe43ad7da7a51590c954e2100557f073c41e8f203358b11bf80f9cc231faa
