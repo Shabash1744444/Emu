@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-07 (CP168 / build #296 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-07 (CP169 / build #303 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -215,3 +215,43 @@ Build gate:
 - artifact ZIP SHA256: edb932de27fabae61159f00d82929b0475458e509f4cf94ad0095712ee272818
 - APK bytes: 33,815,006
 - APK SHA256: 62cd08cae35add096f2f7b5a5266d48ea515b8a29543c21edd07911e15bbc31e
+
+
+## 2026-10-07 — CP169 stable live chat
+Physical G266 device result:
+- compatible runtime + organism successfully reached C4 RUNNING;
+- real autonomous ASK events arrived in Dialogue;
+- repeated ASK flow caused the UI to rerender and force-scroll, making typing impractical.
+
+Host/UI repair:
+- conversation rendering isolated from full app rendering;
+- incoming REPLY / ASK / PUBLISH use chat-only persistence/render path;
+- user send uses explicit follow-bottom path;
+- incoming events never steal scroll while composer is focused;
+- reader position is preserved when not following the bottom;
+- unread badge surfaces queued visible messages instead of forced scrolling;
+- Android visualViewport drives a dynamic viewport height;
+- keyboard mode hides nav/sensory chrome and keeps the composer usable;
+- composer is visually prioritized directly below the feed;
+- detailed sensory HUD is collapsed by default and can be opened explicitly;
+- every real C4 event is still persisted; no cognition or initiative is suppressed.
+
+Build gate:
+- GitHub Actions run #303 SUCCESS.
+- JavaScript syntax PASS.
+- selector misuse lint PASS.
+- organism picker regression lint PASS.
+- stable chat forced-scroll regression guard PASS.
+- Python py_compile PASS.
+- Gradle assembleDebug PASS.
+- APK unzip integrity PASS.
+- artifact: C4-Nursery-0.49-stable-live-chat
+- artifact ID: 11442428033
+- artifact ZIP bytes: 33,816,613
+- artifact ZIP SHA256: 495e55dbdde99d4dcc0a108c8c23263f59b779571eecdc836d0e23bf3ae97bb3
+- APK bytes: 33,816,186
+- APK SHA256: deaa05dab40505982aa62b27c75f5ebce55f3eebdb4022fa229c417b5847e083
+
+Observed core behavior requiring separate core-level analysis:
+- G266 currently emits multiple unresolved g223-world ASK events during autonomous ticks.
+- CP169 does not delete, coalesce or suppress those organism events; it only prevents them from destabilizing the chat UI.
