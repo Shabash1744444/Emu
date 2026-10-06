@@ -1,0 +1,54 @@
+name: C4 Nursery - Build Payload APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'C4_PAYLOAD.txt'
+      - '.github/workflows/c4-build.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Verify and unpack C4 payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f C4_PAYLOAD.txt
+          mkdir -p "$RUNNER_TEMP/c4-build"
+          expected="$(grep '^sha256=' C4_PAYLOAD.txt | head -1 | cut -d= -f2)"
+          sed -n '/^---BEGIN---$/,/^---END---$/p' C4_PAYLOAD.txt | sed '1d;$d' | tr -d '\r\n' | base64 -d > "$RUNNER_TEMP/c4.tar.gz"
+          actual="$(sha256sum "$RUNNER_TEMP/c4.tar.gz" | awk '{print $1}')"
+          test "$actual" = "$expected" || { echo "Payload checksum mismatch"; exit 1; }
+          tar -xzf "$RUNNER_TEMP/c4.tar.gz" -C "$RUNNER_TEMP/c4-build"
+          test -f "$RUNNER_TEMP/c4-build/settings.gradle.kts"
+          test -f "$RUNNER_TEMP/c4-build/app/build.gradle.kts"
+          test -f "$RUNNER_TEMP/c4-build/app/src/main/AndroidManifest.xml"
+          test -f "$RUNNER_TEMP/c4-build/app/src/main/assets/index.html"
+          echo "Payload verified: $actual"
+
+      - name: Build debug APK
+        working-directory: ${{ runner.temp }}/c4-build
+        run: gradle :app:assembleDebug --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: C4-Nursery-DEV37-APK
+          path: ${{ runner.temp }}/c4-build/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
