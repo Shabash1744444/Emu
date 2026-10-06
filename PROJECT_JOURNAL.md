@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-07 (CP167 / build #289 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-07 (CP168 / build #296 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -183,3 +183,35 @@ Build gate:
 - artifact ZIP SHA256: dc6a465913f6a5e2986a5e4af21b87c2f5545af55038131b09da04bd9ce24c3c
 - APK bytes: 33,814,226
 - APK SHA256: 0a3fe43ad7da7a51590c954e2100557f073c41e8f203358b11bf80f9cc231faa
+
+
+## 2026-10-07 — CP168 organism picker hotfix
+Physical symptom: selecting a .c4m in setup step 2 returned to the app with no visible change.
+
+Root cause:
+- Android ACTION_OPEN_DOCUMENT commonly returns content:// URIs without the original filename.
+- The importer incorrectly searched the URI text for ".c4m", so valid organisms could fail with EXPECTED_C4M.
+- ORGANISM_ERROR was stored only as a diagnostic event, making the failure look like no-op.
+
+Fix:
+- resolve OpenableColumns.DISPLAY_NAME and validate the actual display filename;
+- emit ORGANISM_IMPORTING immediately;
+- show hashing/copying, success and errors directly in the Dialogue setup gate;
+- persist/display the organism filename;
+- verify non-empty input and copied byte count;
+- CI guard rejects URI-text .c4m validation regression.
+
+Build gate:
+- GitHub Actions run #296 SUCCESS.
+- JavaScript syntax PASS.
+- selector misuse lint PASS.
+- organism picker regression lint PASS.
+- Python py_compile PASS.
+- Gradle assembleDebug PASS.
+- APK unzip integrity PASS.
+- artifact: C4-Nursery-0.48-organism-picker-hotfix
+- artifact ID: 11441971846
+- artifact ZIP bytes: 33,815,451
+- artifact ZIP SHA256: edb932de27fabae61159f00d82929b0475458e509f4cf94ad0095712ee272818
+- APK bytes: 33,815,006
+- APK SHA256: 62cd08cae35add096f2f7b5a5266d48ea515b8a29543c21edd07911e15bbc31e
