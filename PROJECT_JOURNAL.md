@@ -69,3 +69,11 @@ Green build; restart-safe Library; screenshot unified into source spool; native 
 
 ## End state
 Install Nursery, attach a real organism/runtime when available, talk naturally, provide files/photos/audio/screen, let it act in controlled worlds, teach with provenance, inspect status without devtools, kill/restart without corrupting continuity, and later move the same organism to richer Android/PC bodies without changing C4 cognitive physics.
+
+
+## 2026-10-06 — Repository boundary: C4 core
+- User designated separate repository `Shabash1744444/-` as the future storage/home of the C4 core itself.
+- `Shabash1744444/Emu` remains the Android Nursery/body/runtime-host/verified learning environment.
+- Do not silently copy or freeze the evolving C4 core into Emu.
+- Integration remains through explicit versioned runtime/organism contracts and attested artifacts.
+- This preserves the existing rule: C4 core and its host/body are separable components.
