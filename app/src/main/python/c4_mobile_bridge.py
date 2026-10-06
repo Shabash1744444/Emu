@@ -1,4 +1,4 @@
-import json, os, sys, zipfile, shutil, importlib
+import json, os, sys, zipfile, shutil, importlib, base64
 _runtime=None
 _runtime_root=None
 _checkpoint_path=None
@@ -119,18 +119,22 @@ def _typed_runtime_call(type_,p):
         "SENSORY_SESSION_STOP":("sensory_session_stop","stop_sensory_session"),
         "ACTION_RECEIPT":("action_receipt","receive_action_receipt"),
     }.get(type_,())
+    call_p=dict(p)
+    if type_=="APPEND_SOURCE" and call_p.get("encoding")=="base64" and isinstance(call_p.get("bytes"),str):
+        call_p["bytes"]=base64.b64decode(call_p["bytes"],validate=True)
+        call_p.pop("encoding",None)
     for target in targets:
         if target is None: continue
         for name in names:
             fn=getattr(target,name,None)
             if not callable(fn): continue
             try:
-                out=fn(p)
+                out=fn(call_p)
                 return {"accepted":True,"result":out,"adapterMethod":name}
             except TypeError as e:
                 last_type_error=str(e)
                 try:
-                    out=fn(**p)
+                    out=fn(**call_p)
                     return {"accepted":True,"result":out,"adapterMethod":name}
                 except TypeError as e2:
                     last_type_error=str(e2)
