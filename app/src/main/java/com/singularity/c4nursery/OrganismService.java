@@ -70,8 +70,34 @@ public class OrganismService extends Service {
   }
  }
  private void broadcast(String type,JSONObject payload){
-  Intent e=new Intent(ACTION_EVENT).setPackage(getPackageName());
-  e.putExtra("type",type);e.putExtra("payload",payload.toString());sendBroadcast(e);
+  if(prefs.getBoolean("ui_visible",false)){
+   Intent e=new Intent(ACTION_EVENT).setPackage(getPackageName());
+   e.putExtra("type",type);e.putExtra("payload",payload.toString());sendBroadcast(e);
+  }else{
+   persistInbox(type,payload);
+   if("ASK".equals(type)||"PUBLISH".equals(type))notifyInitiative(type,payload);
+  }
+ }
+ private void persistInbox(String type,JSONObject payload){
+  try{
+   File dir=new File(getFilesDir(),"runtime_inbox");if(!dir.exists()&&!dir.mkdirs())return;
+   File log=new File(dir,"pending.jsonl");
+   JSONObject e=new JSONObject().put("t",System.currentTimeMillis()).put("type",type).put("payload",payload);
+   byte[] b=(e.toString()+"\n").getBytes(java.nio.charset.StandardCharsets.UTF_8);
+   try(FileOutputStream out=new FileOutputStream(log,true)){out.write(b);out.getFD().sync();}
+   if(log.length()>4194304L){File old=new File(dir,"pending.previous.jsonl");if(old.exists())old.delete();log.renameTo(old);}
+  }catch(Exception ignored){}
+ }
+ private void notifyInitiative(String type,JSONObject payload){
+  try{
+   String text=payload.optString("text",type);if(text.length()>120)text=text.substring(0,120)+"…";
+   Notification n=new Notification.Builder(this,Build.VERSION.SDK_INT>=26?CH:"")
+    .setContentTitle("ASK".equals(type)?"C4 хочет спросить":"C4 проявила инициативу")
+    .setContentText(text)
+    .setSmallIcon(android.R.drawable.ic_dialog_info)
+    .setAutoCancel(true).build();
+   getSystemService(NotificationManager.class).notify(93,n);
+  }catch(Exception ignored){}
  }
  private void shutdown(boolean checkpoint){
   if(checkpoint&&prefs.getBoolean("runtime_running",false))try{C4PythonGate.call(this,"checkpoint");}catch(Exception ignored){}
