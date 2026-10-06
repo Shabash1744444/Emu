@@ -247,3 +247,19 @@ New integration-relevant epistemic behavior:
 9. G204-G207 knowledge growth used the organism's own competency loop: gap -> ASK -> targeted lesson -> independent recheck -> MASTERED. No frontend fake initiative.
 
 The current app-facing transport shape remains compatible: initiative can still surface through ordinary ASK/STATUS-style events; do not invent frontend cognition.
+
+
+## Core status update — 2026-10-06 / G240
+
+Current canonical core repository baseline observed by the app thread:
+- repository: `Shabash1744444/-`
+- organism: `child_g240_bryson_fragment_complete_green.c4m`
+- size: 904,909 bytes
+- SHA256: `7d663606136ded693e659d138d4fad2674b967df33c621db65c6473f12fba765`
+- G235-G240 final GREEN lessons: 486 admitted / 0 rejected
+- regression: 254/263; all 9 failures are unchanged missing historical-artifact FileNotFoundErrors, with no new semantic/runtime assertion failure reported.
+
+Integration consequence:
+The Android host is the digital body/environment of the organism, not the cognition itself. G240 uses typed PHYSICAL / MATHEMATICAL / TEMPORAL / CAUSAL / OBSERVATIONAL / LINGUISTIC / PHILOSOPHICAL / EPISTEMIC / SELF-WORLD projections. Host sensors should deliver provenance-preserving physical observations without pre-solving semantics.
+
+The app's last device cold-start smoke was G208, so compatibility with exact G240 runtime/artifact remains a required device gate; do not claim G240 boot until physically tested.
