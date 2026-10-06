@@ -68,3 +68,34 @@ Rules:
 
 ## Trace symmetry
 For every transport command/event, host trace should retain direction, type, session/request/event identity, organism identity and timestamp. Command acceptance, command result and runtime event are separate facts. Absence of an event must not be synthesized into success.
+
+
+## Sensory feature boundary — V1 host cortex
+
+The Android host may reduce raw sensor bandwidth before transport, but the reduction must remain non-semantic.
+
+Current host feature schema: `C4_SENSORY_FEATURES_V1`.
+
+AUDIO V1:
+- PCM16 mono physical frames;
+- sample rate/count/duration;
+- RMS / mean absolute amplitude / peak;
+- zero-crossing rate;
+- fixed-frequency spectral probes and probe centroid.
+
+VISION V1:
+- source/timestamp;
+- input dimensions;
+- 12x8 RGB+luma retinal lattice;
+- mean luma / luma variance / local edge-change measure.
+
+Forbidden in this layer:
+- object/category labels;
+- ASR transcript presented as observation;
+- emotion/intent/scene labels;
+- hidden LLM/VLM inference;
+- promotion of a host feature to learned/true state.
+
+`SENSORY_SESSION_START / SENSORY_FRAME / SENSORY_SESSION_STOP` may be rejected with `RUNTIME_CAPABILITY_UNAVAILABLE` when the installed C4 runtime does not yet expose the sensory ABI. The host must show that honestly rather than synthesize perception.
+
+SIGNAL != SOURCE. CAPTURED != PERCEIVED. PERCEIVED != LEARNED. FEATURE != CONCEPT.
