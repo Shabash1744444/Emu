@@ -1,6 +1,10 @@
 import json, os, sys, zipfile, shutil, importlib
 _runtime=None
-_runtime_root=None\n_checkpoint_path=None\n_h3=None\n_manifest_meta={}\n_last_saved_step=0
+_runtime_root=None
+_checkpoint_path=None
+_h3=None
+_manifest_meta={}
+_last_saved_step=0
 
 def _purge_c4child():
     for name in list(sys.modules):
