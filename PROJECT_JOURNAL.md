@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-06. Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-06 (CP142). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -36,7 +36,7 @@ C4_CORE_HANDOFF.md is synchronization from the separate core branch.
 ## Current stage
 MOBILE ORGANISM SHELL / VERIFIED LEARNING ENVIRONMENT.
 The major seams exist: Android host <-> typed runtime socket <-> organism store; source/sensor spool <-> future runtime ingestion; renderer <-> native verifier <-> future ACTION_RECEIPT.
-The real C4 engine is NOT embedded yet.
+The real C4 engine is NOT embedded yet. Chat UI is now wired to the typed runtime contract and refuses to claim delivery unless a real RUNNING session accepts USER_MESSAGE.
 
 ## Build status
 Runs #86-93 were red because new verifier/source code lacked StandardCharsets and Cursor imports. Root cause fixed in commit 8eb57c2317ae60daae6ef62e0489a24f0da45f39.
@@ -59,7 +59,7 @@ Screenshot still uses older attachment path. Live-screen future runtime consumer
 ## Checkpoint discipline
 Save a physical CP after every meaningful microstage and BEFORE long/risky work. Unsaved work counts as lost. Update THIS journal after every macroiteration. CP files are detailed history; this file is the canonical one-file handoff.
 
-Recent: CP136 transaction/recovery; CP137 typed runtime socket; CP138 external state-audit integration requirements; CP139 app-only scope; CP140 pre verified-world/library; CP141 verified world + durable Library.
+Recent: CP136 transaction/recovery; CP137 typed runtime socket; CP138 external state-audit integration requirements; CP139 app-only scope; CP140 pre verified-world/library; CP141 verified world + durable Library; CP142 chat wired to typed runtime transport.
 
 ## Working style
 User works from Android. When user says “делай/дальше/ебош”, take a substantial macroiteration: implement -> negative paths -> test -> checkpoint -> continue. Do not require repeated micro-confirmations.
