@@ -4,10 +4,16 @@
  <uses-permission android:name="android.permission.CAMERA"/>
  <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"/>
+ <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA"/>
+ <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
  <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
  <application android:theme="@style/AppTheme" android:label="C4 Nursery">
   <provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.files" android:exported="false" android:grantUriPermissions="true"><meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"/></provider>
   <service android:name=".ScreenStreamService" android:exported="false" android:foregroundServiceType="mediaProjection"/>
+  <service android:name=".CameraStreamService" android:exported="false" android:foregroundServiceType="camera"/>
+  <service android:name=".OrganismService" android:exported="false" android:foregroundServiceType="specialUse">
+   <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="Continuous local C4 organism runtime"/>
+  </service>
   <activity android:name=".MainActivity" android:screenOrientation="portrait" android:exported="true">
    <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
   </activity>
