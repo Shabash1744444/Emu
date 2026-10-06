@@ -15,4 +15,4 @@ Current runtime truth:
 No executable C4 engine is embedded. Adapter remains generation-agnostic and NOT_INSTALLED until a canonical runtime is bound.
 
 Build gate:
-GitHub Actions run #108 started for the cumulative CP142-144 code. Do not mark green until completed successfully.
+Runs #108/#109 exposed and preserved the compile failure caused by a literal escaped newline in MainActivity. Fixed in c5b07e1a7b29dd140bf6b354991ee86cd4a87a10. Run #110 completed SUCCESS, including assembleDebug, APK verify/stage and artifact upload. Artifact C4-Nursery-DEV38: 2,274,698 bytes; workflow artifact digest sha256:7eda0893ffbddff26328f6bbac7c4c3a626118de2f47e482dc6e8c0edd26bc72.
