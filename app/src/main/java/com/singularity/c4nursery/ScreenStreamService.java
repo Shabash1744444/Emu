@@ -1,0 +1,21 @@
+package com.singularity.c4nursery;
+
+import android.app.*;import android.content.*;import android.os.*;import android.media.projection.*;import android.media.*;import android.hardware.display.*;import android.graphics.*;import android.net.Uri;import android.util.DisplayMetrics;
+import java.io.*;import java.util.UUID;
+
+public class ScreenStreamService extends Service {
+ public static final String ACTION_START="c4.screen.START",ACTION_STOP="c4.screen.STOP",ACTION_FRAME="c4.screen.FRAME";
+ public static final String EXTRA_CODE="code",EXTRA_DATA="data";
+ private static final String CH="c4_screen"; private MediaProjection projection;private VirtualDisplay display;private ImageReader reader;private Handler handler;
+ private String sessionId;private long lastFrame=0;private int intervalMs=1500;
+
+ @Override public void onCreate(){super.onCreate();handler=new Handler(Looper.getMainLooper());NotificationManager nm=getSystemService(NotificationManager.class);if(Build.VERSION.SDK_INT>=26)nm.createNotificationChannel(new NotificationChannel(CH,"C4 screen observation",NotificationManager.IMPORTANCE_LOW));}
+ private Notification note(){return new Notification.Builder(this,Build.VERSION.SDK_INT>=26?CH:"").setContentTitle("C4 наблюдает экран").setContentText("Идёт разрешённая сессия наблюдения").setSmallIcon(android.R.drawable.ic_menu_view).setOngoing(true).build();}
+ @Override public int onStartCommand(Intent i,int flags,int id){if(i==null)return START_NOT_STICKY;if(ACTION_STOP.equals(i.getAction())){stopSession("user");return START_NOT_STICKY;}if(ACTION_START.equals(i.getAction())){startForeground(77,note());startSession(i.getIntExtra(EXTRA_CODE,Activity.RESULT_CANCELED),(Intent)i.getParcelableExtra(EXTRA_DATA));}return START_NOT_STICKY;}
+ private void startSession(int code,Intent data){if(data==null||code!=Activity.RESULT_OK){stopSelf();return;}sessionId=UUID.randomUUID().toString();MediaProjectionManager pm=(MediaProjectionManager)getSystemService(MEDIA_PROJECTION_SERVICE);projection=pm.getMediaProjection(code,data);DisplayMetrics dm=getResources().getDisplayMetrics();int w=dm.widthPixels,h=dm.heightPixels;reader=ImageReader.newInstance(w,h,PixelFormat.RGBA_8888,2);display=projection.createVirtualDisplay("C4LiveScreen",w,h,dm.densityDpi,DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,reader.getSurface(),null,null);reader.setOnImageAvailableListener(r->sample(r,w,h),handler);broadcast("START",null,0);}
+ private void sample(ImageReader r,int w,int h){Image im=null;try{im=r.acquireLatestImage();if(im==null)return;long n=System.currentTimeMillis();if(n-lastFrame<intervalMs)return;lastFrame=n;Image.Plane p=im.getPlanes()[0];java.nio.ByteBuffer b=p.getBuffer();int ps=p.getPixelStride(),rs=p.getRowStride(),pad=rs-ps*w;Bitmap x=Bitmap.createBitmap(w+pad/ps,h,Bitmap.Config.ARGB_8888);x.copyPixelsFromBuffer(b);Bitmap y=Bitmap.createBitmap(x,0,0,w,h);x.recycle();File dir=new File(getCacheDir(),"screenstream");dir.mkdirs();File[] old=dir.listFiles();if(old!=null)for(File f:old)if(n-f.lastModified()>15000)f.delete();File f=new File(dir,"frame_"+n+".jpg");FileOutputStream os=new FileOutputStream(f);y.compress(Bitmap.CompressFormat.JPEG,55,os);os.close();y.recycle();broadcast("FRAME",Uri.fromFile(f).toString(),f.length());}catch(Exception ignored){}finally{if(im!=null)im.close();}}
+ private void broadcast(String phase,String uri,long size){Intent e=new Intent(ACTION_FRAME).setPackage(getPackageName());e.putExtra("phase",phase);e.putExtra("sessionId",sessionId);e.putExtra("capturedAt",System.currentTimeMillis());if(uri!=null)e.putExtra("uri",uri);e.putExtra("size",size);sendBroadcast(e);}
+ private void stopSession(String why){broadcast("STOP",null,0);if(display!=null){display.release();display=null;}if(reader!=null){reader.close();reader=null;}if(projection!=null){projection.stop();projection=null;}stopForeground(true);stopSelf();}
+ @Override public void onDestroy(){if(projection!=null)stopSession("destroy");super.onDestroy();}
+ @Override public IBinder onBind(Intent i){return null;}
+}
