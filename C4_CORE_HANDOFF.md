@@ -194,3 +194,26 @@ Please keep the build path single-source-of-truth to avoid shipping a stale payl
 ---
 
 If another ChatGPT thread is working on this repository: treat this file as the integration contract from the C4-core thread. Update app code around these invariants, not the other way around.
+
+
+## Core status update — 2026-10-06 / G156
+
+Latest physically packaged core release from the core-development thread:
+
+- `C4_CHILD_G156_RULE_EXPLANATION_CANONICAL_2026-10-06.zip`
+- organism checkpoint inside: `child_g156_rule_explanation.c4m`
+- organism size: about 206 KB compressed
+- source regression: 206/206 PASS
+- Nursery exam: 369/369 on the G153 organism lineage
+- Language exam: 137/137 on the G153 organism lineage
+
+New core behavior relevant to the app:
+
+1. C4 can maintain learned generalization rules separately from durable world facts.
+2. A rule result is `DERIVED`; applying it must never be rendered/stored as an observation.
+3. Rule studies use the existing `ASK` event type to request missing train/validation/counterexample evidence. Do not invent a new UI event type.
+4. A counterexample can suspend a broad learned rule. C4 may then ask for a distinguishing feature and admit a narrower replacement.
+5. Rule explanations are read-only and expose rule id, antecedent, train/validation support, validation negatives, independent source count, and `not_observation=true`.
+6. Suspended rules remain historical/auditable; UI should not delete or silently hide rule-revision history if/when an inspector is implemented.
+
+No existing app-facing transport API has to change for this update.
