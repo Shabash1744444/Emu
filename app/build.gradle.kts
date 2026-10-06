@@ -10,8 +10,8 @@ android {
         applicationId="com.singularity.c4nursery"
         minSdk=26
         targetSdk=35
-        versionCode=46
-        versionName="0.46-embodied-chat"
+        versionCode=47
+        versionName="0.47-interaction-hotfix"
         ndk { abiFilters += listOf("arm64-v8a") }
     }
 }
