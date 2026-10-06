@@ -6,6 +6,7 @@
  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"/>
  <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
  <application android:theme="@style/AppTheme" android:label="C4 Nursery">
+  <provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.files" android:exported="false" android:grantUriPermissions="true"><meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"/></provider>
   <service android:name=".ScreenStreamService" android:exported="false" android:foregroundServiceType="mediaProjection"/>
   <activity android:name=".MainActivity" android:screenOrientation="portrait" android:exported="true">
    <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
