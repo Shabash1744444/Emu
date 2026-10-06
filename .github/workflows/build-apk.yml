@@ -20,6 +20,7 @@ jobs:
       Path('/tmp/c4_ui.js').write_text(js)
       PY
       node --check /tmp/c4_ui.js
+      python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
      if: always()
@@ -36,16 +37,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.42-runtime-host.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.42-runtime-host.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.42-runtime-host.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.43-brain-boot.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.43-brain-boot.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.43-brain-boot.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.42-runtime-host.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.43-brain-boot.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.42-runtime-host
+      name: C4-Nursery-0.43-brain-boot
       path: |
-       release/C4-Nursery-0.42-runtime-host.apk
+       release/C4-Nursery-0.43-brain-boot.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
