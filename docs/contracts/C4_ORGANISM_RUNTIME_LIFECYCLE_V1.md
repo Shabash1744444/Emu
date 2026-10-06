@@ -111,3 +111,17 @@ Only environment-owned receipt may report verified outcome.
 
 ## Future model bay
 The UI may later support multiple installed organisms and multiple runtimes. Registry entries are keyed by organismId/digest; runtime selection is compatibility-based, never inferred from filename.
+
+
+## Independent-review diagnostics
+A distributable validation bundle SHOULD make these independently inspectable:
+- organism state digest and manifest;
+- runtime source/build identity separately from organism;
+- exact regression suite identity and pass count;
+- full correction/tombstone history when claiming non-destructive revision;
+- source-family identity derived from provenance, not loader labels alone;
+- temporal validity/observation time where domain semantics require it;
+- held-out evaluation identity proving it does not overlap curriculum;
+- persisted-byte accounting separated into organism state, runtime code, and optional caches.
+
+A compact .c4m alone MUST NOT be presented as proof that runtime invariants passed.
