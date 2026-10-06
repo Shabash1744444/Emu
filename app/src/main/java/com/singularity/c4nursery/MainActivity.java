@@ -6,16 +6,16 @@ import android.net.Uri;import android.provider.MediaStore;import android.media.M
 import org.json.JSONObject;import java.io.*;import java.util.*;
 
 public class MainActivity extends Activity {
- private WebView web; private SharedPreferences prefs; private MediaRecorder recorder;
+ private WebView web; private SharedPreferences prefs; private MediaRecorder recorder; private BroadcastReceiver screenReceiver;
  private File audioFile; private Uri cameraUri;
- private static final int PICK=4101,CAMERA=4102,MIC=4103,SCREEN=4104; private MediaProjectionManager projectionManager;
+ private static final int PICK=4101,CAMERA=4102,MIC=4103,SCREEN=4104,STREAM=4105; private MediaProjectionManager projectionManager;
 
  @Override public void onCreate(Bundle b){
   super.onCreate(b); prefs=getSharedPreferences("c4_nursery",MODE_PRIVATE);
   web=new WebView(this); web.setBackgroundColor(Color.rgb(13,18,25));
   WebSettings s=web.getSettings(); s.setJavaScriptEnabled(true);s.setDomStorageEnabled(true);s.setAllowFileAccess(false);s.setAllowContentAccess(false);
   web.addJavascriptInterface(new NurseryBridge(),"NurseryNative");web.setWebViewClient(new WebViewClient());
-  projectionManager=(MediaProjectionManager)getSystemService(MEDIA_PROJECTION_SERVICE);web.loadUrl("file:///android_asset/index.html");setContentView(web);
+  projectionManager=(MediaProjectionManager)getSystemService(MEDIA_PROJECTION_SERVICE);screenReceiver=new BroadcastReceiver(){public void onReceive(Context c,Intent i){try{JSONObject p=new JSONObject();p.put("phase",i.getStringExtra("phase"));p.put("sessionId",i.getStringExtra("sessionId"));p.put("capturedAt",i.getLongExtra("capturedAt",0));p.put("uri",i.getStringExtra("uri"));p.put("size",i.getLongExtra("size",0));emit("SCREEN_STREAM",p);}catch(Exception ignored){}}};IntentFilter sf=new IntentFilter(ScreenStreamService.ACTION_FRAME);if(Build.VERSION.SDK_INT>=33)registerReceiver(screenReceiver,sf,Context.RECEIVER_NOT_EXPORTED);else registerReceiver(screenReceiver,sf);web.loadUrl("file:///android_asset/index.html");setContentView(web);
  }
  private void emit(String type,JSONObject payload){try{final String js="window.C4HostEvent&&window.C4HostEvent("+JSONObject.quote(type)+","+payload.toString()+")";runOnUiThread(()->web.evaluateJavascript(js,null));}catch(Exception ignored){}}
  private JSONObject attachment(String kind,String name,String mime,long size,String uri)throws Exception{JSONObject o=new JSONObject();o.put("kind",kind);o.put("name",name);o.put("mime",mime);o.put("size",size);o.put("uri",uri);o.put("capturedAt",System.currentTimeMillis());return o;}
@@ -31,6 +31,8 @@ public class MainActivity extends Activity {
   @JavascriptInterface public void startAudio(){runOnUiThread(()->startRecording());}
   @JavascriptInterface public void stopAudio(){runOnUiThread(()->stopRecording());}
   @JavascriptInterface public void captureScreen(){runOnUiThread(()->startActivityForResult(projectionManager.createScreenCaptureIntent(),SCREEN));}
+  @JavascriptInterface public void startScreenStream(){runOnUiThread(()->startActivityForResult(projectionManager.createScreenCaptureIntent(),STREAM));}
+  @JavascriptInterface public void stopScreenStream(){runOnUiThread(()->startService(new Intent(MainActivity.this,ScreenStreamService.class).setAction(ScreenStreamService.ACTION_STOP)));}
  }
  private void startRecording(){try{
   if(checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)!=PackageManager.PERMISSION_GRANTED){requestPermissions(new String[]{android.Manifest.permission.RECORD_AUDIO},MIC);return;}
@@ -44,6 +46,7 @@ public class MainActivity extends Activity {
   if(r==PICK&&c==RESULT_OK&&d!=null&&d.getData()!=null){Uri u=d.getData();try{getContentResolver().takePersistableUriPermission(u,d.getFlags()&(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION));}catch(SecurityException ignored){}String mime=getContentResolver().getType(u);emit("ATTACHMENT_READY",attachment("file","Документ",mime==null?"application/octet-stream":mime,-1,u.toString()));}
   if(r==CAMERA){if(c==RESULT_OK&&cameraUri!=null)emit("ATTACHMENT_READY",attachment("image","Фото","image/jpeg",-1,cameraUri.toString()));else if(cameraUri!=null)getContentResolver().delete(cameraUri,null,null);cameraUri=null;}
   if(r==SCREEN&&c==RESULT_OK&&d!=null)captureOneScreen(c,d);
+  if(r==STREAM&&c==RESULT_OK&&d!=null){Intent s=new Intent(this,ScreenStreamService.class).setAction(ScreenStreamService.ACTION_START).putExtra(ScreenStreamService.EXTRA_CODE,c).putExtra(ScreenStreamService.EXTRA_DATA,d);if(Build.VERSION.SDK_INT>=26)startForegroundService(s);else startService(s);}
  }catch(Exception e){JSONObject p=new JSONObject();try{p.put("error",e.getClass().getSimpleName());}catch(Exception ignored){}emit("MEDIA_ERROR",p);}}
  private void captureOneScreen(int resultCode,Intent data){try{
   final MediaProjection mp=projectionManager.getMediaProjection(resultCode,data);DisplayMetrics dm=new DisplayMetrics();getWindowManager().getDefaultDisplay().getRealMetrics(dm);
@@ -52,5 +55,6 @@ public class MainActivity extends Activity {
   ir.setOnImageAvailableListener(reader->{Image image=null;try{image=reader.acquireLatestImage();if(image==null)return;Image.Plane p=image.getPlanes()[0];java.nio.ByteBuffer buf=p.getBuffer();int pixelStride=p.getPixelStride(),rowStride=p.getRowStride(),rowPadding=rowStride-pixelStride*w;Bitmap padded=Bitmap.createBitmap(w+rowPadding/pixelStride,h,Bitmap.Config.ARGB_8888);padded.copyPixelsFromBuffer(buf);Bitmap bmp=Bitmap.createBitmap(padded,0,0,w,h);padded.recycle();File f=new File(getFilesDir(),"screen_"+System.currentTimeMillis()+".png");FileOutputStream os=new FileOutputStream(f);bmp.compress(Bitmap.CompressFormat.PNG,92,os);os.close();bmp.recycle();emit("ATTACHMENT_READY",attachment("screen",f.getName(),"image/png",f.length(),Uri.fromFile(f).toString()));}catch(Exception e){JSONObject x=new JSONObject();try{x.put("error",e.getClass().getSimpleName());}catch(Exception ignored){}emit("MEDIA_ERROR",x);}finally{if(image!=null)image.close();vd.release();ir.close();mp.stop();}},new Handler(Looper.getMainLooper()));
  }catch(Exception e){JSONObject x=new JSONObject();try{x.put("error",e.getClass().getSimpleName());}catch(Exception ignored){}emit("MEDIA_ERROR",x);}}
  @Override protected void onPause(){super.onPause();if(recorder!=null)stopRecording();}
+ @Override protected void onDestroy(){if(screenReceiver!=null)unregisterReceiver(screenReceiver);super.onDestroy();}
  @Override public void onBackPressed(){if(web!=null&&web.canGoBack())web.goBack();else super.onBackPressed();}
 }
