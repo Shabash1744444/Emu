@@ -18,7 +18,7 @@ jobs:
       Path('/tmp/c4_ui.js').write_text(js)
       PY
       node --check /tmp/c4_ui.js
-   - run: gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
+   - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
      if: always()
      uses: actions/upload-artifact@v4
