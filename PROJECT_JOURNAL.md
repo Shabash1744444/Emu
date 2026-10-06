@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-06 (CP144 / build #110 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-06 (CP164 / build #240 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -39,19 +39,25 @@ The major seams exist: Android host <-> typed runtime socket <-> organism store;
 The real C4 engine is NOT embedded yet. Chat UI is now wired to the typed runtime contract and refuses to claim delivery unless a real RUNNING session accepts USER_MESSAGE.
 
 ## Build status
-Runs #86-93 were red because new verifier/source code lacked StandardCharsets and Cursor imports. Root cause fixed in commit 8eb57c2317ae60daae6ef62e0489a24f0da45f39.
-Run #94 passed the earlier milestone. Cumulative CP142-144 integration was re-gated: #108/#109 failed on a literal escaped-newline compile error; commit c5b07e1 fixed it; run #110 passed Gradle assembleDebug, APK verify/stage and artifact upload. Artifact C4-Nursery-DEV38 size 2,274,698 bytes, workflow artifact digest sha256:7eda0893ffbddff26328f6bbac7c4c3a626118de2f47e482dc6e8c0edd26bc72.
+CP164 sensory-cortex code was gated on GitHub Actions run #240 and passed:
+- WebView JavaScript syntax: PASS
+- Python py_compile: PASS
+- Gradle assembleDebug: PASS
+- APK unzip integrity: PASS
+- artifact: C4-Nursery-0.44-sensory-cortex
+- artifact ID: 11430637101
+- APK bytes: 33,790,954
+- APK SHA256: 4ab83f3c91c576852336af79620771e6503c6fd5bdbf4dc272e85a7eaff1c278
+
+The built APK now contains the first non-semantic sensory cortex. This is a host/body capability, not proof that the currently installed C4 runtime accepts or understands sensory frames.
 
 ## Next macroiteration
-1. Route screenshot through the unified private source spool.
-2. Add source lifecycle: STORED/QUEUED/INGESTING/INGESTED/ERROR without claiming learned/true.
-3. Harden verifier: host-owned challenge IDs, requestId/action pairing, anti-replay and WorldEngine separation.
-4. Audit remaining direct S mutations and convert core flows to transactions.
-5. Improve Library -> queue for C4 UX; progress only from real SOURCE_PROGRESS.
-6. Improve organism/runtime diagnostics and recovery.
-7. Increase room/avatar/world/constructor product density and visual quality.
-8. Harden WebView/ScreenStreamService/security.
-9. At meaningful milestone: bump dev version, green Actions, download artifact, verify nonzero bytes/unzip/SHA, then give APK.
+1. Device-test 0.44 on Android: microphone PCM stream, camera, screenshot and live-screen retinal frames.
+2. Import exact current G240-compatible runtime + organism and verify whether the runtime exposes SENSORY_*; keep explicit RUNTIME_CAPABILITY_UNAVAILABLE otherwise.
+3. Complete BEGIN_SOURCE / APPEND_SOURCE / END_SOURCE delivery from the private source spool to runtime with digest/offset checks.
+4. Add continuous organism foreground service so cognition does not stop merely because the Activity is backgrounded.
+5. Add the first motor voice surface (parameterized vocalization, not TTS) only behind ACTION_REQUEST -> execution receipt -> auditory feedback.
+6. Continue room/body/world expansion after the sensor loop is physically verified.
 
 ## Known debt
 Screenshot still uses older attachment path. Live-screen future runtime consumer is incomplete. ScreenStreamService lifecycle needs hardening. POST_NOTIFICATIONS polish remains. WebView bridge is larger than desired. WebView security needs audit. Causal mechanics are simplistic. Challenge generation is still partly DOM-owned. Source sidecar integrity/recovery needs hardening. Organism import should become single-pass digest+promote. recoveryInfo has stale previous.c4m concept. Stable signing is absent.
@@ -59,7 +65,7 @@ Screenshot still uses older attachment path. Live-screen future runtime consumer
 ## Checkpoint discipline
 Save a physical CP after every meaningful microstage and BEFORE long/risky work. Unsaved work counts as lost. Update THIS journal after every macroiteration. CP files are detailed history; this file is the canonical one-file handoff.
 
-Recent: CP136 transaction/recovery; CP137 typed runtime socket; CP138 external state-audit integration requirements; CP139 app-only scope; CP140 pre verified-world/library; CP141 verified world + durable Library; CP142 chat wired to typed runtime transport; CP143 training-safe chat/trace export; CP144 crash-safe native runtime trace, build #110 green.
+Recent: CP142 chat transport; CP143 training-safe trace export; CP144 crash-safe runtime trace; CP155-161 room/renderer/world; CP162 executable Python runtime host; CP163 normal C4 brain boot; CP164 non-semantic sensory cortex, build #240 green.
 
 ## Working style
 User works from Android. When user says “делай/дальше/ебош”, take a substantial macroiteration: implement -> negative paths -> test -> checkpoint -> continue. Do not require repeated micro-confirmations.
