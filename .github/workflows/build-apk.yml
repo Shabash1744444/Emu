@@ -12,6 +12,6 @@ jobs:
    - run: gradle :app:assembleDebug --stacktrace
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-DEV37-APK
+      name: C4-Nursery-DEV38-APK
       path: app/build/outputs/apk/debug/app-debug.apk
       if-no-files-found: error
