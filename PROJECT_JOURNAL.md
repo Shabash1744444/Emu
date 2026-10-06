@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-06 (CP164 / build #240 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-06 (CP165 / build #264 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -34,7 +34,7 @@ docs/contracts/C4_RUNTIME_ADAPTER_V1.md
 C4_CORE_HANDOFF.md is synchronization from the separate core branch.
 
 ## Current stage
-MOBILE ORGANISM SHELL / VERIFIED LEARNING ENVIRONMENT.
+LIVING MOBILE BODY / VERIFIED LEARNING ENVIRONMENT.
 The major seams exist: Android host <-> typed runtime socket <-> organism store; source/sensor spool <-> future runtime ingestion; renderer <-> native verifier <-> future ACTION_RECEIPT.
 The real C4 engine is NOT embedded yet. Chat UI is now wired to the typed runtime contract and refuses to claim delivery unless a real RUNNING session accepts USER_MESSAGE.
 
@@ -65,7 +65,7 @@ Screenshot still uses older attachment path. Live-screen future runtime consumer
 ## Checkpoint discipline
 Save a physical CP after every meaningful microstage and BEFORE long/risky work. Unsaved work counts as lost. Update THIS journal after every macroiteration. CP files are detailed history; this file is the canonical one-file handoff.
 
-Recent: CP142 chat transport; CP143 training-safe trace export; CP144 crash-safe runtime trace; CP155-161 room/renderer/world; CP162 executable Python runtime host; CP163 normal C4 brain boot; CP164 non-semantic sensory cortex, build #240 green.
+Recent: CP162 executable Python runtime host; CP163 normal C4 brain boot; CP164 non-semantic sensory cortex; CP165 living mobile body / foreground continuity / live vision, build #264 green.
 
 ## Working style
 User works from Android. When user says “делай/дальше/ебош”, take a substantial macroiteration: implement -> negative paths -> test -> checkpoint -> continue. Do not require repeated micro-confirmations.
@@ -94,3 +94,39 @@ Install Nursery, attach a real organism/runtime when available, talk naturally, 
 - Fixed Python bridge organism checkpoint binding so the active .c4m path/H3/meta are retained after open_organism.
 - App synchronization note updated to canonical C4 G240; G240 device boot is NOT yet claimed.
 - Release target: 0.44-sensory-cortex. CI/build result still required before GREEN.
+
+
+## 2026-10-06 — CP165 living body
+- Dialogue is now the default/primary surface; Home remains the organism's local habitat.
+- RUNNING C4 moves from Activity-owned timer to OrganismService foreground continuity.
+- Process-wide C4PythonGate serializes Activity/service calls into the Python runtime.
+- Service heartbeat distinguishes live foreground continuity from stale process-death state.
+- Real runtime ASK/PUBLISH/REPLY/etc produced while UI is hidden are durably queued; ASK/PUBLISH can surface as tappable Android notifications.
+- Live camera vision added as a foreground camera service and one continuous VISION sensory session.
+- Live screen is likewise represented as one continuous visual session rather than independent fake observations.
+- Chat attachments (file/photo/audio/screenshot) can flow immediately into the private source spool and then BEGIN_SOURCE -> APPEND_SOURCE -> END_SOURCE.
+- Binary source chunks are base64 only across JSON transport and are decoded back to bytes before a concrete Python append_source call.
+- Screenshot now uses the same durable source spool instead of the older attachment-only path.
+- Library has explicit "Передать C4" controls; STORED/DELIVERED_TO_RUNTIME remain distinct from INGESTED/LEARNED/TRUE.
+- Room/home rendering received a living-body visual pass: depth, light, breathing/blink/presence animation and brain-live state.
+- Core synchronization advanced from G240 to current observed G249 (1,247,711-byte organism); exact G249 device boot remains unverified.
+
+Build gate:
+- GitHub Actions run #264 SUCCESS.
+- JavaScript syntax PASS.
+- Python py_compile PASS.
+- Gradle assembleDebug PASS.
+- APK unzip integrity PASS.
+- artifact: C4-Nursery-0.45-living-body
+- artifact ID: 11431854363
+- artifact ZIP bytes: 33,793,970
+- artifact ZIP SHA256: c1bcc8f763aa46355b00869f01c3c0ea162a9864441077270a8641a992acd86d
+- APK bytes: 33,793,558
+- APK SHA256: ea923823e884dba1aaae2503f063e5b3b6189bb31813a072a5fb62c9ab9197a1
+
+Physical device gates still required:
+- live camera start/stop and foreground permission behavior;
+- microphone streaming stability and battery/thermal behavior;
+- background initiative notification permission on Android 13+;
+- exact G249 runtime + .c4m SENSORY_* compatibility;
+- source ingestion with the actual current runtime methods.
