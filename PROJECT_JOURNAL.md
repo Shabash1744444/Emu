@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-06 (CP165 / build #264 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-06 (CP166 / build #283 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -130,3 +130,28 @@ Physical device gates still required:
 - background initiative notification permission on Android 13+;
 - exact G249 runtime + .c4m SENSORY_* compatibility;
 - source ingestion with the actual current runtime methods.
+
+
+## 2026-10-06 — CP166 embodied chat
+- Dialogue is the primary launch surface with direct Runtime ZIP, .c4m and Launch controls.
+- Chat shows honest runtime transport state and distinct REPLY / ASK / PUBLISH messages.
+- Input is now an expanding mobile textarea.
+- Added live audio, vision and device-sensor telemetry in the chat HUD.
+- Added Android device-sensor streaming for motion, rotation, light and proximity.
+- Added avatar contact events as a separate sandbox sensory lane.
+- Improved Android notification permission and background-event recovery.
+- Exact APK version is shown in System diagnostics.
+- Core handoff synchronized to observed G260; G260 device boot is still unverified.
+
+Build gate:
+- GitHub Actions run #283 SUCCESS.
+- JavaScript syntax PASS.
+- Python py_compile PASS.
+- Gradle assembleDebug PASS.
+- APK integrity PASS.
+- artifact: C4-Nursery-0.46-embodied-chat
+- artifact ID: 11439127952
+- artifact ZIP bytes: 33,814,860
+- artifact ZIP SHA256: 5059a3e5c42323a24ef1bc652d95440bbac18134212c342994dadb28101fbb93
+- APK bytes: 33,814,442
+- APK SHA256: add064c1944125cf5e4a64dea6cc0140abfcbce80ea7cb0d6c87ea673007d3c3
