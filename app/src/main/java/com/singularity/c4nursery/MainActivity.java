@@ -3,7 +3,7 @@ package com.singularity.c4nursery;
 import android.app.*;import android.os.*;import android.webkit.*;import android.graphics.Color;
 import android.content.*;import android.content.pm.PackageManager;import android.content.res.Configuration;
 import android.net.Uri;import android.provider.MediaStore;import android.provider.OpenableColumns;import android.media.MediaRecorder;import android.media.projection.MediaProjection;import android.media.projection.MediaProjectionManager;import android.media.Image;import android.media.ImageReader;import android.hardware.display.DisplayManager;import android.hardware.display.VirtualDisplay;import android.graphics.Bitmap;import android.util.DisplayMetrics;
-import org.json.JSONObject;import org.json.JSONArray;import java.io.*;import java.util.*;import java.security.MessageDigest;import android.util.Base64;
+import org.json.JSONObject;import org.json.JSONArray;import java.io.*;import java.util.*;import java.security.MessageDigest;import java.nio.charset.StandardCharsets;import android.database.Cursor;import android.util.Base64;
 
 public class MainActivity extends Activity {
  private WebView web; private SharedPreferences prefs; private MediaRecorder recorder; private BroadcastReceiver screenReceiver;
