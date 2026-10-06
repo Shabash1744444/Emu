@@ -35,6 +35,7 @@ public class OrganismService extends Service {
   if(ACTION_START.equals(i.getAction())){
    if(!prefs.getBoolean("runtime_running",false)){stopSelf();return START_NOT_STICKY;}
    startForeground(91,note());
+   prefs.edit().putLong("organism_service_heartbeat",System.currentTimeMillis()).apply();
    if(exec==null||exec.isShutdown()){
     exec=Executors.newSingleThreadScheduledExecutor();
     exec.scheduleAtFixedRate(this::tick,300,1500,TimeUnit.MILLISECONDS);
@@ -44,6 +45,7 @@ public class OrganismService extends Service {
  }
  private void tick(){
   if(!prefs.getBoolean("runtime_running",false)){shutdown(false);return;}
+  prefs.edit().putLong("organism_service_heartbeat",System.currentTimeMillis()).apply();
   try{
    JSONObject py=new JSONObject(C4PythonGate.call(this,"command","TICK","{\"n\":1}"));
    if(!py.optBoolean("accepted",false))throw new IllegalStateException(py.optString("error","TICK_REJECTED"));
@@ -77,6 +79,6 @@ public class OrganismService extends Service {
   stopForeground(true);stopSelf();
  }
  @Override public void onTaskRemoved(Intent rootIntent){try{C4PythonGate.call(this,"checkpoint");}catch(Exception ignored){}super.onTaskRemoved(rootIntent);}
- @Override public void onDestroy(){if(exec!=null){exec.shutdownNow();exec=null;}super.onDestroy();}
+ @Override public void onDestroy(){prefs.edit().putLong("organism_service_heartbeat",0).apply();if(exec!=null){exec.shutdownNow();exec=null;}super.onDestroy();}
  @Override public IBinder onBind(Intent i){return null;}
 }
