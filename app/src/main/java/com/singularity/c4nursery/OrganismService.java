@@ -4,6 +4,7 @@ import android.app.*;
 import android.content.*;
 import android.os.*;
 import org.json.*;
+import java.io.*;
 import java.util.concurrent.*;
 
 public class OrganismService extends Service {
