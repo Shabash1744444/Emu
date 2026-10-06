@@ -9,6 +9,15 @@ jobs:
      with: {distribution: temurin, java-version: '17'}
    - uses: gradle/actions/setup-gradle@v4
      with: {gradle-version: '8.9'}
+   - name: Validate WebView JavaScript syntax
+     run: |
+      python3 - <<'PY'
+      from pathlib import Path
+      s=Path('app/src/main/assets/index.html').read_text()
+      js=s.rsplit('<script>',1)[1].split('</script>',1)[0]
+      Path('/tmp/c4_ui.js').write_text(js)
+      PY
+      node --check /tmp/c4_ui.js
    - run: gradle :app:assembleDebug --stacktrace
    - name: Verify and stage APK
      shell: bash
@@ -18,16 +27,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.41-scene-v2.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.41-scene-v2.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.41-scene-v2.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.42-runtime-host.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.42-runtime-host.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.42-runtime-host.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.41-scene-v2.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.42-runtime-host.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.41-scene-v2
+      name: C4-Nursery-0.42-runtime-host
       path: |
-       release/C4-Nursery-0.41-scene-v2.apk
+       release/C4-Nursery-0.42-runtime-host.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
