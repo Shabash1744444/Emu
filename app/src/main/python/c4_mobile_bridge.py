@@ -1,6 +1,6 @@
 import json, os, sys, zipfile, shutil, importlib
 _runtime=None
-_runtime_root=None
+_runtime_root=None\n_checkpoint_path=None\n_h3=None\n_manifest_meta={}\n_last_saved_step=0
 
 def _purge_c4child():
     for name in list(sys.modules):
@@ -73,6 +73,20 @@ def open_organism(path):
         _runtime.load_runtime_state(rs)
     state=_runtime.runtime_state()
     return json.dumps({"running":True,"schema":schema,"manifestSchema":manifest.get("schema"),"state":state},ensure_ascii=False,default=str)
+
+def checkpoint():
+    global _last_saved_step
+    if _runtime is None or not _checkpoint_path:
+        return json.dumps({"saved":False,"error":"RUNTIME_NOT_RUNNING"})
+    import c4child.checkpoint as cp
+    tmp=_checkpoint_path+".save.tmp"
+    state=_runtime.runtime_state()
+    save_compact=getattr(cp,"save_c4m_compact",None)
+    if save_compact is None: raise RuntimeError("COMPACT_SAVER_NOT_AVAILABLE")
+    save_compact(tmp,_runtime.dialogue.g,h3=_h3,meta=_manifest_meta,runtime_state=state,include_cold=True)
+    os.replace(tmp,_checkpoint_path)
+    _last_saved_step=int(state.get("step",0))
+    return json.dumps({"saved":True,"path":_checkpoint_path,"step":_last_saved_step})
 
 def command(type_, payload_json):
     if _runtime is None: return json.dumps({"accepted":False,"error":"RUNTIME_NOT_RUNNING"})
