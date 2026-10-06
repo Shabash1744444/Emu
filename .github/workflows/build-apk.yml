@@ -28,6 +28,14 @@ jobs:
       if bad:
           raise SystemExit('Single-element $() used as a collection: '+repr(bad))
       PY
+      python3 - <<'PY'
+      from pathlib import Path
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      if 'String lower=us.toLowerCase' in java or 'lower.contains(".c4m")' in java:
+          raise SystemExit('Do not validate .c4m using content URI text')
+      if 'displayName(u,"organism.c4m")' not in java or 'endsWith(".c4m")' not in java:
+          raise SystemExit('Organism picker must validate DISPLAY_NAME')
+      PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -45,16 +53,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.47-interaction-hotfix.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.47-interaction-hotfix.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.47-interaction-hotfix.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.48-organism-picker-hotfix.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.48-organism-picker-hotfix.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.48-organism-picker-hotfix.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.47-interaction-hotfix.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.48-organism-picker-hotfix.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.47-interaction-hotfix
+      name: C4-Nursery-0.48-organism-picker-hotfix
       path: |
-       release/C4-Nursery-0.47-interaction-hotfix.apk
+       release/C4-Nursery-0.48-organism-picker-hotfix.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
