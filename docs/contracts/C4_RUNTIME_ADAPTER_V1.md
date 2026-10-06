@@ -46,3 +46,25 @@ UI owns presentation only.
 
 ## Recovery
 Process death invalidates RUNNING session ownership. Host restarts STOPPED/RECOVERY; it never auto-replays unfinished ACTION_REQUEST or resumes screen capture.
+
+## Source ingestion state machine
+A source crosses explicit states; none imply the next:
+
+`CAPTURED -> STORED -> INGESTING -> INGESTED`
+
+Semantic/epistemic interpretation is outside this host state machine:
+
+`INGESTED != LEARNED != ACCEPTED_AS_TRUE`
+
+Rules:
+- Android may emit/store a source only after durable spool commit and digest identity.
+- BEGIN_SOURCE references the immutable stored sourceId/digest and declares metadata/evidence envelope.
+- APPEND_SOURCE offsets must be monotonic for that ingestion session; runtime may reject/resume explicitly.
+- END_SOURCE carries the expected digest. Runtime must verify completion before SOURCE_PROGRESS can report an INGESTED terminal phase.
+- SOURCE_PROGRESS is runtime-owned and must include sourceId plus phase/progress sufficient to correlate with the stored source.
+- UI may show STORED from host receipts, but may show INGESTING/INGESTED only from runtime events.
+- CHECKPOINT_COMMITTED is not proof that any particular source was learned or believed.
+- imported/replayed/self-generated material cannot gain independent-evidence status merely by ingestion.
+
+## Trace symmetry
+For every transport command/event, host trace should retain direction, type, session/request/event identity, organism identity and timestamp. Command acceptance, command result and runtime event are separate facts. Absence of an event must not be synthesized into success.
