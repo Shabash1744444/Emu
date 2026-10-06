@@ -29,7 +29,8 @@ public class MainActivity extends Activity {
   @JavascriptInterface public void pickFile(){runOnUiThread(()->{Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);i.addCategory(Intent.CATEGORY_OPENABLE);i.setType("*/*");startActivityForResult(i,PICK);});}
   @JavascriptInterface public void capturePhoto(){runOnUiThread(()->{try{ContentValues v=new ContentValues();v.put(MediaStore.Images.Media.DISPLAY_NAME,"c4_"+System.currentTimeMillis()+".jpg");v.put(MediaStore.Images.Media.MIME_TYPE,"image/jpeg");cameraUri=getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,v);Intent i=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);i.putExtra(MediaStore.EXTRA_OUTPUT,cameraUri);i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);startActivityForResult(i,CAMERA);}catch(Exception e){JSONObject p=new JSONObject();try{p.put("error",e.getClass().getSimpleName());}catch(Exception ignored){}emit("MEDIA_ERROR",p);}});}
   @JavascriptInterface public void startAudio(){runOnUiThread(()->startRecording());}
-  @JavascriptInterface public void stopAudio(){runOnUiThread(()->stopRecording());}\n  @JavascriptInterface public void captureScreen(){runOnUiThread(()->startActivityForResult(projectionManager.createScreenCaptureIntent(),SCREEN));}
+  @JavascriptInterface public void stopAudio(){runOnUiThread(()->stopRecording());}
+  @JavascriptInterface public void captureScreen(){runOnUiThread(()->startActivityForResult(projectionManager.createScreenCaptureIntent(),SCREEN));}
  }
  private void startRecording(){try{
   if(checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)!=PackageManager.PERMISSION_GRANTED){requestPermissions(new String[]{android.Manifest.permission.RECORD_AUDIO},MIC);return;}
