@@ -10,8 +10,8 @@ android {
         applicationId="com.singularity.c4nursery"
         minSdk=26
         targetSdk=35
-        versionCode=47
-        versionName="0.47-interaction-hotfix"
+        versionCode=48
+        versionName="0.48-organism-picker-hotfix"
         ndk { abiFilters += listOf("arm64-v8a") }
     }
 }
