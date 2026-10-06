@@ -99,3 +99,26 @@ Forbidden in this layer:
 `SENSORY_SESSION_START / SENSORY_FRAME / SENSORY_SESSION_STOP` may be rejected with `RUNTIME_CAPABILITY_UNAVAILABLE` when the installed C4 runtime does not yet expose the sensory ABI. The host must show that honestly rather than synthesize perception.
 
 SIGNAL != SOURCE. CAPTURED != PERCEIVED. PERCEIVED != LEARNED. FEATURE != CONCEPT.
+
+
+## Android binary chunk envelope
+
+The WebView/Android/Python JSON boundary may carry an APPEND_SOURCE chunk as:
+- `encoding: "base64"`
+- `bytes: "<base64>"`
+- monotonic `offset`
+
+This is a transport encoding only. Before calling a concrete Python runtime `append_source` / `source_append` method, the host adapter decodes the payload back to raw bytes and removes the transport-only `encoding` field.
+
+Base64 text is never semantic source content and must never be stored as the source itself.
+
+## Foreground organism continuity
+
+When a session reaches RUNNING, Android may keep the local runtime alive with a foreground service. The service:
+- owns autonomous TICK cadence while the Activity is backgrounded;
+- serializes Python calls through the same process-wide gate as the Activity;
+- checkpoints after autonomous emissions and periodically;
+- persists real runtime events to a durable pending inbox when no UI is visible;
+- may surface actual ASK/PUBLISH events as Android notifications.
+
+Foreground continuity does not authorize auto-resuming a dead-process physical action or sensory session. After process death, stale heartbeat -> STOPPED/RECOVERY remains the rule.
