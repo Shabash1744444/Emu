@@ -77,3 +77,14 @@ Install Nursery, attach a real organism/runtime when available, talk naturally, 
 - Do not silently copy or freeze the evolving C4 core into Emu.
 - Integration remains through explicit versioned runtime/organism contracts and attested artifacts.
 - This preserves the existing rule: C4 core and its host/body are separable components.
+
+
+## 2026-10-06 — CP164 sensory-cortex implementation
+- Reframed Emu explicitly as C4's digital body/environment rather than a chat client.
+- Added non-semantic `C4_SENSORY_FEATURES_V1` host cortex.
+- Audio path now uses AudioRecord PCM16 mono at 16 kHz and emits timed physical feature frames while preserving raw PCM as a private content-addressed source.
+- Visual path derives a 12x8 RGB+luma retinal lattice and simple light/contrast/edge measures from camera photos, screenshots and live-screen frames.
+- Added typed runtime routing for SENSORY_SESSION_START / SENSORY_FRAME / SENSORY_SESSION_STOP and source/action-receipt command families; unsupported runtime capability stays explicit.
+- Fixed Python bridge organism checkpoint binding so the active .c4m path/H3/meta are retained after open_organism.
+- App synchronization note updated to canonical C4 G240; G240 device boot is NOT yet claimed.
+- Release target: 0.44-sensory-cortex. CI/build result still required before GREEN.
