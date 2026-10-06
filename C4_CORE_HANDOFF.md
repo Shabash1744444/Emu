@@ -217,3 +217,33 @@ New core behavior relevant to the app:
 6. Suspended rules remain historical/auditable; UI should not delete or silently hide rule-revision history if/when an inspector is implemented.
 
 No existing app-facing transport API has to change for this update.
+
+
+## Core status update — 2026-10-06 / G207
+
+Latest physical canonical release from the core-development thread:
+
+- `C4_G207_SELF_DIRECTED_TECH_CANONICAL_2026-10-06.zip`
+- organism: `child_g207_self_directed_tech.c4m`
+- organism size: 243,886 bytes
+- source regression: 241/241 PASS
+- Nursery exam: 384/384 PASS
+- Language exam: 137/137 PASS
+- entities: 1,123
+- active facts: 1,541
+- evidence records: 1,544
+- open learning gaps after training: 0
+
+New integration-relevant epistemic behavior:
+
+1. External/autonomous teaching uses quarantine with proposal, challenge, and post-retraction revalidation.
+2. A mature contradiction to an autonomously admitted fact retracts it to UNKNOWN first; it does not immediately flip truth.
+3. Revised truth requires a fresh non-model REVALIDATION family distinct from proposal/challenge families.
+4. Source-family degradation counts distinct verified errors, not repeats; rehabilitation requires distinct matches to pre-existing canonical knowledge and restores eligibility, not authority.
+5. Learned-rule admission is provenance-aware: model examples may help propose a rule, but non-model train/validation/counterexample anchors are required.
+6. Rule induction excludes the target proposition from its own feature space (target-leakage protection).
+7. New learned rules track graph support dependencies. If a supporting fact is retracted/tombstoned and the rule no longer satisfies admission constraints, the rule becomes unusable and then SUSPENDED / SUPPORT_RETRACTED.
+8. `DERIVED`, `UNKNOWN`, `CONFLICT`, `QUARANTINED`, `NEEDS_CHALLENGE`, and `NEEDS_REVALIDATION` are semantically distinct states. UI must not collapse them into a single true/false display.
+9. G204-G207 knowledge growth used the organism's own competency loop: gap -> ASK -> targeted lesson -> independent recheck -> MASTERED. No frontend fake initiative.
+
+The current app-facing transport shape remains compatible: initiative can still surface through ordinary ASK/STATUS-style events; do not invent frontend cognition.
