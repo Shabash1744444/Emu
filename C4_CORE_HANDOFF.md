@@ -263,3 +263,24 @@ Integration consequence:
 The Android host is the digital body/environment of the organism, not the cognition itself. G240 uses typed PHYSICAL / MATHEMATICAL / TEMPORAL / CAUSAL / OBSERVATIONAL / LINGUISTIC / PHILOSOPHICAL / EPISTEMIC / SELF-WORLD projections. Host sensors should deliver provenance-preserving physical observations without pre-solving semantics.
 
 The app's last device cold-start smoke was G208, so compatibility with exact G240 runtime/artifact remains a required device gate; do not claim G240 boot until physically tested.
+
+
+## Core status update — 2026-10-06 / G249
+
+Current canonical core repository baseline observed by the app thread:
+- repository: `Shabash1744444/-`
+- generation: G249
+- organism: `child_g249_audio_recurrence_green.c4m`
+- size: 1,247,711 bytes
+- SHA256: `b28f2fe078b896e768f9b20efb112a1b51aa5bc40a596d9f9c9bdaacc1b71e46`
+- G249: 162/162 admitted, cold 14/14, runtime changes 0
+- regression: 254/263; all 9 failures remain missing historical-artifact FileNotFoundErrors
+
+App-relevant audio state:
+- G246 introduced the audio/sensory conceptual foundation.
+- G247 grounded eight real MP3 artifacts through external physical analysis.
+- G248 bound text+audio only where identity was supported.
+- G249 added recurrence/temporal-structure observations from actual audio.
+- The core still explicitly does NOT claim a continuously connected microphone organ.
+
+This makes Nursery 0.45's live microphone/camera sensory bridge directly relevant: the body now provides a path toward the next genuine frontier, but no device compatibility or live-hearing claim is made until an exact G249-compatible runtime and organism accept SENSORY_* on hardware.
