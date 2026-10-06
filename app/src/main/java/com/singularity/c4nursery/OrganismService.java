@@ -10,7 +10,7 @@ public class OrganismService extends Service {
  public static final String ACTION_START="c4.organism.START";
  public static final String ACTION_STOP="c4.organism.STOP";
  public static final String ACTION_EVENT="c4.organism.EVENT";
- private static final String CH="c4_organism";
+ private static final String CH="c4_organism",CH_INIT="c4_initiative";
  private ScheduledExecutorService exec;
  private SharedPreferences prefs;
  private long ticks=0;
@@ -19,7 +19,7 @@ public class OrganismService extends Service {
   super.onCreate();
   prefs=getSharedPreferences("c4_nursery",MODE_PRIVATE);
   NotificationManager nm=getSystemService(NotificationManager.class);
-  if(Build.VERSION.SDK_INT>=26)nm.createNotificationChannel(new NotificationChannel(CH,"C4 organism",NotificationManager.IMPORTANCE_LOW));
+  if(Build.VERSION.SDK_INT>=26){nm.createNotificationChannel(new NotificationChannel(CH,"C4 organism",NotificationManager.IMPORTANCE_LOW));nm.createNotificationChannel(new NotificationChannel(CH_INIT,"C4 initiative",NotificationManager.IMPORTANCE_DEFAULT));}
  }
  private Notification note(){
   return new Notification.Builder(this,Build.VERSION.SDK_INT>=26?CH:"")
@@ -91,9 +91,12 @@ public class OrganismService extends Service {
  private void notifyInitiative(String type,JSONObject payload){
   try{
    String text=payload.optString("text",type);if(text.length()>120)text=text.substring(0,120)+"…";
-   Notification n=new Notification.Builder(this,Build.VERSION.SDK_INT>=26?CH:"")
+   Intent open=new Intent(this,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+   PendingIntent pi=PendingIntent.getActivity(this,0,open,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
+   Notification n=new Notification.Builder(this,Build.VERSION.SDK_INT>=26?CH_INIT:"")
     .setContentTitle("ASK".equals(type)?"C4 хочет спросить":"C4 проявила инициативу")
     .setContentText(text)
+    .setContentIntent(pi)
     .setSmallIcon(android.R.drawable.ic_dialog_info)
     .setAutoCancel(true).build();
    getSystemService(NotificationManager.class).notify(93,n);
