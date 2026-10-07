@@ -4,7 +4,7 @@ import { VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 
 let renderer=null,scene=null,camera=null,canvas=null,currentVrm=null,raf=0;
 let lastTime=performance.now(),loadToken=0,motion={action:'IDLE',start:0,duration:0,context:{},fromRootX:0,toRootX:0};
-let motionQueue=[],lookTarget=null,resizeObserver=null,visible=true;
+let motionQueue=[],lookTarget=null,resizeObserver=null,visible=true,vocal={until:0,level:0};
 let ground=null,groundRing=null,heldProp=null,heldObject=null,rootBaseX=0,visualRootX=0;
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -167,6 +167,25 @@ function applyBlink(t){
   let v=0;if(phase<.13){const q=phase/.13;v=Math.sin(Math.PI*q)}
   setExpression('blink',v);
 }
+function setAnyExpression(names,value){
+  for(const name of names){try{if(currentVrm?.expressionManager?.getExpression(name)){currentVrm.expressionManager.setValue(name,clamp(value,0,1));return true}}catch(_){}}
+  return false;
+}
+function applyVocal(now){
+  if(!currentVrm?.expressionManager)return;
+  if(now<vocal.until){
+    const pulse=.34+.66*Math.abs(Math.sin(now*.0207));
+    setAnyExpression(['aa','a'],clamp(vocal.level*pulse,0,1));
+  }else{
+    setAnyExpression(['aa','a'],0);vocal.level=0;
+  }
+}
+function vocalize(durationMs=500,amplitude=.2){
+  if(!currentVrm)return false;
+  const dur=clamp(Number(durationMs)||500,60,2200),amp=clamp(Number(amplitude)||0,0,0.35);
+  vocal.until=performance.now()+dur;vocal.level=clamp(.18+amp*1.9,0,0.88);emitStatus();return true;
+}
+
 function applyIdle(t){
   const breath=Math.sin(t*1.38);
   rot('spine',0.012*breath,0,0.006*Math.sin(t*.72),1);
@@ -230,7 +249,7 @@ function motor(action,context={}){
 function loop(now){
   raf=requestAnimationFrame(loop);if(!renderer||!scene||!camera||!visible)return;
   const dt=Math.min(.05,(now-lastTime)/1000||.016);lastTime=now;
-  if(currentVrm){applyMotion(now);applyBlink(now/1000);try{currentVrm.update(dt)}catch(_){}}
+  if(currentVrm){applyMotion(now);applyBlink(now/1000);applyVocal(now);try{currentVrm.update(dt)}catch(_){}}
   renderer.render(scene,camera);
 }
 function sync(state={}){
@@ -241,7 +260,7 @@ function sync(state={}){
   currentVrm.scene.position.x=rootBaseX+visualRootX;emitStatus();return true;
 }
 function setVisible(v){visible=!!v}
-function status(){return {ready:!!currentVrm,action:motion.action,queue:motionQueue.map(x=>x.action),queueLength:motionQueue.length,heldObject,rootX:visualRootX,metaVersion:String(currentVrm?.meta?.metaVersion??''),springBones:!!currentVrm?.springBoneManager,expressions:currentVrm?.expressionManager?Object.keys(currentVrm.expressionManager.expressionMap||{}):[],bones:currentVrm?.humanoid?Object.keys(currentVrm.humanoid.normalizedHumanBones||{}):[]}}
+function status(){return {ready:!!currentVrm,action:motion.action,queue:motionQueue.map(x=>x.action),queueLength:motionQueue.length,heldObject,rootX:visualRootX,vocalActive:performance.now()<vocal.until,metaVersion:String(currentVrm?.meta?.metaVersion??''),springBones:!!currentVrm?.springBoneManager,expressions:currentVrm?.expressionManager?Object.keys(currentVrm.expressionManager.expressionMap||{}):[],bones:currentVrm?.humanoid?Object.keys(currentVrm.humanoid.normalizedHumanBones||{}):[]}}
 function dispose(){++loadToken;disposeRendererOnly()}
-window.C4VRM={load,motor,sync,status,setVisible,dispose};
+window.C4VRM={load,motor,vocalize,sync,status,setVisible,dispose};
 window.dispatchEvent(new CustomEvent('c4-vrm-ready'));
