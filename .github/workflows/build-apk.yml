@@ -263,6 +263,26 @@ jobs:
       if present:
           raise SystemExit('Fabricated organism metrics returned: '+repr(present))
       PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      required=[
+          'id="chatPresenceHero"','id="chatPresenceLatest"','renderChatPresence',
+          'compactAmbient','chatTools','keyboardOpen .chatPresenceHero',
+          'C4 · LOCAL ORGANISM','msg.assistant.ask','msg.assistant.publish'
+      ]
+      missing=[x for x in required if x not in html]
+      if missing:
+          raise SystemExit('Cinematic chat presence contract missing: '+repr(missing))
+      forbidden=['typing…','печатает…','думает…','thinking…','Эмоции:','Любопытство:','Энергия:']
+      present=[x for x in forbidden if x in html]
+      if present:
+          raise SystemExit('Fabricated cognitive presence returned: '+repr(present))
+      start=html.find("function render(){")
+      end=html.find("function renderRoomHud()",start)
+      if "m.scrollTop=m.scrollHeight" in html[start:end]:
+          raise SystemExit('Full render must not force chat to bottom')
+      PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -280,16 +300,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.57-cinematic-home.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.57-cinematic-home.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.57-cinematic-home.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.58-cinematic-chat.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.58-cinematic-chat.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.58-cinematic-chat.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.57-cinematic-home.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.58-cinematic-chat.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.57-cinematic-home
+      name: C4-Nursery-0.58-cinematic-chat
       path: |
-       release/C4-Nursery-0.57-cinematic-home.apk
+       release/C4-Nursery-0.58-cinematic-chat.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
