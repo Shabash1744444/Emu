@@ -77,9 +77,37 @@ required=[
     "const wnt=$('#worldNewTask');if(wnt)wnt.onclick",
     "const materialClose=$('#materialClose');if(materialClose)materialClose.onclick",
     "const materialSend=$('#materialSend');if(materialSend)materialSend.onclick",
+    'id="chatSelectBar"',
+    'id="chatSelectCancel"',
+    'id="chatSelectCopy"',
+    'const chatSelection=new Set()',
+    'function toggleChatSelection(',
+    'function copySelectedChat()',
+    'function bindMessageSelection(',
+    "const chatSelectCancel=$('#chatSelectCancel');if(chatSelectCancel)chatSelectCancel.onclick",
+    "const chatSelectCopy=$('#chatSelectCopy');if(chatSelectCopy)chatSelectCopy.onclick",
 ]
 for x in required:
     if x not in s: errs.append(f'missing critical UI binding: {x}')
+
+
+# Chat multi-selection must remain UI-only and clipboard-only.
+chat_block=s[s.find('const chatSelection=new Set()'):s.find('function transact(',s.find('const chatSelection=new Set()'))]
+if not chat_block:
+    errs.append('chat multi-selection block missing')
+else:
+    for forbidden in ['runtimeSend(', 'commit(', 'transact(', 'C4HostEvent', 'ACTION_RECEIPT']:
+        if forbidden in chat_block:
+            errs.append('chat selection must not mutate/runtime-route conversation state: '+forbidden)
+    for required_chat in [
+        "navigator.vibrate(18)",
+        "chatSelection.has(item.key)?' selected':''",
+        "items.length===1?",
+        "join('\\n\\n')",
+        "chatSpeaker(v.x)",
+    ]:
+        if required_chat not in chat_block:
+            errs.append('chat selection behavior missing: '+required_chat)
 
 if errs:
     print('UI CONTRACT FAIL')
