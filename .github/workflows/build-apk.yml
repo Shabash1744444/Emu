@@ -389,6 +389,20 @@ jobs:
       PY
       python3 tools/ui_contract_guard.py app/src/main/assets/index.html
       python3 tools/layout_contract_guard.py app/src/main/assets/index.html
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      py=Path('app/src/main/python/c4_mobile_bridge.py').read_text()
+      need_html=['id="traceSupport"','data-trace-mode="DEEP"','traceNext','cognitiveTrace','C4_NURSERY_TRAINING_BUNDLE_V3']
+      need_java=['C4_COGNITIVE_TRACE_V1','configureCognitiveTrace','requestCognitiveTraceSnapshot','cognitive_trace.jsonl','clearDiagnosticTraces']
+      need_py=['TRACE_CONFIG','TRACE_SNAPSHOT']
+      for name,src,need in [('html',html,need_html),('java',java,need_java),('py',py,need_py)]:
+          missing=[x for x in need if x not in src]
+          if missing: raise SystemExit(f'Cognitive trace {name} contract missing: {missing}')
+      if 'cognitiveTraceIsDiagnosticNotEvidence:true' not in html:
+          raise SystemExit('Cognitive trace epistemic boundary missing')
+      PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -406,16 +420,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.64.1-chat-select.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.64.1-chat-select.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.64.1-chat-select.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.64.2-cognitive-trace.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.64.2-cognitive-trace.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.64.2-cognitive-trace.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.64.1-chat-select.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.64.2-cognitive-trace.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.64.1-chat-select
+      name: C4-Nursery-0.64.2-cognitive-trace
       path: |
-       release/C4-Nursery-0.64.1-chat-select.apk
+       release/C4-Nursery-0.64.2-cognitive-trace.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
