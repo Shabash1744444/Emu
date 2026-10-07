@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-07 (CP174 / build #356 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-07 (CP175 / build #369 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -503,3 +503,20 @@ Bundled assets:
 Device gate:
 - exact VRM render, camera framing, blink/bone orientation and thermal behavior require physical Android visual smoke-test;
 - compatible G266 runtime remains the proven organism boot baseline.
+
+
+## 2026-10-07 — CP175 Embodied Motion V2
+- verified ACTION_RECEIPT context now reaches the VRM renderer;
+- bounded renderer-only motor queue (max 8), never persisted as cognition/plan;
+- target-aware reach/gaze from verified room state;
+- improved step gait, root translation from native body x, finger grasp/release;
+- verified BALL/BOOK/BLOCK proxy can attach to the right hand;
+- ground/contact shadows and rig telemetry added;
+- restart restores only verified x + held object; unfinished gestures do not resume;
+- capability: EMBODIED_MOTION_V2.
+
+Build #369 SUCCESS.
+Artifact: C4-Nursery-0.55-embodied-motion-v2 (ID 11484444114).
+APK: 48,147,439 bytes; SHA256 03723ed74d0d187f5e7473eee9fca1f6d1464cfe5fc6adccc8ea017d95707e63.
+Artifact ZIP SHA256: 76cc9aa4e2a99b0b7889598884873b5706e12f1e46af2576ed4850881b15bee1.
+Physical gate: verify finger axes, hand prop offset/scale, step signs and thermal cost on device.
