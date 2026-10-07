@@ -118,6 +118,8 @@ def _typed_runtime_call(type_,p):
         "SENSORY_FRAME":("sensory_frame","ingest_sensory_frame"),
         "SENSORY_SESSION_STOP":("sensory_session_stop","stop_sensory_session"),
         "ACTION_RECEIPT":("action_receipt","receive_action_receipt"),
+        "WORLD_EVENT":("world_event","observe_world_event","ingest_world_event"),
+        "WORLD_TASK":("world_task","accept_world_task","receive_world_task"),
     }.get(type_,())
     call_p=dict(p)
     if type_=="APPEND_SOURCE" and call_p.get("encoding")=="base64" and isinstance(call_p.get("bytes"),str):
