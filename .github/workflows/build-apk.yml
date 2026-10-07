@@ -71,6 +71,36 @@ jobs:
       if '"WAVE","NOD","LOOK_AROUND","STEP_LEFT","STEP_RIGHT","IDLE"' not in java:
           raise SystemExit('Host motor verbs missing')
       PY
+      python3 - <<'PY'
+      import re
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      bad=[]
+      for needle in [
+          "$('.page').forEach",
+          "$('.nav button').forEach",
+          "$('[data-go]').forEach",
+          "$('[data-home-go]').forEach",
+          "$('#dropTargets span').forEach",
+          "$('[data-object]').forEach",
+      ]:
+          if needle in html and ("$"+needle) not in html:
+              bad.append(needle)
+      if bad:
+          raise SystemExit("Single-element selector used as collection: "+repr(bad))
+      required=[
+          'Дом Синьки','homeStatusRing','homeThoughtPanel','homeModules',
+          'renderHomeDashboard()','data-home-go="chat"','data-home-go="world"',
+          'Тело принадлежит C4'
+      ]
+      missing=[x for x in required if x not in html]
+      if missing:
+          raise SystemExit("Living Home contract missing: "+repr(missing))
+      forbidden=['Эмоции:','Любопытство:','Энергия:','Опыт за сегодня:']
+      present=[x for x in forbidden if x in html]
+      if present:
+          raise SystemExit("Fabricated organism metrics are forbidden: "+repr(present))
+      PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -88,16 +118,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.50-ai-owned-body.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.50-ai-owned-body.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.50-ai-owned-body.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.51-living-home.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.51-living-home.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.51-living-home.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.50-ai-owned-body.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.51-living-home.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.50-ai-owned-body
+      name: C4-Nursery-0.51-living-home
       path: |
-       release/C4-Nursery-0.50-ai-owned-body.apk
+       release/C4-Nursery-0.51-living-home.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
