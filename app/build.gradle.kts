@@ -2,7 +2,10 @@ plugins {
     id("com.android.application")
     id("com.chaquo.python")
 }
-dependencies { implementation("androidx.core:core:1.15.0") }
+dependencies {
+    implementation("androidx.core:core:1.15.0")
+    implementation("androidx.webkit:webkit:1.17.1")
+}
 android {
     namespace="com.singularity.c4nursery"
     compileSdk=35
