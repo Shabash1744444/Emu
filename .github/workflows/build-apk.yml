@@ -325,6 +325,26 @@ jobs:
       if 'ingestSource' in viewer:
           raise SystemExit('Opening a material must not auto-ingest it')
       PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      vrm=Path('app/src/main/assets/src/vrm-renderer-entry.js').read_text()
+      required_vrm=['function setQuality(','qualityMode','targetFps','renderer.setPixelRatio','shadowMap.enabled']
+      missing=[x for x in required_vrm if x not in vrm]
+      if missing:
+          raise SystemExit('Adaptive renderer contract missing: '+repr(missing))
+      required_java=['performanceInfo','setQualityMode','C4_ADAPTIVE_QUALITY_V1','getCurrentThermalStatus','runtimeThrottle']
+      missing=[x for x in required_java if x not in java]
+      if missing:
+          raise SystemExit('Android adaptive quality contract missing: '+repr(missing))
+      required_html=['data-quality="AUTO"','data-quality="HIGH"','data-quality="BALANCED"','data-quality="ECO"','renderPerformanceQuality','applyRendererQuality']
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('Adaptive quality UI contract missing: '+repr(missing))
+      if 'runtimeThrottle",true' in java or 'stopCameraStream()' in html[html.find('function renderPerformanceQuality'):html.find('function renderHomeDashboard')]:
+          raise SystemExit('Quality policy must not throttle cognition/sensory services')
+      PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -342,16 +362,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.61-material-experience.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.61-material-experience.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.61-material-experience.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.62-adaptive-quality.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.62-adaptive-quality.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.62-adaptive-quality.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.61-material-experience.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.62-adaptive-quality.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.61-material-experience
+      name: C4-Nursery-0.62-adaptive-quality
       path: |
-       release/C4-Nursery-0.61-material-experience.apk
+       release/C4-Nursery-0.62-adaptive-quality.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
