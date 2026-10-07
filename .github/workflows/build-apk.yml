@@ -183,6 +183,25 @@ jobs:
       if 'EXPECTED_GLB_OR_VRM_FILE' not in java or 'avatarVrmImport' not in java:
           raise SystemExit('VRM Android import contract missing')
       PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      src=Path('app/src/main/assets/src/vrm-renderer-entry.js').read_text()
+      required_src=[
+          'motionQueue','heldProp','setHeldObject','curlRightFingers',
+          'queueLength','targetX','beginMotion','advanceQueue','rootBaseX'
+      ]
+      missing=[x for x in required_src if x not in src]
+      if missing:
+          raise SystemExit('Embodied motion V2 source contract missing: '+repr(missing))
+      required_html=['id="rigTelemetry"','renderRigTelemetry','playModelClip(action,context={})','playModelClip(action,r)']
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('Embodied motion V2 UI contract missing: '+repr(missing))
+      if 'EMBODIED_MOTION_V2' not in java:
+          raise SystemExit('Embodied motion capability missing')
+      PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -200,16 +219,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.54-vrm-life.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.54-vrm-life.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.54-vrm-life.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.55-embodied-motion-v2.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.55-embodied-motion-v2.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.55-embodied-motion-v2.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.54-vrm-life.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.55-embodied-motion-v2.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.54-vrm-life
+      name: C4-Nursery-0.55-embodied-motion-v2
       path: |
-       release/C4-Nursery-0.54-vrm-life.apk
+       release/C4-Nursery-0.55-embodied-motion-v2.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
