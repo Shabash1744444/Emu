@@ -91,6 +91,24 @@ jobs:
       if present:
           raise SystemExit("Fabricated organism metrics are forbidden: "+repr(present))
       PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      required_html=[
+          'id="avatarVisualWrap"','id="avatarVisual"','id="avatarPick"',
+          'loadAvatarVisual','PHOTO_ANIME_LAYER_V1','visualAvatarActive'
+      ]
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('Visual avatar UI contract missing: '+repr(missing))
+      required_java=['pickAvatarAsset','avatarDataUrl','AVATAR_CHANGED','avatar_sha','PHOTO_ANIME_LAYER_V1']
+      missing=[x for x in required_java if x not in java]
+      if missing:
+          raise SystemExit('Visual avatar host contract missing: '+repr(missing))
+      if 'id="wave"' in html or 'performRoomAction(' in html:
+          raise SystemExit('User avatar puppeteering returned')
+      PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -108,16 +126,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.51-living-home.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.51-living-home.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.51-living-home.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.52-visual-avatar.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.52-visual-avatar.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.52-visual-avatar.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.51-living-home.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.52-visual-avatar.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.51-living-home
+      name: C4-Nursery-0.52-visual-avatar
       path: |
-       release/C4-Nursery-0.51-living-home.apk
+       release/C4-Nursery-0.52-visual-avatar.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
