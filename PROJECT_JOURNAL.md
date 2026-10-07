@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-07 (CP176 / build #385 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-07 (CP185 / build #460 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -539,3 +539,31 @@ Artifact: C4-Nursery-0.56-parametric-voice (ID 11485063780).
 APK: 48,148,743 bytes; SHA256 1c77cb868cdf5a7468d9f8d28e8e18cc9a002438638640de144ae06a2642c823.
 Artifact ZIP SHA256: 8c0f5b0202136038d871a744209031c16de8690548017a373168547a5fb91cab.
 Physical gate: speaker playback, timbre/volume, mouth expression, SELF_AUDIO runtime acceptance.
+
+
+## 2026-10-07 — CP185 Layout Foundation V2
+Layout is now a release contract instead of post-hoc CSS repair.
+
+Implemented:
+- flex app shell with VisualViewport height/width;
+- separate portrait/landscape viewport baselines so rotation is not mistaken for keyboard opening;
+- keyboard mode requires focused composer + real viewport contraction;
+- safe-area aware top/nav/composer/material viewer;
+- bounded horizontal overflow and aggressive wrapping for long runtime/source/chat text;
+- stable 5-column bottom nav with reserved content space;
+- compact <=380px, short-height, landscape and centered tablet modes;
+- >=44px primary touch targets;
+- decorative layers cannot intercept taps;
+- nonfatal on-device layoutHealthCheck emits UI-only LAYOUT_WARNING for overflow/nav/composer geometry problems.
+
+Regression caught during development:
+- a JS String.replace replacement string collapsed literal $$() back to $() in setPage();
+- UI contract guard correctly blocked builds #456/#459;
+- final patch uses callback replacement; exact scan = 0 single-element collection selectors.
+
+CI build #460 SUCCESS.
+UI CONTRACT PASS: 160 ids / 41 critical bindings.
+LAYOUT CONTRACT PASS: 160 unique ids / 5 pages / 5 nav targets.
+Artifact: C4-Nursery-0.64-layout-foundation (ID 11499188616).
+APK: 49,393,656 bytes; SHA256 0e59ed2425c1583577b253706c0194aa3930bb0d7cdf9b76b3376d75ad3393b3.
+Physical gate: portrait/landscape, soft keyboard, long content, gesture safe-area, material viewer, inspect LAYOUT_WARNING.
