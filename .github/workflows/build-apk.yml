@@ -29,6 +29,13 @@ jobs:
       test "$MODEL_BYTES" -eq 16851352
       printf 'bundled VRoid Sample D · %s bytes · ' "$MODEL_BYTES"
       sha256sum "$GITHUB_WORKSPACE/app/src/main/assets/defaults/VRoid_Sample_D.glb"
+      cp "$GITHUB_WORKSPACE/app/src/main/assets/src/vrm-renderer-entry.js" "$TMP/vrm-renderer-entry.js"
+      npm init -y >/dev/null 2>&1
+      npm install --silent --no-save three@0.180.0 @pixiv/three-vrm@3.5.5 esbuild@0.28.2
+      ./node_modules/.bin/esbuild vrm-renderer-entry.js --bundle --format=esm --platform=browser --target=es2022 --minify --outfile="$GITHUB_WORKSPACE/app/src/main/assets/vendor/vrm-renderer.bundle.js"
+      test -s "$GITHUB_WORKSPACE/app/src/main/assets/vendor/vrm-renderer.bundle.js"
+      printf 'three-vrm 3.5.5 + three 0.180.0 bundle · '
+      sha256sum "$GITHUB_WORKSPACE/app/src/main/assets/vendor/vrm-renderer.bundle.js"
    - name: Validate WebView JavaScript syntax
      run: |
       python3 - <<'PY'
@@ -147,7 +154,7 @@ jobs:
       required_java=[
           'pickAvatarModel','avatarModelInfo','AVATAR_MODEL_CHANGED',
           'INVALID_GLB_MAGIC','avatar_model_sha','GLB_RIGGED_BODY_V1',
-          'appassets.androidplatform.net/private/avatar-model.glb'
+          'VRM_LIFE_V1','avatar_model_format','avatar-model.'
       ]
       missing=[x for x in required_java if x not in java]
       if missing:
@@ -156,6 +163,25 @@ jobs:
           raise SystemExit('Legacy file:// WebView origin returned')
       if 'WebViewAssetLoader' not in java:
           raise SystemExit('Secure local asset origin missing')
+      PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      src=Path('app/src/main/assets/src/vrm-renderer-entry.js')
+      bundle=Path('app/src/main/assets/vendor/vrm-renderer.bundle.js')
+      if not src.is_file() or not bundle.is_file() or bundle.stat().st_size < 200000:
+          raise SystemExit('VRM life renderer source/bundle missing')
+      required_src=['VRMLoaderPlugin','resetNormalizedPose','expressionManager','springBoneManager','window.C4VRM','WAVE','NOD','LOOK_AROUND']
+      missing=[x for x in required_src if x not in src.read_text()]
+      if missing:
+          raise SystemExit('VRM life source contract missing: '+repr(missing))
+      required_html=['id="vrmCanvas"','vendor/vrm-renderer.bundle.js','tryVrmLife','avatarVrmReady','window.C4VRM.motor']
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('VRM life UI contract missing: '+repr(missing))
+      if 'EXPECTED_GLB_OR_VRM_FILE' not in java or 'avatarVrmImport' not in java:
+          raise SystemExit('VRM Android import contract missing')
       PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
@@ -174,16 +200,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.53-rigged-glb-body.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.53-rigged-glb-body.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.53-rigged-glb-body.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.54-vrm-life.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.54-vrm-life.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.54-vrm-life.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.53-rigged-glb-body.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.54-vrm-life.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.53-rigged-glb-body
+      name: C4-Nursery-0.54-vrm-life
       path: |
-       release/C4-Nursery-0.53-rigged-glb-body.apk
+       release/C4-Nursery-0.54-vrm-life.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
