@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-07 (CP173 / build #348 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-07 (CP174 / build #356 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -430,3 +430,76 @@ Release:
 Physical device gate:
 - exact 0.53 GLB rendering and model-viewer animation behavior still require Android visual smoke-test;
 - G266-compatible runtime remains the proven organism boot baseline.
+
+
+## 2026-10-07 — CP174 VRM Life Renderer
+Binary inspection of the CP173 default body showed:
+- 144 nodes
+- 3 skins
+- 3 meshes
+- VRM extension present
+- 0 baked animation clips
+
+Implemented a true VRM humanoid life layer instead of relying on baked clips:
+- pinned Three.js 0.180.0;
+- pinned @pixiv/three-vrm 3.5.5;
+- pinned esbuild 0.28.2;
+- CI bundles the renderer locally into the APK, no runtime CDN;
+- same Android private model lane now accepts both .glb and .vrm;
+- VRM0 / VRM1 metadata supported by VRMLoaderPlugin;
+- VRM renderer gets first priority for VRM-extended GLB/VRM;
+- non-VRM GLB automatically falls back to model-viewer;
+- photo layer and CSS silhouette remain deeper fallbacks.
+
+Neutral visual embodiment:
+- procedural breathing micro-motion;
+- neutral periodic blink when blink expression exists;
+- neutral look-at target;
+- vrm.update(delta) every frame, including spring-bone / constraints.
+
+Receipt-driven humanoid bone motor:
+- WAVE
+- NOD
+- LOOK_AROUND
+- STEP_LEFT
+- STEP_RIGHT
+- TAKE / GRASP
+- RELEASE / PLACE
+- MOVE
+- LOOK
+- IDLE
+
+Motor pose sequence:
+C4 ACTION_REQUEST -> native execution -> executionSuccess=true receipt -> normalized humanoid bone motion.
+
+No fake semantic emotion:
+blink/breath/spring physics do not imply mood or cognition.
+
+Build gate:
+- GitHub Actions run #356 SUCCESS.
+- pinned model-viewer vendor PASS;
+- pinned CC0 default model PASS;
+- pinned Three.js / three-vrm / esbuild bundle PASS;
+- VRM Life contract guard PASS;
+- existing UI/runtime/agency guards PASS;
+- Python py_compile PASS;
+- Gradle assembleDebug PASS;
+- APK archive integrity PASS.
+
+Release:
+- versionCode 54
+- versionName 0.54-vrm-life
+- artifact ID: 11480715132
+- artifact ZIP bytes: 48,142,398
+- artifact ZIP SHA256: 468bbd666dced054c0bd6ef1bd9577a2daaa06b679dba404cd5fb5ed3f2ccc9c
+- APK bytes: 48,141,995
+- APK SHA256: aa0345a495afceca5e55cd3a3e194fa0566457440178e93d4f9eac7cab367037
+
+Bundled assets:
+- VRoid_Sample_D.glb: 16,851,352 bytes; SHA256 9adf1b44e959d2688d62c2dd558e74315d6aa40e3bf8d281390b7a85dc0df9b7
+- model-viewer.min.js: 1,068,903 bytes
+- vrm-renderer.bundle.js: 720,226 bytes; SHA256 d0b6e43b31d9307c6a88c7103bf5f8aa147c654217970ef8795ba6bfc0f4b429
+
+Device gate:
+- exact VRM render, camera framing, blink/bone orientation and thermal behavior require physical Android visual smoke-test;
+- compatible G266 runtime remains the proven organism boot baseline.
