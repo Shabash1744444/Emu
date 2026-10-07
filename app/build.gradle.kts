@@ -13,8 +13,8 @@ android {
         applicationId="com.singularity.c4nursery"
         minSdk=26
         targetSdk=35
-        versionCode=66
-        versionName="0.64.1-chat-select"
+        versionCode=67
+        versionName="0.64.2-cognitive-trace"
         ndk { abiFilters += listOf("arm64-v8a") }
     }
 }
