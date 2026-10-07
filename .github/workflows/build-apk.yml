@@ -190,12 +190,12 @@ jobs:
       src=Path('app/src/main/assets/src/vrm-renderer-entry.js').read_text()
       required_src=[
           'motionQueue','heldProp','setHeldObject','curlRightFingers',
-          'queueLength','targetX','beginMotion','advanceQueue','rootBaseX'
+          'queueLength','targetX','beginMotion','advanceQueue','rootBaseX','function sync(state={})'
       ]
       missing=[x for x in required_src if x not in src]
       if missing:
           raise SystemExit('Embodied motion V2 source contract missing: '+repr(missing))
-      required_html=['id="rigTelemetry"','renderRigTelemetry','playModelClip(action,context={})','playModelClip(action,r)']
+      required_html=['id="rigTelemetry"','renderRigTelemetry','playModelClip(action,context={})','playModelClip(action,r)','window.C4VRM.sync']
       missing=[x for x in required_html if x not in html]
       if missing:
           raise SystemExit('Embodied motion V2 UI contract missing: '+repr(missing))
