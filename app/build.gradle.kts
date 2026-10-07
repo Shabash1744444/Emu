@@ -13,8 +13,8 @@ android {
         applicationId="com.singularity.c4nursery"
         minSdk=26
         targetSdk=35
-        versionCode=61
-        versionName="0.61-material-experience"
+        versionCode=62
+        versionName="0.62-adaptive-quality"
         ndk { abiFilters += listOf("arm64-v8a") }
     }
 }
