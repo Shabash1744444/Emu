@@ -233,8 +233,15 @@ function loop(now){
   if(currentVrm){applyMotion(now);applyBlink(now/1000);try{currentVrm.update(dt)}catch(_){}}
   renderer.render(scene,camera);
 }
+function sync(state={}){
+  if(!currentVrm)return false;
+  const x=Number(state?.x);if(Number.isFinite(x))visualRootX=clamp(x,-2,2)*.18;
+  setHeldObject(state?.heldObject||null);
+  motionQueue=[];motion={action:'IDLE',start:performance.now(),duration:0,context:{},fromRootX:visualRootX,toRootX:visualRootX};
+  currentVrm.scene.position.x=rootBaseX+visualRootX;emitStatus();return true;
+}
 function setVisible(v){visible=!!v}
 function status(){return {ready:!!currentVrm,action:motion.action,queue:motionQueue.map(x=>x.action),queueLength:motionQueue.length,heldObject,rootX:visualRootX,metaVersion:String(currentVrm?.meta?.metaVersion??''),springBones:!!currentVrm?.springBoneManager,expressions:currentVrm?.expressionManager?Object.keys(currentVrm.expressionManager.expressionMap||{}):[],bones:currentVrm?.humanoid?Object.keys(currentVrm.humanoid.normalizedHumanBones||{}):[]}}
 function dispose(){++loadToken;disposeRendererOnly()}
-window.C4VRM={load,motor,status,setVisible,dispose};
+window.C4VRM={load,motor,sync,status,setVisible,dispose};
 window.dispatchEvent(new CustomEvent('c4-vrm-ready'));
