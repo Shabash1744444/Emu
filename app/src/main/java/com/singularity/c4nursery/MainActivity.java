@@ -286,7 +286,7 @@ public class MainActivity extends Activity {
   @JavascriptInterface public String performanceInfo(){try{
    JSONObject o=new JSONObject();PowerManager pm=(PowerManager)getSystemService(POWER_SERVICE);String requested=prefs.getString("quality_mode","AUTO");int thermal=-1;if(Build.VERSION.SDK_INT>=29&&pm!=null)thermal=pm.getCurrentThermalStatus();boolean powerSave=pm!=null&&pm.isPowerSaveMode();
    String thermalName=thermal<0?"UNAVAILABLE":thermal==0?"NONE":thermal==1?"LIGHT":thermal==2?"MODERATE":thermal==3?"SEVERE":thermal==4?"CRITICAL":thermal==5?"EMERGENCY":"SHUTDOWN";
-   String effective=requested;if("AUTO".equals(requested)){effective=(powerSave||thermal>=3)?"ECO":"BALANCED";}
+   String effective=requested;if(thermal>=4)effective="ECO";else if("AUTO".equals(requested)){effective=(powerSave||thermal>=3)?"ECO":"BALANCED";}
    o.put("schema","C4_ADAPTIVE_QUALITY_V1").put("requested",requested).put("effective",effective).put("thermalStatus",thermal).put("thermalName",thermalName).put("powerSave",powerSave).put("rendererOnly",true).put("runtimeThrottle",false);
    return o.toString();
   }catch(Exception e){return "{}";}}
