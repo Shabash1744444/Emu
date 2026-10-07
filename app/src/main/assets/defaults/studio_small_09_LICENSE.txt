@@ -1,0 +1,19 @@
+Poly Haven — Studio Small 09 HDRI
+
+Asset: Studio Small 09
+Author: Sergej Majboroda
+Source page: https://polyhaven.com/a/studio_small_09
+Bundled file: studio_small_09_1k.hdr
+Source file URL:
+https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr
+
+License: CC0 1.0 / Public Domain dedication
+Poly Haven license:
+https://polyhaven.com/license
+
+Purpose in C4 Nursery:
+Offline image-based lighting / reflections for the local Three.js renderer.
+
+This HDRI is presentation data only.
+HDRI != C4 observation.
+Lighting/reflection output is not evidence and is not training material.
