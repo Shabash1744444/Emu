@@ -307,7 +307,7 @@ async function tryVrmLife(info,seq,url){
   const result=await window.C4VRM.load(url,'vrmCanvas');
   if(seq!==avatarVrmLoadSeq)return false;
   avatarVrmReady=!!(result&&result.ok);avatarModelReady=avatarVrmReady;avatarModelAnimations=[];
-  if(avatarVrmReady){wrap&&wrap.classList.add('vrmLife');if(mv)mv.removeAttribute('src');if(state)state.textContent='VRM '+(result.metaVersion||'?')+' · '+(result.springBones?'spring bones · ':'')+(result.expressions?.length||0)+' expressions';return true}
+  if(avatarVrmReady){wrap&&wrap.classList.add('vrmLife');if(mv)mv.removeAttribute('src');try{window.C4VRM.sync({x:Number(S?.room?.motor?.x||0),heldObject:S?.room?.held||null})}catch(_){}if(state)state.textContent='VRM '+(result.metaVersion||'?')+' · '+(result.springBones?'spring bones · ':'')+(result.expressions?.length||0)+' expressions';try{renderRigTelemetry(window.C4VRM.status())}catch(_){}return true}
  }catch(e){avatarVrmReady=false;if(state)state.textContent='не VRM · GLB fallback'}
  return false
 }
