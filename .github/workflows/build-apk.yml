@@ -232,6 +232,37 @@ jobs:
       if 'independentEvidence",false' not in java:
           raise SystemExit('SELF_AUDIO must remain non-independent evidence')
       PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      py=Path('app/src/main/python/c4_mobile_bridge.py').read_text()
+      vrm=Path('app/src/main/assets/src/vrm-renderer-entry.js').read_text()
+      required_vrm=[
+          'C4_CINEMATIC_HOME_V1','buildEnvironment','setRoomObjects','updateWorld',
+          'environmentOrb','environmentMonitor','scene.fog','roomProps'
+      ]
+      missing=[x for x in required_vrm if x not in vrm]
+      if missing:
+          raise SystemExit('Cinematic 3D home renderer contract missing: '+repr(missing))
+      required_html=[
+          'vrmHome3D','id="organMap"','id="manifestHandshake"',
+          'renderBodyManifest','window.C4VRM.updateWorld','roomObjects:S?.room?.objects'
+      ]
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('Cinematic home UI/world sync missing: '+repr(missing))
+      required_java=['C4_BODY_MANIFEST_V1','buildBodyManifest','bodyManifest()','BODY_MANIFEST','CINEMATIC_HOME_3D_V1']
+      missing=[x for x in required_java if x not in java]
+      if missing:
+          raise SystemExit('Android body manifest contract missing: '+repr(missing))
+      if '"BODY_MANIFEST":(' not in py or '"WORLD_EVENT","WORLD_TASK","BODY_MANIFEST"' not in py:
+          raise SystemExit('Python runtime capability routing is incomplete')
+      forbidden=['Эмоции:','Любопытство:','Энергия:','Опыт за сегодня:']
+      present=[x for x in forbidden if x in html]
+      if present:
+          raise SystemExit('Fabricated organism metrics returned: '+repr(present))
+      PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -249,16 +280,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.56-parametric-voice.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.56-parametric-voice.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.56-parametric-voice.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.57-cinematic-home.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.57-cinematic-home.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.57-cinematic-home.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.56-parametric-voice.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.57-cinematic-home.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.56-parametric-voice
+      name: C4-Nursery-0.57-cinematic-home
       path: |
-       release/C4-Nursery-0.56-parametric-voice.apk
+       release/C4-Nursery-0.57-cinematic-home.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
