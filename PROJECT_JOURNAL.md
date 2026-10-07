@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-07 (CP171 / build #326 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-07 (CP172 / build #336 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -334,3 +334,45 @@ Build gate:
 Physical-device status:
 - not yet visually inspected on-device for CP171;
 - previous G266-compatible runtime path remains the known running baseline.
+
+
+## 2026-10-07 — CP172 Visual Avatar Layer
+User direction: replace the geometric/CSS avatar look with high-quality photorealistic-anime presentation while preserving C4 motor ownership.
+
+Implemented:
+- added a first-class private visual-avatar asset lane;
+- Android SAF import for PNG / JPG / WebP;
+- validates MIME, dimensions, non-empty file and 12 MiB size cap;
+- copies avatar into private app storage and records SHA-256, filename, MIME, dimensions and bytes;
+- exposes avatarInfo(), avatarDataUrl(), pickAvatarAsset() and clearAvatarAsset();
+- Home now has a primary PHOTO_ANIME_LAYER_V1 visual body;
+- old CSS avatar remains fallback/debug only;
+- visual body receives breath/idle presentation plus receipt-driven WAVE, NOD, LOOK_AROUND, STEP_LEFT, STEP_RIGHT and reach projections;
+- touching the visual body uses the existing TOUCH sensory lane;
+- user can choose appearance but cannot issue C4 motor actions;
+- documented the path from image visual body V1 to rigged VRM/GLB V2.
+
+Semantic boundary:
+VISUAL_ASSET != COGNITION
+ANIMATION != INTENTION
+USER APPEARANCE CHOICE != USER MOTOR CONTROL
+Only verified C4 motor receipts drive action animations.
+
+Build gate:
+- GitHub Actions run #336 SUCCESS.
+- WebView JavaScript syntax PASS.
+- existing selector / picker / stable-chat / AI-owned-body guards PASS.
+- visual-avatar contract guard PASS.
+- Python py_compile PASS.
+- Gradle assembleDebug PASS.
+- APK archive integrity PASS.
+- artifact: C4-Nursery-0.52-visual-avatar
+- artifact ID: 11478796668
+- artifact ZIP bytes: 33,823,656
+- artifact ZIP SHA256: 9846535f34c3a23e4ae7385dddc19645a503f65c42a05a340bcbc8496747ca9c
+- APK bytes: 33,823,238
+- APK SHA256: 1b8639225408a191b19c8e61b4601af81a155ff4095be0d31d07265cdb0790a5
+
+Device gate:
+- image avatar import/render still needs physical Android visual inspection;
+- compatible G266 runtime boot remains the known running baseline.
