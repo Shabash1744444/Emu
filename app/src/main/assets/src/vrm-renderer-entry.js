@@ -4,7 +4,8 @@ import { VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 
 let renderer=null,scene=null,camera=null,canvas=null,currentVrm=null,raf=0;
 let lastTime=performance.now(),loadToken=0,motion={action:'IDLE',start:0,duration:0,context:{},fromRootX:0,toRootX:0};
-let motionQueue=[],lookTarget=null,resizeObserver=null,visible=true,vocal={until:0,level:0};
+let motionQueue=[],lookTarget=null,resizeObserver=null,visible=true,vocal={until:0,startedAt:0,level:0,f0:220};
+let presence={nextBlinkAt:0,blinkStart:0,blinkDuration:135},lookBaseY=1.35;
 let ground=null,groundRing=null,heldProp=null,heldObject=null,rootBaseX=0,visualRootX=0;
 let environment=null,roomProps=new Map(),environmentOrb=null,environmentMonitor=null,baseCameraY=1.05,keyLight=null;
 let qualityMode='BALANCED',targetFps=45,lastRenderAt=0;
@@ -201,7 +202,7 @@ function frameVrm(vrm){
   const h=Math.max(.8,size.y),targetY=h*.54;
   baseCameraY=targetY+0.02;camera.position.set(0,baseCameraY,Math.max(2.25,h*1.72));
   camera.lookAt(0,targetY,-.08);
-  lookTarget.position.set(0,targetY+0.12,4);
+  lookBaseY=targetY+0.12;lookTarget.position.set(0,lookBaseY,4);
 }
 async function load(url,canvasId='vrmCanvas'){
   const el=document.getElementById(canvasId);if(!el)throw new Error('VRM_CANVAS_MISSING');
@@ -217,7 +218,7 @@ async function load(url,canvasId='vrmCanvas'){
   vrm.scene.traverse(o=>{o.frustumCulled=false;if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});
   currentVrm=vrm;scene.add(vrm.scene);frameVrm(vrm);
   if(vrm.lookAt)vrm.lookAt.target=lookTarget;
-  motion={action:'IDLE',start:performance.now(),duration:0,context:{},fromRootX:0,toRootX:0};motionQueue=[];heldObject=null;disposeHeldProp();
+  motion={action:'IDLE',start:performance.now(),duration:0,context:{},fromRootX:0,toRootX:0};motionQueue=[];heldObject=null;disposeHeldProp();presence={nextBlinkAt:performance.now()+2100,blinkStart:0,blinkDuration:135};
   const expressions=vrm.expressionManager?Object.keys(vrm.expressionManager.expressionMap||{}):[];
   const bones=vrm.humanoid?Object.keys(vrm.humanoid.normalizedHumanBones||{}):[];
   return {ok:true,metaVersion:String(vrm.meta?.metaVersion??''),name:String(vrm.meta?.name??vrm.meta?.title??''),expressions,bones,springBones:!!vrm.springBoneManager};
@@ -281,11 +282,28 @@ function advanceQueue(now){
   const next=motionQueue.shift();if(next)beginMotion(next.action,next.context,now);
 }
 
-function applyBlink(t){
+function setBlink(value){
   if(!currentVrm?.expressionManager)return;
-  const cycle=4.35,phase=(t%cycle);
-  let v=0;if(phase<.13){const q=phase/.13;v=Math.sin(Math.PI*q)}
-  setExpression('blink',v);
+  const v=clamp(value,0,1);
+  try{if(currentVrm.expressionManager.getExpression('blink')){currentVrm.expressionManager.setValue('blink',v);return}}catch(_){}
+  try{if(currentVrm.expressionManager.getExpression('blinkLeft'))currentVrm.expressionManager.setValue('blinkLeft',v)}catch(_){}
+  try{if(currentVrm.expressionManager.getExpression('blinkRight'))currentVrm.expressionManager.setValue('blinkRight',v)}catch(_){}
+}
+function applyBlink(now){
+  if(!currentVrm?.expressionManager)return;
+  if(!presence.nextBlinkAt)presence.nextBlinkAt=now+2200;
+  if(!presence.blinkStart&&now>=presence.nextBlinkAt){
+    presence.blinkStart=now;
+    presence.blinkDuration=115+35*(.5+.5*Math.sin(now*.00113));
+    const gap=2100+2600*(.5+.5*Math.sin(now*.00073+1.7));
+    presence.nextBlinkAt=now+presence.blinkDuration+gap;
+  }
+  let v=0;
+  if(presence.blinkStart){
+    const p=(now-presence.blinkStart)/Math.max(80,presence.blinkDuration);
+    if(p>=1)presence.blinkStart=0;else v=Math.sin(Math.PI*clamp(p,0,1));
+  }
+  setBlink(v);
 }
 function setAnyExpression(names,value){
   for(const name of names){try{if(currentVrm?.expressionManager?.getExpression(name)){currentVrm.expressionManager.setValue(name,clamp(value,0,1));return true}}catch(_){}}
@@ -294,23 +312,38 @@ function setAnyExpression(names,value){
 function applyVocal(now){
   if(!currentVrm?.expressionManager)return;
   if(now<vocal.until){
-    const pulse=.34+.66*Math.abs(Math.sin(now*.0207));
-    setAnyExpression(['aa','a'],clamp(vocal.level*pulse,0,1));
+    const total=Math.max(80,vocal.until-vocal.startedAt),p=clamp((now-vocal.startedAt)/total,0,1);
+    const envelope=Math.min(1,p/.10,Math.max(0,(1-p)/.14));
+    const cadence=.012+clamp((vocal.f0-70)/630,0,1)*.004;
+    const pulse=.48+.52*Math.pow(Math.sin(now*cadence),2);
+    setAnyExpression(['aa','a'],clamp(vocal.level*pulse*envelope,0,1));
   }else{
     setAnyExpression(['aa','a'],0);vocal.level=0;
   }
 }
-function vocalize(durationMs=500,amplitude=.2){
+function vocalize(durationMs=500,amplitude=.2,f0=220){
   if(!currentVrm)return false;
-  const dur=clamp(Number(durationMs)||500,60,2200),amp=clamp(Number(amplitude)||0,0,0.35);
-  vocal.until=performance.now()+dur;vocal.level=clamp(.18+amp*1.9,0,0.88);emitStatus();return true;
+  const dur=clamp(Number(durationMs)||500,60,2200),amp=clamp(Number(amplitude)||0,0,0.35),now=performance.now();
+  vocal.startedAt=now;vocal.until=now+dur;vocal.level=clamp(.16+amp*1.85,0,0.86);vocal.f0=clamp(Number(f0)||220,70,700);emitStatus();return true;
 }
 
 function applyIdle(t){
-  const breath=Math.sin(t*1.38);
-  rot('spine',0.012*breath,0,0.006*Math.sin(t*.72),1);
-  rot('chest',0.018*breath,0,0.008*Math.sin(t*.67),1);
-  rot('neck',0.004*Math.sin(t*.83),0.006*Math.sin(t*.41),0,1);
+  const breath=Math.sin(t*1.38),slow=Math.sin(t*.31),counter=Math.sin(t*.23+1.2);
+  pos('hips',.0045*slow,.004*(.5+.5*breath),0);
+  rot('hips',0,.006*counter,.010*slow,1);
+  rot('spine',0.013*breath,.004*counter,.007*Math.sin(t*.72),1);
+  rot('chest',0.020*breath,-.006*counter,.010*Math.sin(t*.67),1);
+  rot('leftShoulder',.005*breath,0,.007*breath,1);
+  rot('rightShoulder',.005*breath,0,-.007*breath,1);
+  rot('neck',.005*Math.sin(t*.83),.010*Math.sin(t*.41),.003*slow,1);
+  rot('head',.003*Math.sin(t*.57),.006*Math.sin(t*.29+1.1),.0025*counter,1);
+}
+function applyPresenceGaze(now){
+  if(!lookTarget||motion.action!=='IDLE')return;
+  const t=now/1000;
+  lookTarget.position.x=.035*Math.sin(t*.41)+.018*Math.sin(t*1.17+1.8);
+  lookTarget.position.y=lookBaseY+.014*Math.sin(t*.37+.6);
+  lookTarget.position.z=4;
 }
 function resetPose(){
   try{currentVrm?.humanoid?.resetNormalizedPose()}catch(_){}
@@ -370,7 +403,7 @@ function loop(now){
   raf=requestAnimationFrame(loop);if(!renderer||!scene||!camera||!visible)return;
   const minFrame=1000/Math.max(1,targetFps);if(lastRenderAt&&now-lastRenderAt<minFrame)return;lastRenderAt=now;
   const dt=Math.min(.07,(now-lastTime)/1000||.016);lastTime=now;
-  if(currentVrm){applyMotion(now);applyBlink(now/1000);applyVocal(now);try{currentVrm.update(dt)}catch(_){}}
+  if(currentVrm){applyMotion(now);applyPresenceGaze(now);applyBlink(now);applyVocal(now);try{currentVrm.update(dt)}catch(_){}}
   const t=now/1000;
   if(environmentOrb){environmentOrb.position.y=.92+Math.sin(t*.9)*.018;environmentOrb.rotation.y=t*.5}
   if(environmentMonitor?.material)environmentMonitor.material.emissiveIntensity=1.20+.18*Math.sin(t*1.35);
@@ -392,7 +425,7 @@ function sync(state={}){
   currentVrm.scene.position.x=rootBaseX+visualRootX;emitStatus();return true;
 }
 function setVisible(v){visible=!!v}
-function status(){return {ready:!!currentVrm,action:motion.action,queue:motionQueue.map(x=>x.action),queueLength:motionQueue.length,heldObject,rootX:visualRootX,vocalActive:performance.now()<vocal.until,environment:'CINEMATIC_HOME_3D_V1',qualityMode,targetFps,pixelRatio:renderer?renderer.getPixelRatio():0,shadows:renderer?renderer.shadowMap.enabled:false,roomProps:[...roomProps.keys()],metaVersion:String(currentVrm?.meta?.metaVersion??''),springBones:!!currentVrm?.springBoneManager,expressions:currentVrm?.expressionManager?Object.keys(currentVrm.expressionManager.expressionMap||{}):[],bones:currentVrm?.humanoid?Object.keys(currentVrm.humanoid.normalizedHumanBones||{}):[]}}
+function status(){return {ready:!!currentVrm,action:motion.action,queue:motionQueue.map(x=>x.action),queueLength:motionQueue.length,heldObject,rootX:visualRootX,vocalActive:performance.now()<vocal.until,presence:'PHYSICAL_IDLE_V2',lookAt:!!currentVrm?.lookAt,environment:'CINEMATIC_HOME_3D_V1',qualityMode,targetFps,pixelRatio:renderer?renderer.getPixelRatio():0,shadows:renderer?renderer.shadowMap.enabled:false,roomProps:[...roomProps.keys()],metaVersion:String(currentVrm?.meta?.metaVersion??''),springBones:!!currentVrm?.springBoneManager,expressions:currentVrm?.expressionManager?Object.keys(currentVrm.expressionManager.expressionMap||{}):[],bones:currentVrm?.humanoid?Object.keys(currentVrm.humanoid.normalizedHumanBones||{}):[]}}
 function dispose(){++loadToken;disposeRendererOnly()}
 window.C4VRM={load,motor,vocalize,sync,updateWorld,setQuality,status,setVisible,dispose};
 window.dispatchEvent(new CustomEvent('c4-vrm-ready'));
