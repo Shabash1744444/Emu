@@ -370,6 +370,23 @@ jobs:
       if bad:
           raise SystemExit('Character presence fabricated psychology: '+repr(bad))
       PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      required_html=[
+          'id="chatSelectBar"','id="chatSelectCount"','id="chatSelectCopy"',
+          'const chatSelection=new Set()','function copySelectedChat()',
+          'function bindMessageSelection(','chatSpeaker(v.x)'
+      ]
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('Chat multi-selection contract missing: '+repr(missing))
+      required_java=['ClipboardManager','ClipData.newPlainText','setPrimaryClip','@JavascriptInterface public boolean copyText']
+      missing=[x for x in required_java if x not in java]
+      if missing:
+          raise SystemExit('Native clipboard bridge missing: '+repr(missing))
+      PY
       python3 tools/ui_contract_guard.py app/src/main/assets/index.html
       python3 tools/layout_contract_guard.py app/src/main/assets/index.html
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
@@ -389,16 +406,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.64-layout-foundation.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.64-layout-foundation.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.64-layout-foundation.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.64.1-chat-select.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.64.1-chat-select.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.64.1-chat-select.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.64-layout-foundation.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.64.1-chat-select.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.64-layout-foundation
+      name: C4-Nursery-0.64.1-chat-select
       path: |
-       release/C4-Nursery-0.64-layout-foundation.apk
+       release/C4-Nursery-0.64.1-chat-select.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
