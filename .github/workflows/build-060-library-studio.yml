@@ -1,0 +1,368 @@
+name: Build C4 Nursery 0.60 Library Studio
+on:
+ workflow_dispatch:
+ push:
+  paths:
+   - '.github/workflows/build-060-library-studio.yml'
+jobs:
+ build:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/checkout@v4
+   - name: Patch release version
+     run: |
+      python3 - <<'PY'
+      from pathlib import Path
+      p=Path('app/build.gradle.kts')
+      s=p.read_text()
+      s=s.replace('versionCode=59','versionCode=60').replace('versionName="0.59-world-hub"','versionName="0.60-library-studio"')
+      if 'versionCode=60' not in s or 'versionName="0.60-library-studio"' not in s:
+          raise SystemExit('release version patch failed')
+      p.write_text(s)
+      PY
+   - uses: actions/setup-java@v4
+     with: {distribution: temurin, java-version: '17'}
+   - uses: actions/setup-python@v5
+     with: {python-version: '3.13'}
+   - uses: gradle/actions/setup-gradle@v4
+     with: {gradle-version: '8.9'}
+   - name: Vendor pinned 3D viewer
+     run: |
+      set -euo pipefail
+      TMP=$(mktemp -d)
+      cd "$TMP"
+      PKG=$(npm pack @google/model-viewer@4.3.1 --silent | tail -1)
+      tar -xzf "$PKG"
+      test -s package/dist/model-viewer.min.js
+      mkdir -p "$GITHUB_WORKSPACE/app/src/main/assets/vendor"
+      cp package/dist/model-viewer.min.js "$GITHUB_WORKSPACE/app/src/main/assets/vendor/model-viewer.min.js"
+      printf 'model-viewer 4.3.1 · '
+      sha256sum "$GITHUB_WORKSPACE/app/src/main/assets/vendor/model-viewer.min.js"
+      mkdir -p "$GITHUB_WORKSPACE/app/src/main/assets/defaults"
+      curl -fsSL --retry 3 "https://raw.githubusercontent.com/iamenahs/xlunar-ai-avatar/5e368bfff897d73090519f9f696c631a52d77397/public/avatars/VRoid_Sample_D.glb" -o "$GITHUB_WORKSPACE/app/src/main/assets/defaults/VRoid_Sample_D.glb"
+      MODEL_BYTES=$(stat -c%s "$GITHUB_WORKSPACE/app/src/main/assets/defaults/VRoid_Sample_D.glb")
+      test "$MODEL_BYTES" -eq 16851352
+      printf 'bundled VRoid Sample D · %s bytes · ' "$MODEL_BYTES"
+      sha256sum "$GITHUB_WORKSPACE/app/src/main/assets/defaults/VRoid_Sample_D.glb"
+      cp "$GITHUB_WORKSPACE/app/src/main/assets/src/vrm-renderer-entry.js" "$TMP/vrm-renderer-entry.js"
+      npm init -y >/dev/null 2>&1
+      npm install --silent --no-save three@0.180.0 @pixiv/three-vrm@3.5.5 esbuild@0.28.2
+      ./node_modules/.bin/esbuild vrm-renderer-entry.js --bundle --format=esm --platform=browser --target=es2022 --minify --outfile="$GITHUB_WORKSPACE/app/src/main/assets/vendor/vrm-renderer.bundle.js"
+      test -s "$GITHUB_WORKSPACE/app/src/main/assets/vendor/vrm-renderer.bundle.js"
+      printf 'three-vrm 3.5.5 + three 0.180.0 bundle · '
+      sha256sum "$GITHUB_WORKSPACE/app/src/main/assets/vendor/vrm-renderer.bundle.js"
+   - name: Validate WebView JavaScript syntax
+     run: |
+      python3 - <<'PY'
+      from pathlib import Path
+      s=Path('app/src/main/assets/index.html').read_text()
+      js=s.rsplit('<script>',1)[1].split('</script>',1)[0]
+      Path('/tmp/c4_ui.js').write_text(js)
+      PY
+      node --check /tmp/c4_ui.js
+      python3 - <<'PY'
+      import re
+      from pathlib import Path
+      js=Path('/tmp/c4_ui.js').read_text()
+      bad=re.findall(r'(?<!\\$)\\$\\([^;\\n]*?\\)\\.(?:forEach|map|filter)',js)
+      if bad:
+          raise SystemExit('Single-element $() used as a collection: '+repr(bad))
+      PY
+      python3 - <<'PY'
+      from pathlib import Path
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      if 'String lower=us.toLowerCase' in java or 'lower.contains(".c4m")' in java:
+          raise SystemExit('Do not validate .c4m using content URI text')
+      if 'displayName(u,"organism.c4m")' not in java or 'endsWith(".c4m")' not in java:
+          raise SystemExit('Organism picker must validate DISPLAY_NAME')
+      PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      required=[
+          "renderConversation({incoming:true})",
+          "renderConversation({forceBottom:true})",
+          "mode==='chat-incoming'",
+          "keyboardOpen",
+          "interactive-widget=resizes-content",
+          "id=\"newMsgBadge\"",
+      ]
+      missing=[x for x in required if x not in html]
+      if missing:
+          raise SystemExit("Stable-chat contract missing: "+repr(missing))
+      start=html.find("function render(){")
+      end=html.find("function renderRoomHud()",start)
+      block=html[start:end]
+      if "m.scrollTop=m.scrollHeight" in block:
+          raise SystemExit("Full render must not force chat to bottom")
+      PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      forbidden=['id="wave"','id="moveBall"','performRoomAction(','ui-room-']
+      bad=[x for x in forbidden if x in html]
+      if bad:
+          raise SystemExit('User puppeteering controls returned: '+repr(bad))
+      required=['Тело принадлежит C4','C4_ACTION_REQUEST','WORLD_EVENT','WORLD_TASK','motorStatus','motorLast']
+      missing=[x for x in required if x not in html and x not in java]
+      if missing:
+          raise SystemExit('AI-owned body contract missing: '+repr(missing))
+      if '"WAVE","NOD","LOOK_AROUND","STEP_LEFT","STEP_RIGHT","IDLE"' not in java:
+          raise SystemExit('Host motor verbs missing')
+      PY
+      python3 - <<'PY'
+      import re
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      bad=re.findall(r"(?<!\\$)\\$\\((['\"])[^'\"]+\\1\\)\\.forEach",html)
+      if bad:
+          raise SystemExit("Single-element selector used as collection: "+repr(bad))
+      required=[
+          'Дом Синьки','homeStatusRing','homeThoughtPanel','homeModules',
+          'renderHomeDashboard()','data-home-go="chat"','data-home-go="world"',
+          'Тело принадлежит C4'
+      ]
+      missing=[x for x in required if x not in html]
+      if missing:
+          raise SystemExit("Living Home contract missing: "+repr(missing))
+      forbidden=['Эмоции:','Любопытство:','Энергия:','Опыт за сегодня:']
+      present=[x for x in forbidden if x in html]
+      if present:
+          raise SystemExit("Fabricated organism metrics are forbidden: "+repr(present))
+      PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      required_html=[
+          'id="avatarVisualWrap"','id="avatarVisual"','id="avatarPick"',
+          'loadAvatarVisual','visualAvatarActive'
+      ]
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('Visual avatar UI contract missing: '+repr(missing))
+      required_java=['pickAvatarAsset','avatarDataUrl','AVATAR_CHANGED','avatar_sha','PHOTO_ANIME_LAYER_V1']
+      missing=[x for x in required_java if x not in java]
+      if missing:
+          raise SystemExit('Visual avatar host contract missing: '+repr(missing))
+      if 'id="wave"' in html or 'performRoomAction(' in html:
+          raise SystemExit('User avatar puppeteering returned')
+      PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      vendor=Path('app/src/main/assets/vendor/model-viewer.min.js')
+      if not vendor.is_file() or vendor.stat().st_size < 100000:
+          raise SystemExit('Bundled model-viewer missing or suspiciously small')
+      default_model=Path('app/src/main/assets/defaults/VRoid_Sample_D.glb')
+      if not default_model.is_file() or default_model.stat().st_size != 16851352:
+          raise SystemExit('Bundled default GLB missing or wrong size')
+      required_html=[
+          'id="avatarModelViewer"','id="avatarModelPick"','loadAvatarModel',
+          'findModelClip','availableAnimations','vendor/model-viewer.min.js'
+      ]
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('Rigged GLB UI contract missing: '+repr(missing))
+      required_java=[
+          'pickAvatarModel','avatarModelInfo','AVATAR_MODEL_CHANGED',
+          'INVALID_GLB_MAGIC','avatar_model_sha','GLB_RIGGED_BODY_V1',
+          'VRM_LIFE_V1','avatar_model_format','avatar-model.'
+      ]
+      missing=[x for x in required_java if x not in java]
+      if missing:
+          raise SystemExit('Rigged GLB host contract missing: '+repr(missing))
+      if 'file:///android_asset/index.html' in java:
+          raise SystemExit('Legacy file:// WebView origin returned')
+      if 'WebViewAssetLoader' not in java:
+          raise SystemExit('Secure local asset origin missing')
+      PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      src=Path('app/src/main/assets/src/vrm-renderer-entry.js')
+      bundle=Path('app/src/main/assets/vendor/vrm-renderer.bundle.js')
+      if not src.is_file() or not bundle.is_file() or bundle.stat().st_size < 200000:
+          raise SystemExit('VRM life renderer source/bundle missing')
+      required_src=['VRMLoaderPlugin','resetNormalizedPose','expressionManager','springBoneManager','window.C4VRM','WAVE','NOD','LOOK_AROUND']
+      missing=[x for x in required_src if x not in src.read_text()]
+      if missing:
+          raise SystemExit('VRM life source contract missing: '+repr(missing))
+      required_html=['id="vrmCanvas"','vendor/vrm-renderer.bundle.js','tryVrmLife','avatarVrmReady','window.C4VRM.motor']
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('VRM life UI contract missing: '+repr(missing))
+      if 'EXPECTED_GLB_OR_VRM_FILE' not in java or 'avatarVrmImport' not in java:
+          raise SystemExit('VRM Android import contract missing')
+      PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      src=Path('app/src/main/assets/src/vrm-renderer-entry.js').read_text()
+      required_src=[
+          'motionQueue','heldProp','setHeldObject','curlRightFingers',
+          'queueLength','targetX','beginMotion','advanceQueue','rootBaseX','function sync(state={})'
+      ]
+      missing=[x for x in required_src if x not in src]
+      if missing:
+          raise SystemExit('Embodied motion V2 source contract missing: '+repr(missing))
+      required_html=['id="rigTelemetry"','renderRigTelemetry','playModelClip(action,context={})','playModelClip(action,r)','window.C4VRM.sync']
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('Embodied motion V2 UI contract missing: '+repr(missing))
+      if 'EMBODIED_MOTION_V2' not in java:
+          raise SystemExit('Embodied motion capability missing')
+      PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      vocal=Path('app/src/main/java/com/singularity/c4nursery/VocalActuator.java')
+      vrm=Path('app/src/main/assets/src/vrm-renderer-entry.js').read_text()
+      if not vocal.is_file():
+          raise SystemExit('VocalActuator.java missing')
+      vs=vocal.read_text()
+      required_vocal=['SAMPLE_RATE=24000','AudioTrack','formantsHz','harmonics','breath','SHA-256','playBlocking']
+      missing=[x for x in required_vocal if x not in vs]
+      if missing:
+          raise SystemExit('Parametric voice synthesis contract missing: '+repr(missing))
+      required_java=['executeVocalAction','VOCAL_STARTED','VOCAL_RECEIPT','VOCAL_SELF_AUDIO','PARAMETRIC_VOICE_V1','VOCAL_ACTUATOR_FEEDBACK','SELF_AUDIO']
+      missing=[x for x in required_java if x not in java]
+      if missing:
+          raise SystemExit('Parametric voice Android host contract missing: '+repr(missing))
+      required_html=['pendingVocalActions','homeCapVoice','VOCAL_SELF_AUDIO','window.C4VRM.vocalize','executeVocalAction']
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('Parametric voice UI contract missing: '+repr(missing))
+      required_vrm=['function vocalize(','applyVocal(','vocalActive']
+      missing=[x for x in required_vrm if x not in vrm]
+      if missing:
+          raise SystemExit('VRM mouth actuator contract missing: '+repr(missing))
+      if 'TextToSpeech' in java or 'TextToSpeech' in html or 'speechSynthesis' in html:
+          raise SystemExit('TTS shortcut is forbidden in Parametric Voice V1')
+      if 'independentEvidence",false' not in java:
+          raise SystemExit('SELF_AUDIO must remain non-independent evidence')
+      PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      py=Path('app/src/main/python/c4_mobile_bridge.py').read_text()
+      vrm=Path('app/src/main/assets/src/vrm-renderer-entry.js').read_text()
+      required_vrm=[
+          'C4_CINEMATIC_HOME_V1','buildEnvironment','setRoomObjects','updateWorld',
+          'environmentOrb','environmentMonitor','scene.fog','roomProps'
+      ]
+      missing=[x for x in required_vrm if x not in vrm]
+      if missing:
+          raise SystemExit('Cinematic 3D home renderer contract missing: '+repr(missing))
+      required_html=[
+          'vrmHome3D','id="organMap"','id="manifestHandshake"',
+          'renderBodyManifest','window.C4VRM.updateWorld','roomObjects:S?.room?.objects'
+      ]
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('Cinematic home UI/world sync missing: '+repr(missing))
+      required_java=['C4_BODY_MANIFEST_V1','buildBodyManifest','bodyManifest()','BODY_MANIFEST','CINEMATIC_HOME_3D_V1']
+      missing=[x for x in required_java if x not in java]
+      if missing:
+          raise SystemExit('Android body manifest contract missing: '+repr(missing))
+      if '"BODY_MANIFEST":(' not in py or '"WORLD_EVENT","WORLD_TASK","BODY_MANIFEST"' not in py:
+          raise SystemExit('Python runtime capability routing is incomplete')
+      forbidden=['Эмоции:','Любопытство:','Энергия:','Опыт за сегодня:']
+      present=[x for x in forbidden if x in html]
+      if present:
+          raise SystemExit('Fabricated organism metrics returned: '+repr(present))
+      PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      required=[
+          'id="chatPresenceHero"','id="chatPresenceLatest"','renderChatPresence',
+          'compactAmbient','chatTools','keyboardOpen .chatPresenceHero',
+          'C4 · LOCAL ORGANISM','msg.assistant.ask','msg.assistant.publish'
+      ]
+      missing=[x for x in required if x not in html]
+      if missing:
+          raise SystemExit('Cinematic chat presence contract missing: '+repr(missing))
+      forbidden=['typing…','печатает…','думает…','thinking…','Эмоции:','Любопытство:','Энергия:']
+      present=[x for x in forbidden if x in html]
+      if present:
+          raise SystemExit('Fabricated cognitive presence returned: '+repr(present))
+      start=html.find("function render(){")
+      end=html.find("function renderRoomHud()",start)
+      if "m.scrollTop=m.scrollHeight" in html[start:end]:
+          raise SystemExit('Full render must not force chat to bottom')
+      PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      required=[
+          'data-world-mode="overview"','data-world-mode="physics"','data-world-mode="memory"',
+          'id="worldMap"','id="worldMapObjects"','renderWorldHub',
+          'id="worldNewTask"','premiumLab','memoryStage'
+      ]
+      missing=[x for x in required if x not in html]
+      if missing:
+          raise SystemExit('World Hub V2 contract missing: '+repr(missing))
+      forbidden=['performRoomAction(','ui-room-','id="wave"','id="moveBall"']
+      bad=[x for x in forbidden if x in html]
+      if bad:
+          raise SystemExit('User puppeteering returned in World Hub: '+repr(bad))
+      if 'pointer-events:none' not in html or 'WORLD_TASK' not in html:
+          raise SystemExit('Passive verified world projection guard missing')
+      PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      required=[
+          'id="libraryCount"','id="libraryBytes"','data-library-filter="image"',
+          'sourcePreviewCache','sourceCategory','sourceCover','studioShelf'
+      ]
+      missing=[x for x in required if x not in html]
+      if missing:
+          raise SystemExit('Library Studio UI contract missing: '+repr(missing))
+      required_java=['sourcePreviewDataUrl','sourceImagePreview','6291456L','image/webp']
+      missing=[x for x in required_java if x not in java]
+      if missing:
+          raise SystemExit('Private Library preview contract missing: '+repr(missing))
+      forbidden=['autoIngestAll','IMPORTED = TRUE','INGESTED = TRUE']
+      bad=[x for x in forbidden if x in html or x in java]
+      if bad:
+          raise SystemExit('Library epistemic boundary regression: '+repr(bad))
+      PY
+      python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
+   - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
+   - name: Upload build log
+     if: always()
+     uses: actions/upload-artifact@v4
+     with:
+      name: C4-build-log
+      path: /tmp/gradle.log
+      if-no-files-found: ignore
+   - name: Verify and stage APK
+     shell: bash
+     run: |
+      set -euo pipefail
+      APK=app/build/outputs/apk/debug/app-debug.apk
+      test -s "$APK"
+      unzip -t "$APK"
+      mkdir -p release
+      cp "$APK" release/C4-Nursery-0.60-library-studio.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.60-library-studio.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.60-library-studio.apk | awk '{print $1}')
+      test "$BYTES" -gt 10000
+      printf 'file=C4-Nursery-0.60-library-studio.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+   - uses: actions/upload-artifact@v4
+     with:
+      name: C4-Nursery-0.60-library-studio
+      path: |
+       release/C4-Nursery-0.60-library-studio.apk
+       release/SHA256.txt
+      if-no-files-found: error
+      compression-level: 0
