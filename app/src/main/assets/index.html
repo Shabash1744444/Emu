@@ -645,7 +645,7 @@ function updateChatSelectionUi(){
  if(bar){bar.classList.toggle('on',chatSelectionMode);bar.setAttribute('aria-hidden',chatSelectionMode?'false':'true')}if(count)count.textContent=String(n);
  if(chatSelectionMode&&document.activeElement===$('#input'))$('#input').blur()
 }
-function clearChatSelection(){chatSelection.clear();$('#msgs .msg.selected').forEach(n=>n.classList.remove('selected'));updateChatSelectionUi()}
+function clearChatSelection(){chatSelection.clear();$$('#msgs .msg.selected').forEach(n=>n.classList.remove('selected'));updateChatSelectionUi()}
 function toggleChatSelection(key,node){
  if(chatSelection.has(key))chatSelection.delete(key);else chatSelection.add(key);
  if(node)node.classList.toggle('selected',chatSelection.has(key));updateChatSelectionUi()
