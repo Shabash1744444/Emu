@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-07 (CP175 / build #369 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-07 (CP176 / build #385 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -520,3 +520,22 @@ Artifact: C4-Nursery-0.55-embodied-motion-v2 (ID 11484444114).
 APK: 48,147,439 bytes; SHA256 03723ed74d0d187f5e7473eee9fca1f6d1464cfe5fc6adccc8ea017d95707e63.
 Artifact ZIP SHA256: 76cc9aa4e2a99b0b7889598884873b5706e12f1e46af2576ed4850881b15bee1.
 Physical gate: verify finger axes, hand prop offset/scale, step signs and thermal cost on device.
+
+
+## 2026-10-07 — CP176 Parametric Motor Voice
+- added low-level deterministic PCM16 vocal actuator; no TTS / speechSynthesis;
+- physical controls: f0, amplitude, duration, formants, harmonics, breath, attack/release;
+- AudioTrack playback is verified by playback-head completion before executionSuccess=true;
+- ACTION_REQUEST(VOCALIZE) is asynchronous and returns ACTION_RECEIPT only after real playback completes;
+- exact waveform gets SHA-256 provenance;
+- exact generated PCM is later routed as SELF_AUDIO / ACTUATOR_FEEDBACK with independentEvidence=false;
+- action completion does not wait for sensory ingestion;
+- completed request IDs are replay-protected;
+- VRM mouth can project amplitude through aa/a expression;
+- Home exposes VOICE motor state without a user puppet button.
+
+Build #385 SUCCESS.
+Artifact: C4-Nursery-0.56-parametric-voice (ID 11485063780).
+APK: 48,148,743 bytes; SHA256 1c77cb868cdf5a7468d9f8d28e8e18cc9a002438638640de144ae06a2642c823.
+Artifact ZIP SHA256: 8c0f5b0202136038d871a744209031c16de8690548017a373168547a5fb91cab.
+Physical gate: speaker playback, timbre/volume, mouth expression, SELF_AUDIO runtime acceptance.
