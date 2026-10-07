@@ -10,8 +10,8 @@ android {
         applicationId="com.singularity.c4nursery"
         minSdk=26
         targetSdk=35
-        versionCode=51
-        versionName="0.51-living-home"
+        versionCode=52
+        versionName="0.52-visual-avatar"
         ndk { abiFilters += listOf("arm64-v8a") }
     }
 }
