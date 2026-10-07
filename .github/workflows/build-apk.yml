@@ -23,6 +23,12 @@ jobs:
       cp package/dist/model-viewer.min.js "$GITHUB_WORKSPACE/app/src/main/assets/vendor/model-viewer.min.js"
       printf 'model-viewer 4.3.1 · '
       sha256sum "$GITHUB_WORKSPACE/app/src/main/assets/vendor/model-viewer.min.js"
+      mkdir -p "$GITHUB_WORKSPACE/app/src/main/assets/defaults"
+      curl -fsSL --retry 3 "https://raw.githubusercontent.com/iamenahs/xlunar-ai-avatar/5e368bfff897d73090519f9f696c631a52d77397/public/avatars/VRoid_Sample_D.glb" -o "$GITHUB_WORKSPACE/app/src/main/assets/defaults/VRoid_Sample_D.glb"
+      MODEL_BYTES=$(stat -c%s "$GITHUB_WORKSPACE/app/src/main/assets/defaults/VRoid_Sample_D.glb")
+      test "$MODEL_BYTES" -eq 16851352
+      printf 'bundled VRoid Sample D · %s bytes · ' "$MODEL_BYTES"
+      sha256sum "$GITHUB_WORKSPACE/app/src/main/assets/defaults/VRoid_Sample_D.glb"
    - name: Validate WebView JavaScript syntax
      run: |
       python3 - <<'PY'
@@ -128,6 +134,9 @@ jobs:
       vendor=Path('app/src/main/assets/vendor/model-viewer.min.js')
       if not vendor.is_file() or vendor.stat().st_size < 100000:
           raise SystemExit('Bundled model-viewer missing or suspiciously small')
+      default_model=Path('app/src/main/assets/defaults/VRoid_Sample_D.glb')
+      if not default_model.is_file() or default_model.stat().st_size != 16851352:
+          raise SystemExit('Bundled default GLB missing or wrong size')
       required_html=[
           'id="avatarModelViewer"','id="avatarModelPick"','loadAvatarModel',
           'findModelClip','availableAnimations','vendor/model-viewer.min.js'
