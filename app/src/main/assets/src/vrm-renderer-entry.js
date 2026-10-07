@@ -207,7 +207,7 @@ function applyMotion(now){
     rot('hips',0,-.05*side*e,0,e);rot('chest',.055,-.19*side,0.045*side,e);rot('neck',.03,-.15*side,0,e);
     rot('rightShoulder',0,-.08*side,-.12*e,e);rot('rightUpperArm',-.72,-.24*side,-.72,e);rot('rightLowerArm',-.70,0,-.30,e);rot('rightHand',-.08,0,-.08,e);
     const closing=(action==='TAKE'||action==='GRASP')?clamp((p-.38)/.32,0,1):(action==='RELEASE'||action==='PLACE')?1-clamp((p-.34)/.28,0,1):(heldObject?1:0);
-    curlRightFingers(closing*e+(heldObject&&action==='LOOK'?.82:0));
+    curlRightFingers(closing*e+((heldObject&&action==='LOOK')?0.82:0));
     if((action==='TAKE'||action==='GRASP')&&p>.67&&!heldObject)setHeldObject(ctx.object||ctx.after?.held);
     if((action==='RELEASE'||action==='PLACE')&&p>.53&&heldObject)setHeldObject(null);
   }
