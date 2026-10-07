@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 import { VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 
 let renderer=null,scene=null,camera=null,canvas=null,currentVrm=null,raf=0;
@@ -8,6 +9,7 @@ let motionQueue=[],lookTarget=null,resizeObserver=null,visible=true,vocal={until
 let presence={nextBlinkAt:0,blinkStart:0,blinkDuration:135},lookBaseY=1.35;
 let ground=null,groundRing=null,heldProp=null,heldObject=null,rootBaseX=0,visualRootX=0;
 let environment=null,roomProps=new Map(),environmentOrb=null,environmentMonitor=null,baseCameraY=1.05,keyLight=null;
+let environmentMap=null,environmentLoadState='UNLOADED';
 let qualityMode='BALANCED',targetFps=45,lastRenderAt=0;
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -38,7 +40,7 @@ function ensure(canvasEl){
   groundRing.rotation.x=-Math.PI/2;groundRing.position.set(0,-0.002,0);scene.add(groundRing);
   lookTarget=new THREE.Object3D();lookTarget.position.set(0,1.35,4);scene.add(lookTarget);
 
-  buildEnvironment();applyQuality();
+  buildEnvironment();applyQuality();loadStudioEnvironment();
   resizeObserver=new ResizeObserver(resize);resizeObserver.observe(canvas);
   resize();
   if(!raf){lastTime=performance.now();raf=requestAnimationFrame(loop)}
@@ -48,6 +50,27 @@ function resize(){
   const r=canvas.getBoundingClientRect(),w=Math.max(1,Math.floor(r.width)),h=Math.max(1,Math.floor(r.height));
   renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
 }
+function loadStudioEnvironment(){
+  if(!renderer||!scene||environmentLoadState==='LOADING'||environmentLoadState==='READY')return;
+  environmentLoadState='LOADING';
+  const pmrem=new THREE.PMREMGenerator(renderer);pmrem.compileEquirectangularShader();
+  new RGBELoader().load(
+    'https://appassets.androidplatform.net/assets/defaults/studio_small_09_1k.hdr',
+    texture=>{
+      try{
+        if(environmentMap){environmentMap.dispose();environmentMap=null}
+        environmentMap=pmrem.fromEquirectangular(texture).texture;
+        scene.environment=environmentMap;
+        if('environmentRotation' in scene)scene.environmentRotation.set(0,-.38,0);
+        texture.dispose();environmentLoadState='READY';applyQuality();emitStatus();
+      }catch(_){environmentLoadState='ERROR'}
+      try{pmrem.dispose()}catch(_){}
+    },
+    undefined,
+    ()=>{environmentLoadState='ERROR';try{pmrem.dispose()}catch(_){};emitStatus()}
+  );
+}
+
 function applyQuality(){
   if(!renderer)return;
   const dpr=window.devicePixelRatio||1;
@@ -55,6 +78,7 @@ function applyQuality(){
   targetFps=qualityMode==='HIGH'?60:qualityMode==='ECO'?30:45;
   renderer.setPixelRatio(pr);
   renderer.shadowMap.enabled=qualityMode!=='ECO';
+  if(scene&&'environmentIntensity' in scene)scene.environmentIntensity=qualityMode==='HIGH'?1.05:qualityMode==='ECO'?.52:.82;
   if(keyLight){
     keyLight.castShadow=qualityMode!=='ECO';
     const size=qualityMode==='HIGH'?1024:512;
@@ -182,8 +206,9 @@ function disposeCurrent(){
 function disposeRendererOnly(){
   if(resizeObserver){try{resizeObserver.disconnect()}catch(_){}resizeObserver=null}
   disposeCurrent();
+  if(environmentMap){try{environmentMap.dispose()}catch(_){}environmentMap=null}
   if(renderer){try{renderer.dispose()}catch(_){}renderer=null}
-  environment=null;roomProps=new Map();environmentOrb=null;environmentMonitor=null;keyLight=null;scene=null;camera=null;canvas=null;
+  environmentLoadState='UNLOADED';environment=null;roomProps=new Map();environmentOrb=null;environmentMonitor=null;keyLight=null;scene=null;camera=null;canvas=null;
 }
 function frameVrm(vrm){
   vrm.scene.updateMatrixWorld(true);
@@ -425,7 +450,7 @@ function sync(state={}){
   currentVrm.scene.position.x=rootBaseX+visualRootX;emitStatus();return true;
 }
 function setVisible(v){visible=!!v}
-function status(){return {ready:!!currentVrm,action:motion.action,queue:motionQueue.map(x=>x.action),queueLength:motionQueue.length,heldObject,rootX:visualRootX,vocalActive:performance.now()<vocal.until,presence:'PHYSICAL_IDLE_V2',lookAt:!!currentVrm?.lookAt,environment:'CINEMATIC_HOME_3D_V1',qualityMode,targetFps,pixelRatio:renderer?renderer.getPixelRatio():0,shadows:renderer?renderer.shadowMap.enabled:false,roomProps:[...roomProps.keys()],metaVersion:String(currentVrm?.meta?.metaVersion??''),springBones:!!currentVrm?.springBoneManager,expressions:currentVrm?.expressionManager?Object.keys(currentVrm.expressionManager.expressionMap||{}):[],bones:currentVrm?.humanoid?Object.keys(currentVrm.humanoid.normalizedHumanBones||{}):[]}}
+function status(){return {ready:!!currentVrm,action:motion.action,queue:motionQueue.map(x=>x.action),queueLength:motionQueue.length,heldObject,rootX:visualRootX,vocalActive:performance.now()<vocal.until,presence:'PHYSICAL_IDLE_V2',lookAt:!!currentVrm?.lookAt,environment:'CINEMATIC_HOME_3D_V1',ibl:environmentLoadState,qualityMode,targetFps,pixelRatio:renderer?renderer.getPixelRatio():0,shadows:renderer?renderer.shadowMap.enabled:false,roomProps:[...roomProps.keys()],metaVersion:String(currentVrm?.meta?.metaVersion??''),springBones:!!currentVrm?.springBoneManager,expressions:currentVrm?.expressionManager?Object.keys(currentVrm.expressionManager.expressionMap||{}):[],bones:currentVrm?.humanoid?Object.keys(currentVrm.humanoid.normalizedHumanBones||{}):[]}}
 function dispose(){++loadToken;disposeRendererOnly()}
 window.C4VRM={load,motor,vocalize,sync,updateWorld,setQuality,status,setVisible,dispose};
 window.dispatchEvent(new CustomEvent('c4-vrm-ready'));
