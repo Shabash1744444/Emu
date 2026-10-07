@@ -13,8 +13,8 @@ android {
         applicationId="com.singularity.c4nursery"
         minSdk=26
         targetSdk=35
-        versionCode=56
-        versionName="0.56-parametric-voice"
+        versionCode=57
+        versionName="0.57-cinematic-home"
         ndk { abiFilters += listOf("arm64-v8a") }
     }
 }
