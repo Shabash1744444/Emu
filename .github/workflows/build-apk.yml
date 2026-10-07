@@ -56,6 +56,21 @@ jobs:
       if "m.scrollTop=m.scrollHeight" in block:
           raise SystemExit("Full render must not force chat to bottom")
       PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      forbidden=['id="wave"','id="moveBall"','performRoomAction(','ui-room-']
+      bad=[x for x in forbidden if x in html]
+      if bad:
+          raise SystemExit('User puppeteering controls returned: '+repr(bad))
+      required=['Тело принадлежит C4','C4_ACTION_REQUEST','WORLD_EVENT','WORLD_TASK','motorStatus','motorLast']
+      missing=[x for x in required if x not in html and x not in java]
+      if missing:
+          raise SystemExit('AI-owned body contract missing: '+repr(missing))
+      if '"WAVE","NOD","LOOK_AROUND","STEP_LEFT","STEP_RIGHT","IDLE"' not in java:
+          raise SystemExit('Host motor verbs missing')
+      PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -73,16 +88,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.49-stable-live-chat.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.49-stable-live-chat.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.49-stable-live-chat.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.50-ai-owned-body.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.50-ai-owned-body.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.50-ai-owned-body.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.49-stable-live-chat.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.50-ai-owned-body.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.49-stable-live-chat
+      name: C4-Nursery-0.50-ai-owned-body
       path: |
-       release/C4-Nursery-0.49-stable-live-chat.apk
+       release/C4-Nursery-0.50-ai-owned-body.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
