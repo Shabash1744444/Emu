@@ -75,17 +75,7 @@ jobs:
       import re
       from pathlib import Path
       html=Path('app/src/main/assets/index.html').read_text()
-      bad=[]
-      for needle in [
-          "$('.page').forEach",
-          "$('.nav button').forEach",
-          "$('[data-go]').forEach",
-          "$('[data-home-go]').forEach",
-          "$('#dropTargets span').forEach",
-          "$('[data-object]').forEach",
-      ]:
-          if needle in html and ("$"+needle) not in html:
-              bad.append(needle)
+      bad=re.findall(r"(?<!\\$)\\$\\((['\"])[^'\"]+\\1\\)\\.forEach",html)
       if bad:
           raise SystemExit("Single-element selector used as collection: "+repr(bad))
       required=[
