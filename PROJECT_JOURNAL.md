@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-07 (CP170 / build #313 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-07 (CP171 / build #326 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -297,3 +297,40 @@ Build gate:
 - artifact ZIP SHA256: 87102a271f48758c618f808279bea981d778939ae9b7e50622b752ce6a5e946a
 - APK bytes: 33,817,302
 - APK SHA256: 2f4888e16aec7e518393157f7d00a6b7b089c7950ae2102378107044dd3adf3a
+
+
+## 2026-10-07 — CP171 Living Home
+Reference direction: premium, cinematic living-world UI where Home, thoughts, world, library and senses feel like one organism environment.
+
+Implemented:
+- rebuilt Home as a real-state Living Home dashboard;
+- large habitat hero with richer lighting, depth, bed, monitor glow and holographic orb;
+- runtime presence ring driven only by runtimeInfo();
+- latest C4 REPLY / ASK / PUBLISH shown as the Home thought card;
+- quick modules for Dialogue, World, Library and Sensory channels;
+- real counters for messages, ASK events, stored sources and host save time;
+- real capability chips for chat, camera vision, microphone audio and body sensors;
+- preserved C4-owned body boundary and user-as-external-actor model;
+- kept fake emotion / curiosity / XP / energy metrics explicitly out of the UI;
+- hardened navigation and collection selectors after a regression was detected;
+- CI now rejects collection-selector misuse and fabricated organism metrics.
+
+Build gate:
+- GitHub Actions run #326 SUCCESS.
+- WebView JavaScript syntax PASS.
+- selector regression guards PASS.
+- AI-owned body guard PASS.
+- Living Home realism contract PASS.
+- Python py_compile PASS.
+- Gradle assembleDebug PASS.
+- APK archive integrity PASS.
+- artifact: C4-Nursery-0.51-living-home
+- artifact ID: 11477637912
+- artifact ZIP bytes: 33,821,870
+- artifact ZIP SHA256: b1a9183f6f07495821de896d39f4a3350d93ad38c9180c973bcdaf63936cd0ce
+- APK bytes: 33,821,458
+- APK SHA256: 00de8ec1f40b16204618bf7d7f3b8376dd7a64b697860087c479a63f2708433b
+
+Physical-device status:
+- not yet visually inspected on-device for CP171;
+- previous G266-compatible runtime path remains the known running baseline.
