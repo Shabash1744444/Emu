@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-07 (CP172 / build #336 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-07 (CP173 / build #348 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -376,3 +376,57 @@ Build gate:
 Device gate:
 - image avatar import/render still needs physical Android visual inspection;
 - compatible G266 runtime boot remains the known running baseline.
+
+
+## 2026-10-07 — CP173 Rigged GLB Body
+User direction: stop using geometric bodies and move to real anime 3D models.
+
+Implemented:
+- secure local WebView origin through WebViewAssetLoader; legacy file:// app origin removed;
+- pinned AndroidX WebKit 1.17.1;
+- pinned @google/model-viewer 4.3.1 bundled into APK during CI, no runtime CDN dependency;
+- private Android SAF import for .glb avatar models;
+- validates .glb filename, glTF magic, non-empty file and 96 MiB cap;
+- atomic private storage + SHA-256 metadata;
+- private imported model exposed only at appassets local origin;
+- GLB_RIGGED_BODY_V1 renderer in Home;
+- renderer discovers real animation clips from model.availableAnimations;
+- verified C4 motor receipts conservatively map to Idle/Wave/Nod/Look/Step/Reach/Grab/Place-like clips;
+- if the model lacks a matching clip, only a bounded whole-body visual fallback runs; C4 action is not fabricated;
+- fallback order is GLB -> photo-anime V1 -> CSS debug silhouette;
+- user may choose appearance/model but still cannot puppet C4 motor actions.
+
+Bundled default body:
+- VRoid_Sample_D.glb
+- CC0 1.0
+- pixiv Inc. / VRoid Studio Team
+- pinned upstream mirror commit: 5e368bfff897d73090519f9f696c631a52d77397
+- GLB bytes in APK: 16,851,352
+- GLB SHA256: 9adf1b44e959d2688d62c2dd558e74315d6aa40e3bf8d281390b7a85dc0df9b7
+
+Bundled renderer:
+- model-viewer.min.js bytes: 1,068,903
+- SHA256: 283b0672384614b4847636c306fc93fe4b1fcadc76d668b4e47f0ca76bcf033b
+
+Build gate:
+- GitHub Actions run #348 SUCCESS.
+- pinned 3D viewer vendor step PASS;
+- pinned default GLB exact-byte check PASS;
+- WebView JavaScript syntax PASS;
+- selector / organism picker / stable-chat / AI-owned-body / Living Home / visual-avatar / rigged-GLB guards PASS;
+- Python py_compile PASS;
+- Gradle assembleDebug PASS;
+- APK archive integrity PASS.
+
+Release:
+- versionCode 53
+- versionName 0.53-rigged-glb-body
+- artifact ID: 11479558415
+- artifact ZIP bytes: 47,902,807
+- artifact ZIP SHA256: 6ac394846fcfb4859903865f16f7b95344dd18003d0d7396af72596ad704e2d8
+- APK bytes: 47,902,383
+- APK SHA256: 86365fde9d705df8bff349c64f8f7d86927420e6377227a7b53bf255065c692c
+
+Physical device gate:
+- exact 0.53 GLB rendering and model-viewer animation behavior still require Android visual smoke-test;
+- G266-compatible runtime remains the proven organism boot baseline.
