@@ -1,0 +1,20 @@
+VRoid_Sample_D.glb
+
+License: CC0 1.0 Universal
+Author / source: pixiv Inc. / VRoid Studio Team
+Upstream mirror used for the bundled binary:
+https://github.com/iamenahs/xlunar-ai-avatar
+
+Pinned upstream commit:
+5e368bfff897d73090519f9f696c631a52d77397
+
+Upstream attribution file:
+public/avatars/LICENSES/ATTRIBUTION.md
+
+Expected binary path:
+public/avatars/VRoid_Sample_D.glb
+
+Expected bytes:
+16851352
+
+The model is bundled only as the default visual body. It is not training data and it is not evidence for C4.
