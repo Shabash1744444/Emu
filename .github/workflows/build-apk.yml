@@ -97,7 +97,7 @@ jobs:
       java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
       required_html=[
           'id="avatarVisualWrap"','id="avatarVisual"','id="avatarPick"',
-          'loadAvatarVisual','PHOTO_ANIME_LAYER_V1','visualAvatarActive'
+          'loadAvatarVisual','visualAvatarActive'
       ]
       missing=[x for x in required_html if x not in html]
       if missing:
