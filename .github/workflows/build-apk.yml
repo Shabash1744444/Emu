@@ -283,6 +283,24 @@ jobs:
       if "m.scrollTop=m.scrollHeight" in html[start:end]:
           raise SystemExit('Full render must not force chat to bottom')
       PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      required=[
+          'data-world-mode="overview"','data-world-mode="physics"','data-world-mode="memory"',
+          'id="worldMap"','id="worldMapObjects"','renderWorldHub',
+          'id="worldNewTask"','premiumLab','memoryStage'
+      ]
+      missing=[x for x in required if x not in html]
+      if missing:
+          raise SystemExit('World Hub V2 contract missing: '+repr(missing))
+      forbidden=['performRoomAction(','ui-room-','id="wave"','id="moveBall"']
+      bad=[x for x in forbidden if x in html]
+      if bad:
+          raise SystemExit('User puppeteering returned in World Hub: '+repr(bad))
+      if 'pointer-events:none' not in html or 'WORLD_TASK' not in html:
+          raise SystemExit('Passive verified world projection guard missing')
+      PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -300,16 +318,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.58-cinematic-chat.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.58-cinematic-chat.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.58-cinematic-chat.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.59-world-hub.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.59-world-hub.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.59-world-hub.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.58-cinematic-chat.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.59-world-hub.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.58-cinematic-chat
+      name: C4-Nursery-0.59-world-hub
       path: |
-       release/C4-Nursery-0.58-cinematic-chat.apk
+       release/C4-Nursery-0.59-world-hub.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
