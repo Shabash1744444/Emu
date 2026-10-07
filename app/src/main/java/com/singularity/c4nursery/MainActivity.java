@@ -19,6 +19,16 @@ public class MainActivity extends Activity {
    .addPathHandler("/assets/",new WebViewAssetLoader.AssetsPathHandler(this))
    .addPathHandler("/private/",path->{try{
     if("avatar-model.glb".equals(path)||"avatar-model.vrm".equals(path)){String p=prefs.getString("avatar_model_path","");File model=p.isEmpty()?null:new File(p);if(model!=null&&model.isFile())return new WebResourceResponse("model/gltf-binary",null,200,"OK",Collections.singletonMap("Cache-Control","no-store"),new FileInputStream(model));}
+    if(path!=null&&path.startsWith("source/")){
+     String sha=path.substring("source/".length()).toLowerCase(Locale.ROOT);
+     if(!sha.matches("[0-9a-f]{64}"))return null;
+     File store=new File(new File(getFilesDir(),"sources"),"store"),data=new File(store,sha+".bin"),metaFile=new File(store,sha+".json");
+     if(!data.isFile()||!metaFile.isFile())return null;
+     byte[] mb=new byte[(int)Math.min(metaFile.length(),1048576L)];int mn;try(FileInputStream mi=new FileInputStream(metaFile)){mn=mi.read(mb);}
+     if(mn<=0)return null;JSONObject meta=new JSONObject(new String(mb,0,mn,StandardCharsets.UTF_8));String mime=meta.optString("mime","application/octet-stream");
+     Map<String,String> h=new HashMap<>();h.put("Cache-Control","no-store, max-age=0");h.put("X-Content-Type-Options","nosniff");h.put("Content-Disposition","inline");
+     return new WebResourceResponse(mime,null,200,"OK",h,new FileInputStream(data));
+    }
    }catch(Exception ignored){}return null;}).build();
   web.addJavascriptInterface(new NurseryBridge(),"NurseryNative");web.setWebViewClient(new WebViewClient(){
    @Override public WebResourceResponse shouldInterceptRequest(WebView v,WebResourceRequest req){return assetLoader.shouldInterceptRequest(req.getUrl());}
@@ -274,7 +284,35 @@ public class MainActivity extends Activity {
   @JavascriptInterface public String avatarDataUrl(){try{String path=prefs.getString("avatar_path","");if(path.isEmpty())return "";File f=new File(path);if(!f.isFile()||f.length()<=0||f.length()>12582912L)return "";byte[] data=new byte[(int)f.length()];try(FileInputStream in=new FileInputStream(f)){int off=0,n;while(off<data.length&&(n=in.read(data,off,data.length-off))>0)off+=n;if(off!=data.length)return "";}String mime=prefs.getString("avatar_mime","image/webp");return "data:"+mime+";base64,"+Base64.encodeToString(data,Base64.NO_WRAP);}catch(Exception e){return "";}}
   @JavascriptInterface public void clearAvatarAsset(){try{String path=prefs.getString("avatar_path","");if(!path.isEmpty())new File(path).delete();prefs.edit().remove("avatar_path").remove("avatar_name").remove("avatar_mime").remove("avatar_sha").remove("avatar_width").remove("avatar_height").commit();emit("AVATAR_CHANGED",new JSONObject().put("available",false));}catch(Exception ignored){}}
   @JavascriptInterface public String hostInfo(){try{JSONObject o=new JSONObject();o.put("sdk",Build.VERSION.SDK_INT);o.put("device",Build.MANUFACTURER+" "+Build.MODEL);o.put("orientation",getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE?"landscape":"portrait");android.content.pm.PackageInfo pi=getPackageManager().getPackageInfo(getPackageName(),0);o.put("versionName",pi.versionName==null?"":pi.versionName);o.put("versionCode",Build.VERSION.SDK_INT>=28?pi.getLongVersionCode():pi.versionCode);return o.toString();}catch(Exception e){return "{}";}}
-  @JavascriptInterface public String capabilities(){try{JSONObject o=new JSONObject();o.put("files",true);o.put("camera",getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY));o.put("liveCamera",getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY));o.put("microphone",getPackageManager().hasSystemFeature(PackageManager.FEATURE_MICROPHONE));o.put("screenCapture",Build.VERSION.SDK_INT>=21);android.hardware.SensorManager sm=(android.hardware.SensorManager)getSystemService(SENSOR_SERVICE);o.put("bodySensors",sm!=null&&(sm.getDefaultSensor(android.hardware.Sensor.TYPE_ACCELEROMETER)!=null||sm.getDefaultSensor(android.hardware.Sensor.TYPE_GYROSCOPE)!=null||sm.getDefaultSensor(android.hardware.Sensor.TYPE_LIGHT)!=null));o.put("sensoryCortex","C4_SENSORY_FEATURES_V1");o.put("audioPhysicalFrames",true);o.put("visualPhysicalFrames",true);o.put("bodyPhysicalFrames",true);o.put("c4Transport",prefs.getBoolean("runtime_running",false));o.put("organismManager",true);o.put("runtimeLifecycle",true);o.put("foregroundOrganism",true);o.put("visualAvatar","PHOTO_ANIME_LAYER_V1");o.put("avatarImageImport",true);o.put("riggedAvatar","GLB_RIGGED_BODY_V1");o.put("avatarGlbImport",true);o.put("vrmAvatar","VRM_LIFE_V1");o.put("avatarVrmImport",true);o.put("embodiedMotion","EMBODIED_MOTION_V2");o.put("vocalMotor","PARAMETRIC_VOICE_V1");o.put("selfAudioFeedback",true);o.put("bodyManifest","C4_BODY_MANIFEST_V1");o.put("cinematicHome3D","CINEMATIC_HOME_3D_V1");o.put("sourceImagePreview",true);return o.toString();}catch(Exception e){return "{}";}}
+  @JavascriptInterface public String capabilities(){try{JSONObject o=new JSONObject();o.put("files",true);o.put("camera",getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY));o.put("liveCamera",getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY));o.put("microphone",getPackageManager().hasSystemFeature(PackageManager.FEATURE_MICROPHONE));o.put("screenCapture",Build.VERSION.SDK_INT>=21);android.hardware.SensorManager sm=(android.hardware.SensorManager)getSystemService(SENSOR_SERVICE);o.put("bodySensors",sm!=null&&(sm.getDefaultSensor(android.hardware.Sensor.TYPE_ACCELEROMETER)!=null||sm.getDefaultSensor(android.hardware.Sensor.TYPE_GYROSCOPE)!=null||sm.getDefaultSensor(android.hardware.Sensor.TYPE_LIGHT)!=null));o.put("sensoryCortex","C4_SENSORY_FEATURES_V1");o.put("audioPhysicalFrames",true);o.put("visualPhysicalFrames",true);o.put("bodyPhysicalFrames",true);o.put("c4Transport",prefs.getBoolean("runtime_running",false));o.put("organismManager",true);o.put("runtimeLifecycle",true);o.put("foregroundOrganism",true);o.put("visualAvatar","PHOTO_ANIME_LAYER_V1");o.put("avatarImageImport",true);o.put("riggedAvatar","GLB_RIGGED_BODY_V1");o.put("avatarGlbImport",true);o.put("vrmAvatar","VRM_LIFE_V1");o.put("avatarVrmImport",true);o.put("embodiedMotion","EMBODIED_MOTION_V2");o.put("vocalMotor","PARAMETRIC_VOICE_V1");o.put("selfAudioFeedback",true);o.put("bodyManifest","C4_BODY_MANIFEST_V1");o.put("cinematicHome3D","CINEMATIC_HOME_3D_V1");o.put("sourceImagePreview",true);o.put("materialExperience","MATERIAL_EXPERIENCE_V1");o.put("sourcePrivateStreaming",true);o.put("sourceTextPreview",true);return o.toString();}catch(Exception e){return "{}";}}
+  @JavascriptInterface public String sourceExperienceInfo(String sourceId){try{
+   String sha=sourceId==null?"":sourceId.replace("sha256:","").toLowerCase(Locale.ROOT);
+   JSONObject out=new JSONObject().put("available",false);
+   if(!sha.matches("[0-9a-f]{64}"))return out.put("error","INVALID_SOURCE_ID").toString();
+   File store=new File(new File(getFilesDir(),"sources"),"store"),data=new File(store,sha+".bin"),metaFile=new File(store,sha+".json");
+   if(!data.isFile()||!metaFile.isFile())return out.put("error","SOURCE_MISSING").toString();
+   byte[] mb=new byte[(int)Math.min(metaFile.length(),1048576L)];int mn;try(FileInputStream mi=new FileInputStream(metaFile)){mn=mi.read(mb);}
+   if(mn<=0)return out.put("error","META_MISSING").toString();
+   JSONObject meta=new JSONObject(new String(mb,0,mn,StandardCharsets.UTF_8));String mime=meta.optString("mime","application/octet-stream").toLowerCase(Locale.ROOT);
+   boolean media=mime.startsWith("image/")||mime.startsWith("audio/")||mime.startsWith("video/");
+   boolean text=mime.startsWith("text/")||"application/json".equals(mime)||mime.contains("markdown")||mime.contains("xml");
+   out.put("available",true).put("sourceId","sha256:"+sha).put("name",meta.optString("name",meta.optString("displayName","Источник"))).put("mime",mime).put("bytes",data.length()).put("streamable",media).put("textReadable",text).put("url",media?("https://appassets.androidplatform.net/private/source/"+sha):JSONObject.NULL).put("maxTextBytes",262144).put("epistemic","OPENED_NE_INGESTED");
+   return out.toString();
+  }catch(Exception e){try{return new JSONObject().put("available",false).put("error",e.getClass().getSimpleName()).toString();}catch(Exception ignored){return "{\"available\":false}";}}}
+  @JavascriptInterface public String sourceTextPreview(String sourceId){try{
+   String sha=sourceId==null?"":sourceId.replace("sha256:","").toLowerCase(Locale.ROOT);
+   JSONObject out=new JSONObject().put("ok",false);
+   if(!sha.matches("[0-9a-f]{64}"))return out.put("error","INVALID_SOURCE_ID").toString();
+   File store=new File(new File(getFilesDir(),"sources"),"store"),data=new File(store,sha+".bin"),metaFile=new File(store,sha+".json");
+   if(!data.isFile()||!metaFile.isFile())return out.put("error","SOURCE_MISSING").toString();
+   byte[] mb=new byte[(int)Math.min(metaFile.length(),1048576L)];int mn;try(FileInputStream mi=new FileInputStream(metaFile)){mn=mi.read(mb);}
+   if(mn<=0)return out.put("error","META_MISSING").toString();
+   JSONObject meta=new JSONObject(new String(mb,0,mn,StandardCharsets.UTF_8));String mime=meta.optString("mime","").toLowerCase(Locale.ROOT);
+   if(!(mime.startsWith("text/")||"application/json".equals(mime)||mime.contains("markdown")||mime.contains("xml")))return out.put("error","TEXT_PREVIEW_UNSUPPORTED").put("mime",mime).toString();
+   int cap=262144,n=(int)Math.min(data.length(),cap);byte[] b=new byte[n];int off=0;try(FileInputStream in=new FileInputStream(data)){int k;while(off<b.length&&(k=in.read(b,off,b.length-off))>0)off+=k;}
+   String text=new String(b,0,off,StandardCharsets.UTF_8);
+   return out.put("ok",true).put("mime",mime).put("text",text).put("bytesRead",off).put("truncated",data.length()>cap).put("sourceBytes",data.length()).put("sourceId","sha256:"+sha).put("semanticLabels",false).toString();
+  }catch(Exception e){try{return new JSONObject().put("ok",false).put("error",e.getClass().getSimpleName()).toString();}catch(Exception ignored){return "{\"ok\":false}";}}}
   @JavascriptInterface public String sourcePreviewDataUrl(String sourceId){try{
    String sha=sourceId==null?"":sourceId.replace("sha256:","").toLowerCase(Locale.ROOT);
    if(!sha.matches("[0-9a-f]{64}"))return "";
