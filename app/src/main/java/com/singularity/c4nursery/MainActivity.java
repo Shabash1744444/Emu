@@ -164,11 +164,12 @@ public class MainActivity extends Activity {
      JSONObject started=new JSONObject().put("requestId",requestId).put("action","VOCALIZE").put("durationMs",v.durationMs).put("f0Hz",v.params.optDouble("f0Hz")).put("amplitude",v.params.optDouble("amplitude")).put("waveformDigest","sha256:"+v.sha256).put("semanticLabels",false);
      emit("VOCAL_STARTED",started);
      boolean played=VocalActuator.playBlocking(v);
-     JSONObject feedback=played?sendSelfAudioFeedback(requestId,v):new JSONObject().put("emitted",false).put("error","PLAYBACK_NOT_VERIFIED").put("origin","SELF_AUDIO").put("independentEvidence",false);
-     receipt.put("requestId",requestId).put("action","VOCALIZE").put("accepted",true).put("executionSuccess",played).put("origin","ACTUATOR").put("world","HOME").put("bodyOwner","C4").put("motor",true).put("actuator","PARAMETRIC_VOICE_V1").put("params",v.params).put("waveformDigest","sha256:"+v.sha256).put("selfAudioFeedback",feedback).put("completedAt",System.currentTimeMillis());
+     JSONObject feedbackPlan=new JSONObject().put("queued",played).put("origin","SELF_AUDIO").put("phase","ACTUATOR_FEEDBACK").put("independentEvidence",false);
+     receipt.put("requestId",requestId).put("action","VOCALIZE").put("accepted",true).put("executionSuccess",played).put("origin","ACTUATOR").put("world","HOME").put("bodyOwner","C4").put("motor",true).put("actuator","PARAMETRIC_VOICE_V1").put("params",v.params).put("waveformDigest","sha256:"+v.sha256).put("selfAudioFeedback",feedbackPlan).put("completedAt",System.currentTimeMillis());
      if(!played)receipt.put("error","AUDIO_PLAYBACK_NOT_VERIFIED");
     }catch(Exception e){try{receipt.put("requestId",requestId).put("action","VOCALIZE").put("accepted",false).put("executionSuccess",false).put("origin","ACTUATOR").put("bodyOwner","C4").put("motor",true).put("actuator","PARAMETRIC_VOICE_V1").put("error","VOCAL_ACTUATOR_ERROR:"+e.getClass().getSimpleName()).put("detail",String.valueOf(e.getMessage()));}catch(Exception ignored){}}
     try{prefs.edit().putString(key,receipt.toString()).commit();appendRuntimeTrace("HOST_ACTUATOR","ACTION_RECEIPT",requestId,receipt);emit("VOCAL_RECEIPT",receipt);}catch(Exception ignored){}
+    try{if(receipt.optBoolean("executionSuccess",false)){VocalActuator.Vocalization v=VocalActuator.synthesize(requestId,q);JSONObject feedback=sendSelfAudioFeedback(requestId,v);feedback.put("requestId",requestId).put("waveformDigest","sha256:"+v.sha256);emit("VOCAL_SELF_AUDIO",feedback);}}catch(Exception ignored){}
     synchronized(vocalLock){vocalPending.remove(pendingKey);}
    },"c4-vocal-actuator").start();
    return new JSONObject().put("accepted",true).put("pending",true).put("requestId",requestId).put("actuator","PARAMETRIC_VOICE_V1").toString();
