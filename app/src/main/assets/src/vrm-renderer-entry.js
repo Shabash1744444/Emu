@@ -6,7 +6,8 @@ let renderer=null,scene=null,camera=null,canvas=null,currentVrm=null,raf=0;
 let lastTime=performance.now(),loadToken=0,motion={action:'IDLE',start:0,duration:0,context:{},fromRootX:0,toRootX:0};
 let motionQueue=[],lookTarget=null,resizeObserver=null,visible=true,vocal={until:0,level:0};
 let ground=null,groundRing=null,heldProp=null,heldObject=null,rootBaseX=0,visualRootX=0;
-let environment=null,roomProps=new Map(),environmentOrb=null,environmentMonitor=null,baseCameraY=1.05;
+let environment=null,roomProps=new Map(),environmentOrb=null,environmentMonitor=null,baseCameraY=1.05,keyLight=null;
+let qualityMode='BALANCED',targetFps=45,lastRenderAt=0;
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const ease=(x)=>0.5-0.5*Math.cos(Math.PI*clamp(x,0,1));
@@ -16,7 +17,7 @@ function ensure(canvasEl){
   disposeRendererOnly();
   canvas=canvasEl;
   renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'high-performance'});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.35));
   renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.toneMapping=THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure=1.08;
@@ -27,7 +28,7 @@ function ensure(canvasEl){
   camera.position.set(0,1.05,3.15);
   camera.lookAt(0,1.0,0);
   scene.add(new THREE.HemisphereLight(0xbfefff,0x281d1a,1.42));
-  const key=new THREE.DirectionalLight(0xffe7cf,3.1);key.position.set(1.7,3.1,2.4);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-2.5;key.shadow.camera.right=2.5;key.shadow.camera.top=3;key.shadow.camera.bottom=-1;scene.add(key);
+  keyLight=new THREE.DirectionalLight(0xffe7cf,3.1);keyLight.position.set(1.7,3.1,2.4);keyLight.castShadow=true;keyLight.shadow.mapSize.set(512,512);keyLight.shadow.camera.left=-2.5;keyLight.shadow.camera.right=2.5;keyLight.shadow.camera.top=3;keyLight.shadow.camera.bottom=-1;scene.add(keyLight);
   const rim=new THREE.DirectionalLight(0x65dfff,2.15);rim.position.set(-2.2,2.0,-2.0);scene.add(rim);
   const fill=new THREE.DirectionalLight(0x8affdf,0.72);fill.position.set(0.3,0.8,2.5);scene.add(fill);
   ground=new THREE.Mesh(new THREE.CircleGeometry(1.55,64),new THREE.MeshStandardMaterial({color:0x101923,roughness:.94,metalness:.04,transparent:true,opacity:.78}));
@@ -36,7 +37,7 @@ function ensure(canvasEl){
   groundRing.rotation.x=-Math.PI/2;groundRing.position.set(0,-0.002,0);scene.add(groundRing);
   lookTarget=new THREE.Object3D();lookTarget.position.set(0,1.35,4);scene.add(lookTarget);
 
-  buildEnvironment();
+  buildEnvironment();applyQuality();
   resizeObserver=new ResizeObserver(resize);resizeObserver.observe(canvas);
   resize();
   if(!raf){lastTime=performance.now();raf=requestAnimationFrame(loop)}
@@ -46,6 +47,27 @@ function resize(){
   const r=canvas.getBoundingClientRect(),w=Math.max(1,Math.floor(r.width)),h=Math.max(1,Math.floor(r.height));
   renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
 }
+function applyQuality(){
+  if(!renderer)return;
+  const dpr=window.devicePixelRatio||1;
+  const pr=qualityMode==='HIGH'?Math.min(dpr,2):qualityMode==='ECO'?Math.min(dpr,.9):Math.min(dpr,1.35);
+  targetFps=qualityMode==='HIGH'?60:qualityMode==='ECO'?30:45;
+  renderer.setPixelRatio(pr);
+  renderer.shadowMap.enabled=qualityMode!=='ECO';
+  if(keyLight){
+    keyLight.castShadow=qualityMode!=='ECO';
+    const size=qualityMode==='HIGH'?1024:512;
+    if(keyLight.shadow.mapSize.x!==size){keyLight.shadow.mapSize.set(size,size);if(keyLight.shadow.map){try{keyLight.shadow.map.dispose()}catch(_){}keyLight.shadow.map=null}}
+  }
+  if(groundRing)groundRing.visible=qualityMode!=='ECO';
+  resize();emitStatus();
+}
+function setQuality(mode){
+  mode=String(mode||'BALANCED').toUpperCase();
+  if(!['HIGH','BALANCED','ECO'].includes(mode))mode='BALANCED';
+  qualityMode=mode;applyQuality();return status();
+}
+
 function mat(color,rough=.8,metal=.02,emissive=0x000000,ei=0){
   return new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal,emissive,emissiveIntensity:ei});
 }
@@ -160,7 +182,7 @@ function disposeRendererOnly(){
   if(resizeObserver){try{resizeObserver.disconnect()}catch(_){}resizeObserver=null}
   disposeCurrent();
   if(renderer){try{renderer.dispose()}catch(_){}renderer=null}
-  environment=null;roomProps=new Map();environmentOrb=null;environmentMonitor=null;scene=null;camera=null;canvas=null;
+  environment=null;roomProps=new Map();environmentOrb=null;environmentMonitor=null;keyLight=null;scene=null;camera=null;canvas=null;
 }
 function frameVrm(vrm){
   vrm.scene.updateMatrixWorld(true);
@@ -346,12 +368,13 @@ function motor(action,context={}){
 }
 function loop(now){
   raf=requestAnimationFrame(loop);if(!renderer||!scene||!camera||!visible)return;
-  const dt=Math.min(.05,(now-lastTime)/1000||.016);lastTime=now;
+  const minFrame=1000/Math.max(1,targetFps);if(lastRenderAt&&now-lastRenderAt<minFrame)return;lastRenderAt=now;
+  const dt=Math.min(.07,(now-lastTime)/1000||.016);lastTime=now;
   if(currentVrm){applyMotion(now);applyBlink(now/1000);applyVocal(now);try{currentVrm.update(dt)}catch(_){}}
   const t=now/1000;
   if(environmentOrb){environmentOrb.position.y=.92+Math.sin(t*.9)*.018;environmentOrb.rotation.y=t*.5}
   if(environmentMonitor?.material)environmentMonitor.material.emissiveIntensity=1.20+.18*Math.sin(t*1.35);
-  if(camera&&currentVrm){camera.position.y=baseCameraY+Math.sin(t*.28)*.008;camera.position.x=Math.sin(t*.17)*.015}
+  if(camera&&currentVrm){if(qualityMode==='ECO'){camera.position.y=baseCameraY;camera.position.x=0}else{camera.position.y=baseCameraY+Math.sin(t*.28)*.008;camera.position.x=Math.sin(t*.17)*.015}}
   renderer.render(scene,camera);
 }
 function updateWorld(state={}){
@@ -369,7 +392,7 @@ function sync(state={}){
   currentVrm.scene.position.x=rootBaseX+visualRootX;emitStatus();return true;
 }
 function setVisible(v){visible=!!v}
-function status(){return {ready:!!currentVrm,action:motion.action,queue:motionQueue.map(x=>x.action),queueLength:motionQueue.length,heldObject,rootX:visualRootX,vocalActive:performance.now()<vocal.until,environment:'CINEMATIC_HOME_3D_V1',roomProps:[...roomProps.keys()],metaVersion:String(currentVrm?.meta?.metaVersion??''),springBones:!!currentVrm?.springBoneManager,expressions:currentVrm?.expressionManager?Object.keys(currentVrm.expressionManager.expressionMap||{}):[],bones:currentVrm?.humanoid?Object.keys(currentVrm.humanoid.normalizedHumanBones||{}):[]}}
+function status(){return {ready:!!currentVrm,action:motion.action,queue:motionQueue.map(x=>x.action),queueLength:motionQueue.length,heldObject,rootX:visualRootX,vocalActive:performance.now()<vocal.until,environment:'CINEMATIC_HOME_3D_V1',qualityMode,targetFps,pixelRatio:renderer?renderer.getPixelRatio():0,shadows:renderer?renderer.shadowMap.enabled:false,roomProps:[...roomProps.keys()],metaVersion:String(currentVrm?.meta?.metaVersion??''),springBones:!!currentVrm?.springBoneManager,expressions:currentVrm?.expressionManager?Object.keys(currentVrm.expressionManager.expressionMap||{}):[],bones:currentVrm?.humanoid?Object.keys(currentVrm.humanoid.normalizedHumanBones||{}):[]}}
 function dispose(){++loadToken;disposeRendererOnly()}
-window.C4VRM={load,motor,vocalize,sync,updateWorld,status,setVisible,dispose};
+window.C4VRM={load,motor,vocalize,sync,updateWorld,setQuality,status,setVisible,dispose};
 window.dispatchEvent(new CustomEvent('c4-vrm-ready'));
