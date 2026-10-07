@@ -1,5 +1,5 @@
 # C4 Nursery — Living Project Journal / New Chat Handoff
-Updated: 2026-10-07 (CP169 / build #303 green). Repo: Shabash1744444/Emu, main.
+Updated: 2026-10-07 (CP170 / build #313 green). Repo: Shabash1744444/Emu, main.
 Scope: Android Nursery application. The C4 neural/core runtime is developed separately.
 
 ## Mission
@@ -255,3 +255,45 @@ Build gate:
 Observed core behavior requiring separate core-level analysis:
 - G266 currently emits multiple unresolved g223-world ASK events during autonomous ticks.
 - CP169 does not delete, coalesce or suppress those organism events; it only prevents them from destabilizing the chat UI.
+
+
+## 2026-10-07 — CP170 AI-owned body
+User correction: the human must not puppet C4's avatar.
+
+Agency boundary implemented:
+- removed user-facing Wave / Move Ball / direct Take / Place / Look controls that executed C4 motor actions;
+- Home now states explicitly that the body belongs to C4;
+- user interactions are USER_WORLD (call, point/touch environment, avatar tactile contact), not C4_ACTION;
+- sandbox challenges are delivered through WORLD_TASK capability probing instead of being smuggled through TICK;
+- user-world interactions use WORLD_EVENT capability probing;
+- unsupported runtime capability stays explicit RUNTIME_CAPABILITY_UNAVAILABLE.
+
+C4 motor lane:
+- ACTION_REQUEST remains the only route that can mutate C4 body state;
+- native host now supports bounded body verbs WAVE, NOD, LOOK_AROUND, STEP_LEFT, STEP_RIGHT, IDLE;
+- object motor verbs remain bounded by native affordances;
+- C4-requested target is now forwarded to the native executor;
+- verified motor receipts update only the habitat/avatar, not the whole app/chat;
+- recent C4 motor action is visible in Home;
+- animations are projections of executionSuccess=true receipts, never fabricated intentions.
+
+Visual pass:
+- autonomy/motor panel;
+- richer avatar motor animations and presence glow;
+- improved room depth, shadows, ball/block materials, window/rug lighting;
+- room objects are passive world state in the user UI rather than puppet controls.
+
+Build gate:
+- GitHub Actions run #313 SUCCESS.
+- JavaScript syntax PASS.
+- previous selector / organism / stable-chat guards PASS.
+- AI-owned-body regression guard PASS.
+- Python py_compile PASS.
+- Gradle assembleDebug PASS.
+- APK archive integrity PASS.
+- artifact: C4-Nursery-0.50-ai-owned-body
+- artifact ID: 11474260570
+- artifact ZIP bytes: 33,817,720
+- artifact ZIP SHA256: 87102a271f48758c618f808279bea981d778939ae9b7e50622b752ce6a5e946a
+- APK bytes: 33,817,302
+- APK SHA256: 2f4888e16aec7e518393157f7d00a6b7b089c7950ae2102378107044dd3adf3a
