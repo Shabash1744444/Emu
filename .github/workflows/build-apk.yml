@@ -301,6 +301,30 @@ jobs:
       if 'pointer-events:none' not in html or 'WORLD_TASK' not in html:
           raise SystemExit('Passive verified world projection guard missing')
       PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      required_html=[
+          'id="materialExperience"','openSourceExperience','closeSourceExperience',
+          'USER VIEW · ≠ C4 LEARNING','materialVideo','materialReader','materialSend'
+      ]
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('Material Experience UI contract missing: '+repr(missing))
+      required_java=[
+          'sourceExperienceInfo','sourceTextPreview','private/source/',
+          'OPENED_NE_INGESTED','262144','no-store'
+      ]
+      missing=[x for x in required_java if x not in java]
+      if missing:
+          raise SystemExit('Material Experience host contract missing: '+repr(missing))
+      if "commit('SOURCE_USER_OPENED'" not in html or "c4Observation:false" not in html or "ingested:false" not in html:
+          raise SystemExit('User-view epistemic boundary missing')
+      viewer=html[html.find('function openSourceExperience'):html.find("const materialClose")]
+      if 'ingestSource' in viewer:
+          raise SystemExit('Opening a material must not auto-ingest it')
+      PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -318,16 +342,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.59-world-hub.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.59-world-hub.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.59-world-hub.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.61-material-experience.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.61-material-experience.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.61-material-experience.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.59-world-hub.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.61-material-experience.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.59-world-hub
+      name: C4-Nursery-0.61-material-experience
       path: |
-       release/C4-Nursery-0.59-world-hub.apk
+       release/C4-Nursery-0.61-material-experience.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
