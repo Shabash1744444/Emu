@@ -11,6 +11,18 @@ jobs:
      with: {python-version: '3.13'}
    - uses: gradle/actions/setup-gradle@v4
      with: {gradle-version: '8.9'}
+   - name: Vendor pinned 3D viewer
+     run: |
+      set -euo pipefail
+      TMP=$(mktemp -d)
+      cd "$TMP"
+      PKG=$(npm pack @google/model-viewer@4.3.1 --silent | tail -1)
+      tar -xzf "$PKG"
+      test -s package/dist/model-viewer.min.js
+      mkdir -p "$GITHUB_WORKSPACE/app/src/main/assets/vendor"
+      cp package/dist/model-viewer.min.js "$GITHUB_WORKSPACE/app/src/main/assets/vendor/model-viewer.min.js"
+      printf 'model-viewer 4.3.1 · '
+      sha256sum "$GITHUB_WORKSPACE/app/src/main/assets/vendor/model-viewer.min.js"
    - name: Validate WebView JavaScript syntax
      run: |
       python3 - <<'PY'
@@ -109,6 +121,33 @@ jobs:
       if 'id="wave"' in html or 'performRoomAction(' in html:
           raise SystemExit('User avatar puppeteering returned')
       PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      vendor=Path('app/src/main/assets/vendor/model-viewer.min.js')
+      if not vendor.is_file() or vendor.stat().st_size < 100000:
+          raise SystemExit('Bundled model-viewer missing or suspiciously small')
+      required_html=[
+          'id="avatarModelViewer"','id="avatarModelPick"','loadAvatarModel',
+          'findModelClip','availableAnimations','vendor/model-viewer.min.js'
+      ]
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('Rigged GLB UI contract missing: '+repr(missing))
+      required_java=[
+          'pickAvatarModel','avatarModelInfo','AVATAR_MODEL_CHANGED',
+          'INVALID_GLB_MAGIC','avatar_model_sha','GLB_RIGGED_BODY_V1',
+          'appassets.androidplatform.net/private/avatar-model.glb'
+      ]
+      missing=[x for x in required_java if x not in java]
+      if missing:
+          raise SystemExit('Rigged GLB host contract missing: '+repr(missing))
+      if 'file:///android_asset/index.html' in java:
+          raise SystemExit('Legacy file:// WebView origin returned')
+      if 'WebViewAssetLoader' not in java:
+          raise SystemExit('Secure local asset origin missing')
+      PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -126,16 +165,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.52-visual-avatar.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.52-visual-avatar.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.52-visual-avatar.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.53-rigged-glb-body.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.53-rigged-glb-body.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.53-rigged-glb-body.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.52-visual-avatar.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.53-rigged-glb-body.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.52-visual-avatar
+      name: C4-Nursery-0.53-rigged-glb-body
       path: |
-       release/C4-Nursery-0.52-visual-avatar.apk
+       release/C4-Nursery-0.53-rigged-glb-body.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
