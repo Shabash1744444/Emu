@@ -29,6 +29,13 @@ jobs:
       test "$MODEL_BYTES" -eq 16851352
       printf 'bundled VRoid Sample D · %s bytes · ' "$MODEL_BYTES"
       sha256sum "$GITHUB_WORKSPACE/app/src/main/assets/defaults/VRoid_Sample_D.glb"
+      curl -fsSL --retry 3 "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr" -o "$GITHUB_WORKSPACE/app/src/main/assets/defaults/studio_small_09_1k.hdr"
+      HDR_BYTES=$(stat -c%s "$GITHUB_WORKSPACE/app/src/main/assets/defaults/studio_small_09_1k.hdr")
+      test "$HDR_BYTES" -gt 1000000
+      test "$HDR_BYTES" -lt 3000000
+      head -c 20 "$GITHUB_WORKSPACE/app/src/main/assets/defaults/studio_small_09_1k.hdr" | grep -Fq '#?RADIANCE'
+      printf 'Poly Haven Studio Small 09 1K HDRI · %s bytes · ' "$HDR_BYTES"
+      sha256sum "$GITHUB_WORKSPACE/app/src/main/assets/defaults/studio_small_09_1k.hdr"
       cp "$GITHUB_WORKSPACE/app/src/main/assets/src/vrm-renderer-entry.js" "$TMP/vrm-renderer-entry.js"
       npm init -y >/dev/null 2>&1
       npm install --silent --no-save three@0.180.0 @pixiv/three-vrm@3.5.5 esbuild@0.28.2
