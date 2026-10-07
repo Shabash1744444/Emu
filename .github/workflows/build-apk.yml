@@ -371,6 +371,7 @@ jobs:
           raise SystemExit('Character presence fabricated psychology: '+repr(bad))
       PY
       python3 tools/ui_contract_guard.py app/src/main/assets/index.html
+      python3 tools/layout_contract_guard.py app/src/main/assets/index.html
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -388,16 +389,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.63.1-ui-hotfix.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.63.1-ui-hotfix.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.63.1-ui-hotfix.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.64-layout-foundation.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.64-layout-foundation.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.64-layout-foundation.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.63.1-ui-hotfix.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.64-layout-foundation.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.63.1-ui-hotfix
+      name: C4-Nursery-0.64-layout-foundation
       path: |
-       release/C4-Nursery-0.63.1-ui-hotfix.apk
+       release/C4-Nursery-0.64-layout-foundation.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
