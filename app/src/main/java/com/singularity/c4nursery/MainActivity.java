@@ -194,6 +194,13 @@ public class MainActivity extends Activity {
   @JavascriptInterface public String loadState(){return prefs.getString("state","{}");}
   @JavascriptInterface public boolean commitState(String json){try{new JSONObject(json);return prefs.edit().putString("state",json).commit();}catch(Exception e){return false;}}
   @JavascriptInterface public long now(){return System.currentTimeMillis();}
+  @JavascriptInterface public boolean copyText(String text){try{
+   ClipboardManager cb=(ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+   if(cb==null)return false;
+   cb.setPrimaryClip(ClipData.newPlainText("C4 message",text==null?"":text));
+   runOnUiThread(()->android.widget.Toast.makeText(MainActivity.this,"Скопировано",android.widget.Toast.LENGTH_SHORT).show());
+   return true;
+  }catch(Exception e){return false;}}
   @JavascriptInterface public String runtimeTrace(){return readRuntimeTrace();}
   @JavascriptInterface public void exportConversationBundle(String json){try{JSONObject root=new JSONObject(json);File dir=new File(getCacheDir(),"exports");if(!dir.exists()&&!dir.mkdirs())throw new IOException("EXPORT_DIR_FAILED");File out=new File(dir,"c4_chat_"+System.currentTimeMillis()+".json");try(FileOutputStream fos=new FileOutputStream(out)){byte[] b=root.toString(2).getBytes(StandardCharsets.UTF_8);fos.write(b);fos.getFD().sync();}Uri uri=androidx.core.content.FileProvider.getUriForFile(MainActivity.this,getPackageName()+".files",out);Intent send=new Intent(Intent.ACTION_SEND);send.setType("application/json");send.putExtra(Intent.EXTRA_STREAM,uri);send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);startActivity(Intent.createChooser(send,"Экспорт C4 chat bundle"));}catch(Exception e){try{JSONObject p=new JSONObject();p.put("error",e.getClass().getSimpleName());emit("EXPORT_ERROR",p);}catch(Exception ignored){}}}
   @JavascriptInterface public String executeVocalAction(String json){try{
