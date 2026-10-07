@@ -202,6 +202,36 @@ jobs:
       if 'EMBODIED_MOTION_V2' not in java:
           raise SystemExit('Embodied motion capability missing')
       PY
+      python3 - <<'PY'
+      from pathlib import Path
+      html=Path('app/src/main/assets/index.html').read_text()
+      java=Path('app/src/main/java/com/singularity/c4nursery/MainActivity.java').read_text()
+      vocal=Path('app/src/main/java/com/singularity/c4nursery/VocalActuator.java')
+      vrm=Path('app/src/main/assets/src/vrm-renderer-entry.js').read_text()
+      if not vocal.is_file():
+          raise SystemExit('VocalActuator.java missing')
+      vs=vocal.read_text()
+      required_vocal=['SAMPLE_RATE=24000','AudioTrack','formantsHz','harmonics','breath','SHA-256','playBlocking']
+      missing=[x for x in required_vocal if x not in vs]
+      if missing:
+          raise SystemExit('Parametric voice synthesis contract missing: '+repr(missing))
+      required_java=['executeVocalAction','VOCAL_STARTED','VOCAL_RECEIPT','VOCAL_SELF_AUDIO','PARAMETRIC_VOICE_V1','VOCAL_ACTUATOR_FEEDBACK','SELF_AUDIO']
+      missing=[x for x in required_java if x not in java]
+      if missing:
+          raise SystemExit('Parametric voice Android host contract missing: '+repr(missing))
+      required_html=['pendingVocalActions','homeCapVoice','VOCAL_SELF_AUDIO','window.C4VRM.vocalize','executeVocalAction']
+      missing=[x for x in required_html if x not in html]
+      if missing:
+          raise SystemExit('Parametric voice UI contract missing: '+repr(missing))
+      required_vrm=['function vocalize(','applyVocal(','vocalActive']
+      missing=[x for x in required_vrm if x not in vrm]
+      if missing:
+          raise SystemExit('VRM mouth actuator contract missing: '+repr(missing))
+      if 'TextToSpeech' in java or 'TextToSpeech' in html or 'speechSynthesis' in html:
+          raise SystemExit('TTS shortcut is forbidden in Parametric Voice V1')
+      if 'independentEvidence",false' not in java:
+          raise SystemExit('SELF_AUDIO must remain non-independent evidence')
+      PY
       python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
@@ -219,16 +249,16 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.55-embodied-motion-v2.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.55-embodied-motion-v2.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.55-embodied-motion-v2.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.56-parametric-voice.apk
+      BYTES=$(stat -c%s release/C4-Nursery-0.56-parametric-voice.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.56-parametric-voice.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.55-embodied-motion-v2.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.56-parametric-voice.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.55-embodied-motion-v2
+      name: C4-Nursery-0.56-parametric-voice
       path: |
-       release/C4-Nursery-0.55-embodied-motion-v2.apk
+       release/C4-Nursery-0.56-parametric-voice.apk
        release/SHA256.txt
       if-no-files-found: error
       compression-level: 0
