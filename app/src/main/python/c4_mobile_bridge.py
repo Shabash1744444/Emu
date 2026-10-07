@@ -120,6 +120,7 @@ def _typed_runtime_call(type_,p):
         "ACTION_RECEIPT":("action_receipt","receive_action_receipt"),
         "WORLD_EVENT":("world_event","observe_world_event","ingest_world_event"),
         "WORLD_TASK":("world_task","accept_world_task","receive_world_task"),
+        "BODY_MANIFEST":("body_manifest","set_body_manifest","capability_manifest","receive_body_manifest"),
     }.get(type_,())
     call_p=dict(p)
     if type_=="APPEND_SOURCE" and call_p.get("encoding")=="base64" and isinstance(call_p.get("bytes"),str):
@@ -156,7 +157,7 @@ def command(type_, payload_json):
     if type_=="POLL":
         out=_runtime.poll(int(p.get("limit",100)))
         return json.dumps({"accepted":True,"result":out,"events":out,"state":_runtime.runtime_state()},ensure_ascii=False,default=str)
-    if type_ in ("BEGIN_SOURCE","APPEND_SOURCE","END_SOURCE","SENSORY_SESSION_START","SENSORY_FRAME","SENSORY_SESSION_STOP","ACTION_RECEIPT"):
+    if type_ in ("BEGIN_SOURCE","APPEND_SOURCE","END_SOURCE","SENSORY_SESSION_START","SENSORY_FRAME","SENSORY_SESSION_STOP","ACTION_RECEIPT","WORLD_EVENT","WORLD_TASK","BODY_MANIFEST"):
         r=_typed_runtime_call(type_,p)
         r["events"]=_runtime.poll(100) if r.get("accepted") else []
         r["state"]=_runtime.runtime_state()
