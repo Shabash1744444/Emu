@@ -169,6 +169,29 @@ def command(type_, payload_json):
 def state():
     return json.dumps(_runtime.runtime_state() if _runtime else {"state":"STOPPED"},ensure_ascii=False,default=str)
 
+def bind_native_room_session(session_id):
+    """Native Java-only call on OPEN_SESSION; not exposed by command()."""
+    if _runtime is None:
+        return json.dumps({"accepted":False,"error":"RUNTIME_NOT_RUNNING"})
+    return json.dumps(_runtime.bind_native_room_session(str(session_id)),ensure_ascii=False)
+
+def native_room_receipt(receipt_json,session_id):
+    """Native Java room result only; never a WebView runtime command.
+
+    This caller is trusted to supply the receipt returned by the room executor.
+    A JSON message sent through USER_MESSAGE / ACTION_RECEIPT cannot reach here.
+    """
+    if _runtime is None:
+        return json.dumps({"accepted":False,"error":"RUNTIME_NOT_RUNNING"})
+    if not isinstance(receipt_json,str) or len(receipt_json)>20000:
+        return json.dumps({"accepted":False,"error":"INVALID_NATIVE_RECEIPT_SIZE"})
+    try:
+        receipt=json.loads(receipt_json)
+        result=_runtime.native_room_receipt(receipt,str(session_id))
+    except (ValueError,TypeError,KeyError) as exc:
+        result={"accepted":False,"error":"NATIVE_RECEIPT_REJECTED","reason":str(exc)}
+    return json.dumps(result,ensure_ascii=False,default=str)
+
 def close():
     global _runtime
     _runtime=None
