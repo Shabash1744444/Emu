@@ -6,7 +6,8 @@ import android.net.Uri;import android.provider.MediaStore;import android.provide
 import androidx.webkit.WebViewAssetLoader;import com.chaquo.python.Python;import com.chaquo.python.android.AndroidPlatform;import com.chaquo.python.PyObject;import org.json.JSONObject;import org.json.JSONArray;import java.io.*;import java.util.*;import java.security.MessageDigest;import java.nio.charset.StandardCharsets;import android.database.Cursor;import android.util.Base64;
 
 public class MainActivity extends Activity {
- private WebView web; private SharedPreferences prefs; private BroadcastReceiver screenReceiver,cameraReceiver,bodyReceiver,organismReceiver; private boolean webReady=false;
+ private WebView web;
+ private NurseryBridge c4NativeHostBridge; private SharedPreferences prefs; private BroadcastReceiver screenReceiver,cameraReceiver,bodyReceiver,organismReceiver; private boolean webReady=false;
  private AudioRecord audioRecord; private Thread audioThread; private volatile boolean audioRunning=false; private String audioSensorySession="",screenSensorySession="",cameraSensorySession="",bodySensorySession=""; private long audioSensorySeq=0,visualSensorySeq=0;
  private File audioFile; private Uri cameraUri; private final Object organismLock=new Object(); private final Object vocalLock=new Object(); private final Set<String> vocalPending=Collections.synchronizedSet(new HashSet<>());
  private static final int PICK=4101,CAMERA=4102,MIC=4103,SCREEN=4104,STREAM=4105,ORGANISM=4106,EXPORT_LOG=4107,RUNTIME_PACKAGE=4108,CAMERA_LIVE=4109,NOTIFY=4110,AVATAR=4111,AVATAR_MODEL=4112; private MediaProjectionManager projectionManager;
@@ -30,7 +31,7 @@ public class MainActivity extends Activity {
      return new WebResourceResponse(mime,null,200,"OK",h,new FileInputStream(data));
     }
    }catch(Exception ignored){}return null;}).build();
-  web.addJavascriptInterface(new NurseryBridge(),"NurseryNative");web.setWebViewClient(new WebViewClient(){
+  c4NativeHostBridge=new NurseryBridge();web.addJavascriptInterface(c4NativeHostBridge,"NurseryNative");web.setWebViewClient(new WebViewClient(){
    @Override public WebResourceResponse shouldInterceptRequest(WebView v,WebResourceRequest req){return assetLoader.shouldInterceptRequest(req.getUrl());}
    @Override public void onPageFinished(WebView v,String url){webReady=true;if(prefs!=null)prefs.edit().putBoolean("ui_visible",true).apply();drainRuntimeInbox();}
   });
@@ -53,8 +54,52 @@ public class MainActivity extends Activity {
  private void startBodySensors(){Intent i=new Intent(this,BodySensorService.class).setAction(BodySensorService.ACTION_START);if(Build.VERSION.SDK_INT>=26)startForegroundService(i);else startService(i);}
  private void stopBodySensors(){startService(new Intent(this,BodySensorService.class).setAction(BodySensorService.ACTION_STOP));}
  private void configurePythonRuntime(){try{JSONObject x=new JSONObject(pyCallHost("configure",getFilesDir().getAbsolutePath()));boolean ready=x.optBoolean("ready",false);prefs.edit().putBoolean("runtime_package_installed",ready).apply();}catch(Exception e){prefs.edit().putBoolean("runtime_package_installed",false).putString("runtime_last_error","CONFIGURE:"+e.getClass().getSimpleName()).apply();}}
- private void emitRuntimeHost(String type,JSONObject payload){try{appendRuntimeTrace("RUNTIME_TO_APP",type,payload.optString("eventId",""),payload);if(type!=null&&type.startsWith("TRACE_"))appendCognitiveTrace(type,payload);final String js="window.C4RuntimeEvent&&window.C4RuntimeEvent("+JSONObject.quote(type)+","+payload.toString()+")";runOnUiThread(()->web.evaluateJavascript(js,null));}catch(Exception ignored){}}
- private void dispatchPyEvents(JSONObject py){JSONArray ev=py.optJSONArray("events");if(ev==null)return;for(int i=0;i<ev.length();i++){JSONObject e=ev.optJSONObject(i);if(e==null)continue;String et=e.optString("type",e.optString("kind","STATUS"));emitRuntimeHost(et,e);}}
+ private void emitRuntimeHost(String type,JSONObject payload){try{
+  // Background service cannot authenticate room actions through WebView.
+  // Drop rather than let JavaScript execute an unbound C4 action.
+  if("ACTION_REQUEST".equals(type)&&"C4_NATIVE_ROOM_ACTION_V1".equals(payload.optString("schema"))){
+   appendRuntimeTrace("HOST_WORLD","C4_NATIVE_ACTION_BACKGROUND_BLOCKED",payload.optString("requestId",""),payload);
+   return;
+  }
+  appendRuntimeTrace("RUNTIME_TO_APP",type,payload.optString("eventId",""),payload);if(type!=null&&type.startsWith("TRACE_"))appendCognitiveTrace(type,payload);final String js="window.C4RuntimeEvent&&window.C4RuntimeEvent("+JSONObject.quote(type)+","+payload.toString()+")";runOnUiThread(()->web.evaluateJavascript(js,null));}catch(Exception ignored){}}
+ private void dispatchPyEvents(JSONObject py){
+  JSONArray ev=py.optJSONArray("events");if(ev==null)return;
+  for(int i=0;i<ev.length();i++){
+   JSONObject e=ev.optJSONObject(i);if(e==null)continue;
+   String et=e.optString("type",e.optString("kind","STATUS"));
+   if("ACTION_REQUEST".equals(et)&&"C4_NATIVE_ROOM_ACTION_V1".equals(e.optString("schema"))){
+    dispatchNativeC4RoomAction(e);continue;
+   }
+   emitRuntimeHost(et,e);
+  }
+ }
+ private void dispatchNativeC4RoomAction(JSONObject request){
+  String rid=request.optString("requestId","");
+  try{
+   if(!"SIM".equals(request.optString("scope"))||!"home".equals(request.optString("scene"))||
+      !prefs.getBoolean("runtime_running",false)||c4NativeHostBridge==null||rid.isEmpty())
+      throw new IllegalStateException("NATIVE_ROOM_ACTION_NOT_READY");
+   String sid=prefs.getString("runtime_session_id","");
+   if(sid.isEmpty())throw new IllegalStateException("NATIVE_ROOM_SESSION_UNBOUND");
+   // No user-controlled receipt may enter the C4 cognitive credit path.
+   // This is a Java-produced sandbox measurement, evaluated by native Python.
+   JSONObject cmd=new JSONObject().put("requestId",rid)
+       .put("action",request.optString("action"))
+       .put("object",request.optString("object"));
+   JSONObject roomReceipt=new JSONObject(c4NativeHostBridge.executeRoomAction(cmd.toString()));
+   JSONObject credit=new JSONObject(pyCallHost("native_room_receipt",roomReceipt.toString(),sid));
+   JSONObject note=new JSONObject().put("requestId",rid)
+       .put("room",roomReceipt).put("c4Credit",credit);
+   appendRuntimeTrace("HOST_WORLD","C4_NATIVE_ROOM_TRANSITION",rid,note);
+   emitRuntimeHost("HOST_SIM_RESULT",note);
+  }catch(Exception ex){
+   try{JSONObject err=new JSONObject().put("requestId",rid)
+       .put("accepted",false).put("error","NATIVE_ROOM_BRIDGE_REJECTED")
+       .put("reason",ex.getClass().getSimpleName());
+       appendRuntimeTrace("HOST_WORLD","C4_NATIVE_ROOM_REJECTED",rid,err);
+       emitRuntimeHost("HOST_SIM_RESULT",err);}catch(Exception ignored){}
+  }
+ }
  private void brainTick(){if(!prefs.getBoolean("runtime_running",false))return;try{JSONObject py=new JSONObject(pyCallHost("command","TICK","{\"n\":1}"));if(!py.optBoolean("accepted",false))throw new IllegalStateException(py.optString("error","TICK_REJECTED"));dispatchPyEvents(py);}catch(Exception e){prefs.edit().putBoolean("runtime_running",false).putString("runtime_last_error","TICK:"+e.getClass().getSimpleName()+":"+String.valueOf(e.getMessage())).commit();try{emitRuntimeHost("ERROR",new JSONObject().put("error","BRAIN_TICK_FAILED").put("detail",String.valueOf(e.getMessage())));}catch(Exception ignored){}}}
  private void emit(String type,JSONObject payload){try{appendRuntimeTrace("HOST_TO_UI",type,payload==null?"":payload.optString("requestId",payload.optString("eventId","")),payload);final String js="window.C4HostEvent&&window.C4HostEvent("+JSONObject.quote(type)+","+payload.toString()+")";runOnUiThread(()->web.evaluateJavascript(js,null));}catch(Exception ignored){}}
  private void drainRuntimeInbox(){
@@ -380,7 +425,7 @@ public class MainActivity extends Activity {
   private String pyCall(String fn,Object...args)throws Exception{return pyCallHost(fn,args);}
   @JavascriptInterface public void pickRuntimePackage(){runOnUiThread(()->{Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);i.addCategory(Intent.CATEGORY_OPENABLE);i.setType("application/zip");startActivityForResult(i,RUNTIME_PACKAGE);});}
   @JavascriptInterface public String runtimePackageInfo(){try{return new JSONObject().put("installed",prefs.getBoolean("runtime_package_installed",false)).put("name",prefs.getString("runtime_package_name","")).toString();}catch(Exception e){return "{}";}}
-  @JavascriptInterface public String runtimeCommand(String json){JSONObject q=null,o=new JSONObject();String type="",requestId="";try{q=new JSONObject(json);type=q.optString("type","");requestId=q.optString("requestId","");appendRuntimeTrace("APP_TO_RUNTIME",type,requestId,q);o.put("accepted",false).put("type",type);if(!requestId.isEmpty())o.put("requestId",requestId);if("OPEN_SESSION".equals(type)){String path=prefs.getString("organism_private_path","");if(!prefs.getBoolean("runtime_package_installed",false))o.put("error","RUNTIME_PACKAGE_NOT_INSTALLED");else if(path.isEmpty()||!new File(path).isFile())o.put("error","ORGANISM_NOT_READY");else{JSONObject py=new JSONObject(pyCall("open_organism",path));if(!py.optBoolean("running",false))throw new IllegalStateException("PY_RUNTIME_DID_NOT_START");String sid="c4-"+System.currentTimeMillis();prefs.edit().putBoolean("runtime_running",true).putString("runtime_session_id",sid).putLong("organism_service_heartbeat",System.currentTimeMillis()).remove("runtime_last_error").commit();startOrganismService();o.put("accepted",true).put("runtimeState","RUNNING").put("sessionId",sid).put("checkpointSchema",py.optString("schema","")).put("python",py);
+  @JavascriptInterface public String runtimeCommand(String json){JSONObject q=null,o=new JSONObject();String type="",requestId="";try{q=new JSONObject(json);type=q.optString("type","");requestId=q.optString("requestId","");appendRuntimeTrace("APP_TO_RUNTIME",type,requestId,q);o.put("accepted",false).put("type",type);if(!requestId.isEmpty())o.put("requestId",requestId);if("OPEN_SESSION".equals(type)){String path=prefs.getString("organism_private_path","");if(!prefs.getBoolean("runtime_package_installed",false))o.put("error","RUNTIME_PACKAGE_NOT_INSTALLED");else if(path.isEmpty()||!new File(path).isFile())o.put("error","ORGANISM_NOT_READY");else{JSONObject py=new JSONObject(pyCall("open_organism",path));if(!py.optBoolean("running",false))throw new IllegalStateException("PY_RUNTIME_DID_NOT_START");String sid="c4-"+System.currentTimeMillis();JSONObject hostBound=new JSONObject(pyCall("bind_native_room_session",sid));if(!hostBound.optBoolean("accepted",false))throw new IllegalStateException("NATIVE_ROOM_HOST_BIND_FAILED");prefs.edit().putBoolean("runtime_running",true).putString("runtime_session_id",sid).putLong("organism_service_heartbeat",System.currentTimeMillis()).remove("runtime_last_error").commit();startOrganismService();o.put("accepted",true).put("runtimeState","RUNNING").put("sessionId",sid).put("checkpointSchema",py.optString("schema","")).put("python",py);
 JSONObject manifest=buildBodyManifest();try{JSONObject mr=new JSONObject(pyCall("command","BODY_MANIFEST",manifest.toString()));boolean ma=mr.optBoolean("accepted",false);o.put("bodyManifestAccepted",ma);o.put("bodyManifestResult",mr);prefs.edit().putBoolean("body_manifest_accepted",ma).commit();dispatchPyEvents(mr);appendRuntimeTrace("HOST_BODY","BODY_MANIFEST",sid,manifest);}catch(Exception ignored){o.put("bodyManifestAccepted",false);prefs.edit().putBoolean("body_manifest_accepted",false).commit();}
 emitRuntime("STATUS",new JSONObject().put("state","RUNNING").put("sessionId",sid).put("continuity","FOREGROUND_SERVICE").put("checkpointSchema",py.optString("schema","")).put("bodyManifestAccepted",o.optBoolean("bodyManifestAccepted",false)));}}else if("CLOSE_SESSION".equals(type)){prefs.edit().putBoolean("runtime_running",false).commit();stopOrganismService();try{pyCall("checkpoint");}catch(Exception ignored){}pyCall("close");prefs.edit().remove("runtime_session_id").putLong("organism_service_heartbeat",0).commit();o.put("accepted",true).put("runtimeState","STOPPED");}else if(!prefs.getBoolean("runtime_running",false)){o.put("error","SESSION_NOT_RUNNING");}else if("USER_MESSAGE".equals(type)||"TICK".equals(type)||"BEGIN_SOURCE".equals(type)||"APPEND_SOURCE".equals(type)||"END_SOURCE".equals(type)||"SENSORY_SESSION_START".equals(type)||"SENSORY_FRAME".equals(type)||"SENSORY_SESSION_STOP".equals(type)||"ACTION_RECEIPT".equals(type)||"WORLD_EVENT".equals(type)||"WORLD_TASK".equals(type)||"BODY_MANIFEST".equals(type)||"TRACE_CONFIG".equals(type)||"TRACE_SNAPSHOT".equals(type)){JSONObject py=new JSONObject(pyCall("command",type,q.optJSONObject("payload")==null?q.toString():q.optJSONObject("payload").toString()));o.put("accepted",py.optBoolean("accepted",false));o.put("python",py);dispatchPyEvents(py);}else if("CHECKPOINT".equals(type)){JSONObject py=new JSONObject(pyCall("checkpoint"));o.put("accepted",py.optBoolean("saved",false)).put("python",py);if(py.optBoolean("saved",false))emitRuntime("CHECKPOINT_COMMITTED",py);}else{o.put("error","COMMAND_NOT_IMPLEMENTED");}}catch(Exception e){prefs.edit().putString("runtime_last_error",e.getClass().getSimpleName()+":"+String.valueOf(e.getMessage())).apply();try{o=new JSONObject().put("accepted",false).put("error","RUNTIME_EXCEPTION").put("detail",e.getClass().getSimpleName()+":"+e.getMessage());}catch(Exception ignored){}}appendRuntimeTrace("RUNTIME_COMMAND_RESULT",type,requestId,o);return o.toString();}
   private void emitRuntime(String type,JSONObject payload){emitRuntimeHost(type,payload);}
