@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
    JSONObject cmd=new JSONObject().put("requestId",rid)
        .put("action",request.optString("action"))
        .put("object",request.optString("object"));
-   JSONObject roomReceipt=new JSONObject(c4NativeHostBridge.executeRoomAction(cmd.toString()));
+   JSONObject roomReceipt=new JSONObject(c4NativeHostBridge.executeRoomActionTrusted(cmd.toString()));
    JSONObject credit=new JSONObject(pyCallHost("native_room_receipt",roomReceipt.toString(),sid));
    JSONObject note=new JSONObject().put("requestId",rid)
        .put("room",roomReceipt).put("c4Credit",credit);
@@ -300,7 +300,19 @@ public class MainActivity extends Activity {
    },"c4-vocal-actuator").start();
    return new JSONObject().put("accepted",true).put("pending",true).put("requestId",requestId).put("actuator","PARAMETRIC_VOICE_V1").toString();
   }catch(Exception e){try{return new JSONObject().put("accepted",false).put("pending",false).put("error","VOCAL_REQUEST_INVALID:"+e.getClass().getSimpleName()).toString();}catch(Exception ignored){return "{\"accepted\":false,\"pending\":false,\"error\":\"VOCAL_REQUEST_INVALID\"}";}}}
-  @JavascriptInterface public String executeRoomAction(String json){synchronized(organismLock){try{
+  @JavascriptInterface public String executeRoomAction(String json){
+   // UI game actions cannot consume a request ID owned by C4's DRIVE.
+   // Only private Java dispatch can execute a reserved C4 cognitive action.
+   try{
+    JSONObject req=new JSONObject(json);
+    String requestId=req.optString("requestId","");
+    if(requestId.startsWith("trial:"))
+     return new JSONObject().put("requestId",requestId).put("accepted",false)
+       .put("executionSuccess",false).put("error","C4_HOST_OWNED_REQUEST_ID").toString();
+   }catch(Exception e){return "{\\"accepted\\":false,\\"executionSuccess\\":false,\\"error\\":\\"ROOM_REQUEST_INVALID\\"}";}
+   return executeRoomActionTrusted(json);
+  }
+  private String executeRoomActionTrusted(String json){synchronized(organismLock){try{
    JSONObject q=new JSONObject(json);
    String requestId=q.optString("requestId","").trim(),action=q.optString("action","").toUpperCase(Locale.ROOT),id=q.optString("object","").toUpperCase(Locale.ROOT);
    JSONObject receipt=new JSONObject().put("requestId",requestId).put("action",action).put("object",id).put("accepted",false).put("executionSuccess",false).put("origin","SANDBOX").put("world","HOME").put("bodyOwner","C4");
