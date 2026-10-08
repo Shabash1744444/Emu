@@ -12,6 +12,7 @@ public=re.search(
 assert public, "Public WebView room executor and private native room executor must be separate methods"
 body=public.group(1)
 assert 'requestId.startsWith("trial:")' in body, "C4-owned IDs must be blocked from WebView"
+assert 'req.optString("requestId","").trim()' in body, "Reject trial IDs after the same normalization as the private executor"
 assert '"C4_HOST_OWNED_REQUEST_ID"' in body, "Rejection must be visible, not silent"
 assert 'return executeRoomActionTrusted(json);' in body, "Ordinary UI game commands must retain executor"
 assert 'private String executeRoomActionTrusted(String json)' in java
