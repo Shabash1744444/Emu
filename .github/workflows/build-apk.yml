@@ -11,6 +11,8 @@ jobs:
      with: {python-version: '3.13'}
    - uses: gradle/actions/setup-gradle@v4
      with: {gradle-version: '8.9'}
+   - name: Enforce C4 private executor boundary
+     run: python3 tools/check_c004_private_executor.py
    - name: Vendor pinned 3D viewer
      run: |
       set -euo pipefail
