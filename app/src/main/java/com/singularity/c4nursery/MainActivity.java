@@ -309,7 +309,7 @@ public class MainActivity extends Activity {
     if(requestId.startsWith("trial:"))
      return new JSONObject().put("requestId",requestId).put("accepted",false)
        .put("executionSuccess",false).put("error","C4_HOST_OWNED_REQUEST_ID").toString();
-   }catch(Exception e){return "{\\"accepted\\":false,\\"executionSuccess\\":false,\\"error\\":\\"ROOM_REQUEST_INVALID\\"}";}
+   }catch(Exception e){return "{\"accepted\":false,\"executionSuccess\":false,\"error\":\"ROOM_REQUEST_INVALID\"}";}
    return executeRoomActionTrusted(json);
   }
   private String executeRoomActionTrusted(String json){synchronized(organismLock){try{
