@@ -21,4 +21,7 @@ assert 'c4NativeHostBridge.executeRoomAction(cmd.toString())' not in java
 native=java.split("private String executeRoomActionTrusted(String json)",1)[0]
 assert not re.search(r'@JavascriptInterface\s+private String executeRoomActionTrusted',native), "Private executor must not be exposed to JS"
 assert 'pyCallHost("native_room_receipt",roomReceipt.toString(),sid)' in java, "Trusted Java receipt path required"
+assert 'String target=request.optString("target","");' in java, "C4 room request destination must reach Java"
+assert 'cmd.put("target",target);' in java, "C4 goal target must be forwarded, never defaulted"
+assert 'C4_TARGET_ZONE_INVALID' in java, "C4 requested destination requires validation"
 print("C004_PRIVATE_EXECUTOR_CONTRACT PASS")
