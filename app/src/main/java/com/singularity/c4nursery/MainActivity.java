@@ -86,6 +86,13 @@ public class MainActivity extends Activity {
    JSONObject cmd=new JSONObject().put("requestId",rid)
        .put("action",request.optString("action"))
        .put("object",request.optString("object"));
+   String action=request.optString("action","");
+   if("PLACE".equals(action)||"RELEASE".equals(action)){
+     String target=request.optString("target","");
+     if(!Arrays.asList("floor-left","floor-right","shelf","desk","basket").contains(target))
+       throw new IllegalStateException("C4_TARGET_ZONE_INVALID");
+     cmd.put("target",target);
+   }
    JSONObject roomReceipt=new JSONObject(c4NativeHostBridge.executeRoomActionTrusted(cmd.toString()));
    JSONObject credit=new JSONObject(pyCallHost("native_room_receipt",roomReceipt.toString(),sid));
    JSONObject note=new JSONObject().put("requestId",rid)
