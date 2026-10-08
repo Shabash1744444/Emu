@@ -305,7 +305,7 @@ public class MainActivity extends Activity {
    // Only private Java dispatch can execute a reserved C4 cognitive action.
    try{
     JSONObject req=new JSONObject(json);
-    String requestId=req.optString("requestId","");
+    String requestId=req.optString("requestId","").trim();
     if(requestId.startsWith("trial:"))
      return new JSONObject().put("requestId",requestId).put("accepted",false)
        .put("executionSuccess",false).put("error","C4_HOST_OWNED_REQUEST_ID").toString();
