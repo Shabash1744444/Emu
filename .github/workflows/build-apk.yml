@@ -45,6 +45,8 @@ jobs:
       test -s "$GITHUB_WORKSPACE/app/src/main/assets/vendor/vrm-renderer.bundle.js"
       printf 'three-vrm 3.5.5 + three 0.180.0 bundle · '
       sha256sum "$GITHUB_WORKSPACE/app/src/main/assets/vendor/vrm-renderer.bundle.js"
+   - name: Verify host execution, cognitive credit and goal reporting are independent
+     run: node tests/c004_host_sim_diagnostics.test.cjs
    - name: Validate WebView JavaScript syntax
      run: |
       python3 - <<'PY'
