@@ -46,3 +46,5 @@ python3 tools/create_runtime_profile.py --runtime ORIGINAL.zip --abi DECLARED_AB
 - PHYSICAL ANDROID VERIFIED: нет. Эти проверки не заменяют телефон.
 
 Собственный аватар пользователя, joystick/look, gamepad, настройка управления и комната сохранены. WORLD_EVENT для данного исследовательского runtime остаётся UNSUPPORTED; физика Android не выдаётся за обучение C4. G30G self-report не удостоверяет личность. Свободный разговорный русский и новая голосовая способность не заявляются.
+
+Первая CI попытка 38175126445: Python/physics PASS, browser world FAIL на ожидании joystick (200 ms). Исправлено ожидание готовности модели и реального события движения; тесты не отключены.
