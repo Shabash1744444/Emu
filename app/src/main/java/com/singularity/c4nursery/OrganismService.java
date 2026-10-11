@@ -39,7 +39,7 @@ public class OrganismService extends Service {
    prefs.edit().putLong("organism_service_heartbeat",System.currentTimeMillis()).apply();
    if(exec==null||exec.isShutdown()){
     exec=Executors.newSingleThreadScheduledExecutor();
-    exec.scheduleAtFixedRate(this::tick,300,1500,TimeUnit.MILLISECONDS);
+    exec.scheduleWithFixedDelay(this::tick,300,1500,TimeUnit.MILLISECONDS);
    }
   }
   return START_NOT_STICKY;
@@ -58,11 +58,11 @@ public class OrganismService extends Service {
     broadcast(type,e);
    }
    ticks++;
-   if(emitted||ticks%20==0){
+   if(ticks%200==0){
     try{
      JSONObject cp=new JSONObject(C4PythonGate.call(this,"checkpoint"));
      if(cp.optBoolean("saved",false))broadcast("CHECKPOINT_COMMITTED",cp);
-    }catch(Exception ignored){}
+    }catch(Exception saveError){try{broadcast("ERROR",new JSONObject().put("error","CHECKPOINT_FAILED").put("detail",String.valueOf(saveError.getMessage())));}catch(Exception ignored){}}
    }
   }catch(Exception e){
    prefs.edit().putBoolean("runtime_running",false).putString("runtime_last_error","SERVICE_TICK:"+e.getClass().getSimpleName()+":"+String.valueOf(e.getMessage())).commit();
@@ -86,7 +86,7 @@ public class OrganismService extends Service {
    JSONObject e=new JSONObject().put("t",System.currentTimeMillis()).put("type",type).put("payload",payload);
    byte[] b=(e.toString()+"\n").getBytes(java.nio.charset.StandardCharsets.UTF_8);
    try(FileOutputStream out=new FileOutputStream(log,true)){out.write(b);out.getFD().sync();}
-   if(log.length()>4194304L){File old=new File(dir,"pending.previous.jsonl");if(old.exists())old.delete();log.renameTo(old);}
+   if(log.length()>4194304L){File old=new File(dir,"pending.previous.jsonl");old=new File(dir,"pending."+System.currentTimeMillis()+".jsonl");log.renameTo(old);}
   }catch(Exception ignored){}
  }
  private void notifyInitiative(String type,JSONObject payload){

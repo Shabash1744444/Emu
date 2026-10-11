@@ -567,3 +567,7 @@ LAYOUT CONTRACT PASS: 160 unique ids / 5 pages / 5 nav targets.
 Artifact: C4-Nursery-0.64-layout-foundation (ID 11499188616).
 APK: 49,393,656 bytes; SHA256 0e59ed2425c1583577b253706c0194aa3930bb0d7cdf9b76b3376d75ad3393b3.
 Physical gate: portrait/landscape, soft keyboard, long content, gesture safe-area, material viewer, inspect LAYOUT_WARNING.
+
+
+## CP-187 — native research ABI 2026-10-11
+Separate branch experiments/c4-native-nursery-20261011. Core unchanged. Exact profile; immutable imports; native append journal/WAL/generation checkpoints; diagnostics separated from C4 speech; restored runtimeSend; async user/lifecycle queue; host physics and independent teacher marker. Local exact-organism tests 9/9 PASS. Original phone AttributeError not reproduced; physical Android NOT VERIFIED. See docs/NATIVE_RESEARCH_INTEGRATION.md for contract, evidence and limitations.

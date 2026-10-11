@@ -1,0 +1,1006 @@
+{
+  "contextual_forms": {
+    "его": [
+      "DISCOURSE_REFERENCE_CONTEXT_REQUIRED"
+    ],
+    "меня": [
+      "DEICTIC:SPEAKER"
+    ],
+    "мне": [
+      "DEICTIC:SPEAKER"
+    ],
+    "мной": [
+      "DEICTIC:SPEAKER"
+    ],
+    "он": [
+      "DISCOURSE_REFERENCE_CONTEXT_REQUIRED"
+    ],
+    "она": [
+      "DISCOURSE_REFERENCE_CONTEXT_REQUIRED"
+    ],
+    "тебе": [
+      "DEICTIC:ADDRESSEE"
+    ],
+    "тебя": [
+      "DEICTIC:ADDRESSEE"
+    ],
+    "тобой": [
+      "DEICTIC:ADDRESSEE"
+    ],
+    "ты": [
+      "DEICTIC:ADDRESSEE"
+    ],
+    "этого": [
+      "DISCOURSE_REFERENCE_CONTEXT_REQUIRED"
+    ],
+    "я": [
+      "DEICTIC:SPEAKER"
+    ]
+  },
+  "inflections": {
+    "алина": [
+      "алина"
+    ],
+    "алине": [
+      "алина"
+    ],
+    "алины": [
+      "алина"
+    ],
+    "алла": [
+      "алла"
+    ],
+    "алле": [
+      "алла"
+    ],
+    "аллы": [
+      "алла"
+    ],
+    "антон": [
+      "антон"
+    ],
+    "антона": [
+      "антон"
+    ],
+    "антону": [
+      "антон"
+    ],
+    "артур": [
+      "артур"
+    ],
+    "артура": [
+      "артур"
+    ],
+    "артуру": [
+      "артур"
+    ],
+    "вадим": [
+      "вадим"
+    ],
+    "вадима": [
+      "вадим"
+    ],
+    "вадиму": [
+      "вадим"
+    ],
+    "вале": [
+      "валя"
+    ],
+    "вали": [
+      "валя"
+    ],
+    "валя": [
+      "валя"
+    ],
+    "вера": [
+      "вера"
+    ],
+    "вере": [
+      "вера"
+    ],
+    "веры": [
+      "вера"
+    ],
+    "виктор": [
+      "виктор"
+    ],
+    "виктора": [
+      "виктор"
+    ],
+    "виктору": [
+      "виктор"
+    ],
+    "глаша": [
+      "глаша"
+    ],
+    "глаше": [
+      "глаша"
+    ],
+    "глаши": [
+      "глаша"
+    ],
+    "глеб": [
+      "глеб"
+    ],
+    "глеба": [
+      "глеб"
+    ],
+    "глебу": [
+      "глеб"
+    ],
+    "даша": [
+      "даша"
+    ],
+    "даше": [
+      "даша"
+    ],
+    "даши": [
+      "даша"
+    ],
+    "денис": [
+      "денис"
+    ],
+    "дениса": [
+      "денис"
+    ],
+    "денису": [
+      "денис"
+    ],
+    "дина": [
+      "дина"
+    ],
+    "дине": [
+      "дина"
+    ],
+    "дины": [
+      "дина"
+    ],
+    "диск": [
+      "диск"
+    ],
+    "егор": [
+      "егор"
+    ],
+    "егора": [
+      "егор"
+    ],
+    "егору": [
+      "егор"
+    ],
+    "жетон": [
+      "жетон"
+    ],
+    "зина": [
+      "зина"
+    ],
+    "зине": [
+      "зина"
+    ],
+    "зины": [
+      "зина"
+    ],
+    "иван": [
+      "иван"
+    ],
+    "ивана": [
+      "иван"
+    ],
+    "ивану": [
+      "иван"
+    ],
+    "кате": [
+      "катя"
+    ],
+    "кати": [
+      "катя"
+    ],
+    "катя": [
+      "катя"
+    ],
+    "кирилл": [
+      "кирилл"
+    ],
+    "кирилла": [
+      "кирилл"
+    ],
+    "кириллу": [
+      "кирилл"
+    ],
+    "ключ": [
+      "ключ"
+    ],
+    "куб": [
+      "куб"
+    ],
+    "лара": [
+      "лара"
+    ],
+    "ларе": [
+      "лара"
+    ],
+    "лары": [
+      "лара"
+    ],
+    "лена": [
+      "лена"
+    ],
+    "лене": [
+      "лена"
+    ],
+    "лены": [
+      "лена"
+    ],
+    "лиза": [
+      "лиза"
+    ],
+    "лизе": [
+      "лиза"
+    ],
+    "лизы": [
+      "лиза"
+    ],
+    "марина": [
+      "марина"
+    ],
+    "марине": [
+      "марина"
+    ],
+    "марины": [
+      "марина"
+    ],
+    "марк": [
+      "марк"
+    ],
+    "марка": [
+      "марк"
+    ],
+    "марку": [
+      "марк"
+    ],
+    "маша": [
+      "маша"
+    ],
+    "маше": [
+      "маша"
+    ],
+    "маши": [
+      "маша"
+    ],
+    "мила": [
+      "мила"
+    ],
+    "миле": [
+      "мила"
+    ],
+    "милы": [
+      "мила"
+    ],
+    "мяч": [
+      "мяч"
+    ],
+    "наде": [
+      "надя"
+    ],
+    "нади": [
+      "надя"
+    ],
+    "надя": [
+      "надя"
+    ],
+    "назар": [
+      "назар"
+    ],
+    "назара": [
+      "назар"
+    ],
+    "назару": [
+      "назар"
+    ],
+    "наташа": [
+      "наташа"
+    ],
+    "наташе": [
+      "наташа"
+    ],
+    "наташи": [
+      "наташа"
+    ],
+    "нина": [
+      "нина"
+    ],
+    "нине": [
+      "нина"
+    ],
+    "нины": [
+      "нина"
+    ],
+    "оле": [
+      "оля"
+    ],
+    "олег": [
+      "олег"
+    ],
+    "олега": [
+      "олег"
+    ],
+    "олегу": [
+      "олег"
+    ],
+    "оли": [
+      "оля"
+    ],
+    "оля": [
+      "оля"
+    ],
+    "пакет": [
+      "пакет"
+    ],
+    "рае": [
+      "рая"
+    ],
+    "раи": [
+      "рая"
+    ],
+    "рая": [
+      "рая"
+    ],
+    "рита": [
+      "рита"
+    ],
+    "рите": [
+      "рита"
+    ],
+    "риты": [
+      "рита"
+    ],
+    "роман": [
+      "роман"
+    ],
+    "романа": [
+      "роман"
+    ],
+    "роману": [
+      "роман"
+    ],
+    "руслан": [
+      "руслан"
+    ],
+    "руслана": [
+      "руслан"
+    ],
+    "руслану": [
+      "руслан"
+    ],
+    "саша": [
+      "саша"
+    ],
+    "саше": [
+      "саша"
+    ],
+    "саши": [
+      "саша"
+    ],
+    "света": [
+      "света"
+    ],
+    "свете": [
+      "света"
+    ],
+    "светы": [
+      "света"
+    ],
+    "соне": [
+      "соня"
+    ],
+    "сони": [
+      "соня"
+    ],
+    "соня": [
+      "соня"
+    ],
+    "тане": [
+      "таня"
+    ],
+    "тани": [
+      "таня"
+    ],
+    "таня": [
+      "таня"
+    ],
+    "тимур": [
+      "тимур"
+    ],
+    "тимура": [
+      "тимур"
+    ],
+    "тимуру": [
+      "тимур"
+    ],
+    "токен": [
+      "токен"
+    ],
+    "файл": [
+      "файл"
+    ],
+    "фонарь": [
+      "фонарь"
+    ],
+    "шар": [
+      "шар"
+    ],
+    "шлем": [
+      "шлем"
+    ],
+    "эмма": [
+      "эмма"
+    ],
+    "эмме": [
+      "эмма"
+    ],
+    "эммы": [
+      "эмма"
+    ],
+    "яна": [
+      "яна"
+    ],
+    "яне": [
+      "яна"
+    ],
+    "яны": [
+      "яна"
+    ],
+    "ярослав": [
+      "ярослав"
+    ],
+    "ярослава": [
+      "ярослав"
+    ],
+    "ярославу": [
+      "ярослав"
+    ],
+    "ящик": [
+      "ящик"
+    ]
+  },
+  "lexicon": {
+    "алый": "feature:[\"visual_hue\",\"H18\"]",
+    "архивируй": "operation:\"F2\"",
+    "архивный": "feature:[\"virtual_mark\",\"M7\"]",
+    "белый": "feature:[\"visual_hue\",\"H5\"]",
+    "бирюзовый": "feature:[\"visual_hue\",\"H9\"]",
+    "бордовый": "feature:[\"visual_hue\",\"H10\"]",
+    "важный": "feature:[\"virtual_mark\",\"M4\"]",
+    "ведомость": "feature:[\"document_type\",\"E10\"]",
+    "впереди": "spatial:axis:1:positive:first_is_target",
+    "входящий": "feature:[\"virtual_mark\",\"M16\"]",
+    "выше": "spatial:axis:2:positive:first_is_target",
+    "готовый": "feature:[\"virtual_mark\",\"M10\"]",
+    "графитовый": "feature:[\"visual_hue\",\"H19\"]",
+    "диск": "feature:[\"solid_shape\",\"G6\"]",
+    "договор": "feature:[\"document_type\",\"E7\"]",
+    "додекаэдр": "feature:[\"solid_shape\",\"G13\"]",
+    "досье": "feature:[\"document_type\",\"E12\"]",
+    "жёлтый": "feature:[\"visual_hue\",\"H3\"]",
+    "закрытый": "feature:[\"virtual_mark\",\"M6\"]",
+    "заметка": "feature:[\"document_type\",\"E1\"]",
+    "заявление": "feature:[\"document_type\",\"E11\"]",
+    "звезда": "feature:[\"solid_shape\",\"G12\"]",
+    "зелёный": "feature:[\"visual_hue\",\"H2\"]",
+    "золотой": "feature:[\"visual_hue\",\"H12\"]",
+    "инструкция": "feature:[\"document_type\",\"E8\"]",
+    "исходящий": "feature:[\"virtual_mark\",\"M17\"]",
+    "кольцо": "feature:[\"solid_shape\",\"G7\"]",
+    "конус": "feature:[\"solid_shape\",\"G2\"]",
+    "коснись": "operation:\"T0\"",
+    "красный": "feature:[\"visual_hue\",\"H0\"]",
+    "куб": "feature:[\"solid_shape\",\"G0\"]",
+    "лазурный": "feature:[\"visual_hue\",\"H14\"]",
+    "линза": "feature:[\"solid_shape\",\"G18\"]",
+    "личный": "feature:[\"virtual_mark\",\"M2\"]",
+    "медный": "feature:[\"visual_hue\",\"H16\"]",
+    "накладная": "feature:[\"document_type\",\"E17\"]",
+    "ниже": "spatial:axis:2:negative:first_is_target",
+    "новый": "feature:[\"virtual_mark\",\"M0\"]",
+    "обнови": "operation:\"F3\"",
+    "общий": "feature:[\"virtual_mark\",\"M3\"]",
+    "овал": "feature:[\"solid_shape\",\"G8\"]",
+    "октаэдр": "feature:[\"solid_shape\",\"G16\"]",
+    "оранжевый": "feature:[\"visual_hue\",\"H7\"]",
+    "основной": "feature:[\"virtual_mark\",\"M9\"]",
+    "отчёт": "feature:[\"document_type\",\"E4\"]",
+    "параболоид": "feature:[\"solid_shape\",\"G17\"]",
+    "пирамида": "feature:[\"solid_shape\",\"G4\"]",
+    "письмо": "feature:[\"document_type\",\"E5\"]",
+    "пластина": "feature:[\"solid_shape\",\"G11\"]",
+    "поверни": "operation:\"T2\"",
+    "подвинь": "operation:\"T1\"",
+    "подними": "operation:\"T3\"",
+    "подписанный": "feature:[\"virtual_mark\",\"M15\"]",
+    "позади": "spatial:axis:1:negative:first_is_target",
+    "полусфера": "feature:[\"solid_shape\",\"G10\"]",
+    "пометь": "operation:\"F1\"",
+    "призма": "feature:[\"solid_shape\",\"G5\"]",
+    "проверенный": "feature:[\"virtual_mark\",\"M11\"]",
+    "просмотри": "operation:\"F0\"",
+    "протокол": "feature:[\"document_type\",\"E9\"]",
+    "рабочий": "feature:[\"virtual_mark\",\"M8\"]",
+    "регламент": "feature:[\"document_type\",\"E15\"]",
+    "рисунок": "feature:[\"document_type\",\"E3\"]",
+    "розовый": "feature:[\"visual_hue\",\"H8\"]",
+    "ромб": "feature:[\"solid_shape\",\"G9\"]",
+    "секретный": "feature:[\"virtual_mark\",\"M12\"]",
+    "серебристый": "feature:[\"visual_hue\",\"H13\"]",
+    "серый": "feature:[\"visual_hue\",\"H11\"]",
+    "синий": "feature:[\"visual_hue\",\"H1\"]",
+    "сиреневый": "feature:[\"visual_hue\",\"H15\"]",
+    "слева": "spatial:axis:0:negative:first_is_target",
+    "спецификация": "feature:[\"document_type\",\"E13\"]",
+    "справа": "spatial:axis:0:positive:first_is_target",
+    "справка": "feature:[\"document_type\",\"E16\"]",
+    "срочный": "feature:[\"virtual_mark\",\"M1\"]",
+    "схема": "feature:[\"document_type\",\"E6\"]",
+    "таблица": "feature:[\"document_type\",\"E2\"]",
+    "тор": "feature:[\"solid_shape\",\"G15\"]",
+    "трапеция": "feature:[\"solid_shape\",\"G14\"]",
+    "устаревший": "feature:[\"virtual_mark\",\"M13\"]",
+    "утверждённый": "feature:[\"virtual_mark\",\"M14\"]",
+    "фиолетовый": "feature:[\"visual_hue\",\"H4\"]",
+    "цилиндр": "feature:[\"solid_shape\",\"G3\"]",
+    "черновой": "feature:[\"virtual_mark\",\"M5\"]",
+    "чертёж": "feature:[\"document_type\",\"E0\"]",
+    "чёрный": "feature:[\"visual_hue\",\"H6\"]",
+    "шар": "feature:[\"solid_shape\",\"G1\"]",
+    "эскиз": "feature:[\"document_type\",\"E14\"]",
+    "янтарный": "feature:[\"visual_hue\",\"H17\"]"
+  },
+  "parent_file_name": "checkpoints/g29_dialogue_life/snapshot.json",
+  "parent_snapshot_sha256": "2d01a83db6a42e23d1908191ed339bb45c85062562a70b63441f1214207d55e2",
+  "sample_witness_roots": {
+    "алый": [
+      "sandbox:c6f73c57bcb4b00887bcd9bd645ad929daa12ab1ad6e98c945db6cc6af9b9c54",
+      "sandbox:369bbcacd4a71bc4406aff32285169aea2cd0bd0b55d98f4e0773e747a7f906f",
+      "sandbox:65da2268973cad9a0795222562fb19a5bf0618b05a06e6530a56a8abf0703784"
+    ],
+    "архивируй": [
+      "sandbox:fd6e4aa8342f972a3e95ea03b1f257a98a481d81303af76d45e8c21cb109e68f",
+      "sandbox:4d80909c65aad8d1bfc1cbe329cb75443c4cde9302e5acdd972fdf28f37a8e67",
+      "sandbox:51eb73f9ff1a70ecbb84da1a1bfec11418f3989c89d85fb859c9e610f08c8629"
+    ],
+    "архивный": [
+      "sandbox:b65ecfdc68c97c3a68e89d91ef252f1fa7775c061f301115a6814644fef22e80",
+      "sandbox:6d27531be250659f99da1f5e3e697d9410031184c5f6a22152a0dd69db53910f",
+      "sandbox:d776222fdb7e84b62b3227909efb447a03a2b9c6994da9ecc74d5d0a8a023946"
+    ],
+    "белый": [
+      "sandbox:cc16f0a77e5c0ce2381d5346e9efbe9dc7420599395fa30edb30b6d957122344",
+      "sandbox:d49a52f2bbfeb6b4d9870869729a7e13f25d55d8ae72f94dc464190ead54edc7",
+      "sandbox:2ba1aca8f4af73e9799d35f98814facbbd13d9c5ed343cc1e0389ef8346f4ae5"
+    ],
+    "бирюзовый": [
+      "sandbox:eb9c768f0de3651f0508d11554f078651e79cbc0240b52a33e970b4e8e438e95",
+      "sandbox:e214a424ca1ea1faa78d5e145a90f914ec8dc991dd476804dc990c5bcfe7368d",
+      "sandbox:5326e37deb1eff25a1c0d40d53299222a56d1bc761822382fd7fade2727176e5"
+    ],
+    "бордовый": [
+      "sandbox:d7d5d7ef9fc49c2bede3038638ed2ad5afbf63a085fac0504af4088cc5e8410b",
+      "sandbox:92583b4d19f6ed0d396957d01a353afe63489ec25b574ee027800ade591a5b65",
+      "sandbox:e45d010d39d1143d4ab3b8dc9450ed2dc225a9c670d030c5d136590eb4d924f4"
+    ],
+    "важный": [
+      "sandbox:97719dcd272863752c36d75d5b7c3ef440d3e4e89772a69a98a0dae90bfa6a04",
+      "sandbox:52d2fad02070765ee336ad88db2b56c2309a0a86ba1716cfadd4da4504c4bb00",
+      "sandbox:54ce1f80168ec220abeefbc2319d9fb6bee1bbbc0cec2e7b97bd26e76c80a213"
+    ],
+    "ведомость": [
+      "sandbox:5c5c3766a392dbea748f02ba3e5f3e8c3aa17b6fcef1989a5292dd8cccbb890b",
+      "sandbox:c4f7e7a0daec178ce09a7eca4fc035092d395dd4eef47d55e0363f4f675eef93",
+      "sandbox:3aba3fb07bdfc7d1755d3d5d09f1a1a4992893896170489dfae362e50b703ad7"
+    ],
+    "впереди": [
+      "sandbox:a28d323c656437d421bfa7e7134791a9fdffc9421531bf681a5df835a86cb31d",
+      "sandbox:553fd81239656838c995c1e3be35949f3e6e0f133f5c0fa14e656a2b54c07ced",
+      "sandbox:d3b3ce63fb31845c02aa259663564154071a0a3b35c82eb8e3dd56a32f4b21d6"
+    ],
+    "входящий": [
+      "sandbox:a44c111ee9f8863f829352ae1287852e5e79ed68bdd7a5be82a13c09101af974",
+      "sandbox:77490a742e57a58a655558a963df62bf3066b45b71025f0e2c8d0b5637104f06",
+      "sandbox:67c4ce9a1a48be4b55e7d154a113713b3bfa3d76cab80ca9c46e74c8f9bf2a07"
+    ],
+    "выше": [
+      "sandbox:92531716626f815b551d02becd54249ab639ee209ef25381f5c590f25d9ca46d",
+      "sandbox:551624f5264cac8c8585bd9835fdf288a90cc8e35f77c785ab8769640f9b2782",
+      "sandbox:25c99bf7aa89916b49d8b1963fc7479e5a2b658d6d374bf06b371d63ddc8651f"
+    ],
+    "готовый": [
+      "sandbox:279a9dbb5ab82ac4ddbd1a8af1427e67b3a4cc774880922d47cdc60b4cdf4ac5",
+      "sandbox:89262cb945074a51b200ed09df72c47937038d364abde30c3799f50ab9253e19",
+      "sandbox:eb130aa1524552fe7b63cce9836bab8bbaa94433bea17743a3a12cae7e108f2d"
+    ],
+    "графитовый": [
+      "sandbox:9978d1792aa27d79ad669a1da3c07d1ccf0f57c263514a9a7ecd47403b945617",
+      "sandbox:3b0cdfdd82686ebf6e3c478e1486ab8793b187967a2fdae7a594f7b29a2419b9",
+      "sandbox:5ca14a3b33448dd8895347db4f50017ec6dc6f8b7b9fad5227d8d74832d17da0"
+    ],
+    "диск": [
+      "sandbox:670670e47e319f126fe8ff2ceee23677864e4d9c62d5d4ce08b6e3de8d859fb6",
+      "sandbox:4f9fd6e700f62d5408021e75b4090239a0636b5867f5fbe6bed770fe9b459e00",
+      "sandbox:2f35b68076b5ba5f05eac601642e472a575c7e9f0f7175a989355ded39733b8c"
+    ],
+    "договор": [
+      "sandbox:63a35aaa2477fd04e382b4822e5e182f80f051f81237aae177fec5d1a02b54d6",
+      "sandbox:1031dd94fe07e036f5a971855f799f4a09ab88e5f7b6b22dbcc409483211553d",
+      "sandbox:7f5a3c6d21e6651fbe44bd6cdc3678e52b24dc5412a39542c1228a26706822b2"
+    ],
+    "додекаэдр": [
+      "sandbox:520bbf7679c9a911ed46f7b85fc4bd6ef192fbd9ce9d0191bcb23e404e288ce8",
+      "sandbox:59493f25804751da88cef7c6c69a09bff2d3d8483387fd6c4381ae300d64282e",
+      "sandbox:e16d2398a68cdb0affeeb75a216a1a4bda91580ea34ba64d6a8e30e3e6daa766"
+    ],
+    "досье": [
+      "sandbox:6fe86669238d7749ef73d6db20aca2ade43945f591bd5b92ab7f09f8849b7711",
+      "sandbox:a748745e9b0dcf0ca19a8cd0991e6135624c5455b8769f68cc37f13f23070352",
+      "sandbox:c9f57f357f27d8bf19c3311548209c4e9fea00889894b5a3b8c13d3e1c50eef9"
+    ],
+    "жёлтый": [
+      "sandbox:9f1204718a347f2285ac794ddfa8da2d4e02df38cd07967136ae840993a6db2a",
+      "sandbox:095f6f6ab860263c0631ee427e54ceed008378699d572133ef3fa8e2e1fac908",
+      "sandbox:9da10175c6405cb3c678e68a66d2edaf51a5f1aa1ae15698aba40a48dc789979"
+    ],
+    "закрытый": [
+      "sandbox:c7f558449ca56b3f5b39beeaf7fcb1baca15e4decc2488029880ba6958df5c9f",
+      "sandbox:c57569eca33e38f0e2d58947b215b6e2ebe3b5da2cf7bd853ca825e3cf23111d",
+      "sandbox:0a7eed8db33023b454a97cfc90a519d3b80f20c04bbbc51ca39e258ff73f6b03"
+    ],
+    "заметка": [
+      "sandbox:5feef9c75d6c8493ed061b9f863ded57e7a4d85755fccfc8b5ab1ab533283380",
+      "sandbox:3b2cbcf5926dd4fae1b647c4b062481ee24870a6b30e42a5e43cda659dc1f661",
+      "sandbox:3e2e949652ba87ffe772550510c8e374c042b070944652f706dc001397d955d3"
+    ],
+    "заявление": [
+      "sandbox:3b3a7be9779f955c5d36f180841f31675b65cb901953a5e75c4807e7363139b0",
+      "sandbox:65ae28136e370e23b12bb764f2cb66bf12ee7b1b8964135846c9533a7e04b3cc",
+      "sandbox:b14f099f0a12c31005956bb9f88c245560b0f2f3ef41d7b832fb17c4b8a1e997"
+    ],
+    "звезда": [
+      "sandbox:8bce97a1fc5abc47fbf39f5b64397726aaf4b98871f201e287863b6f260b021d",
+      "sandbox:7d56a320cec2ed0b2964cf3cbf7c9fcb93e378b05d91082b652ac96877e396f5",
+      "sandbox:81035f3dfdeb9a0ee41e8051840e512749fc10ce46ea567fc608dcecbc6c9fd7"
+    ],
+    "зелёный": [
+      "sandbox:5f403adc7ec44085149bb3183a75b358fddcb669a5d070b340938e776a9a469d",
+      "sandbox:f8bd84f05f1293abb0a96a8b352fbef10b47cbb97f5e9363d1671c0a1272bbbf",
+      "sandbox:e97068d50cbe3b1b400e405d48944a30949c78926dd89a9e42a5df2db0c1fe74"
+    ],
+    "золотой": [
+      "sandbox:fa701a4f3c4a54d03ba57cecd37bdae3671c6f021874fbefa0fbecbdd7dc10de",
+      "sandbox:72dfe9583177180fa29b0e3623acafcf367eb0cc4d7a7039d36d09d3189a0783",
+      "sandbox:83e05e45e3d9eeea01d53013a4947b12a46b2996da1d01e4a4539a33ceeac430"
+    ],
+    "инструкция": [
+      "sandbox:5473d8b0859061c523b485c8464d1f5d399b1579b548ebb8c230f9ed84dcba97",
+      "sandbox:7cdab76b8c4c31cd973e9a8a61889556554346750a417776c4fe4443153e3899",
+      "sandbox:517ddf56327c4dab034924774dcee9e6b812954640662df0d91571977e2f17d2"
+    ],
+    "исходящий": [
+      "sandbox:8dbe2113e089843ed57b9aeef75d9fe45bbded61718e4f1e1fe23a3883b8914f",
+      "sandbox:f5f974b6a7814e9f64fa2a20907480ccfd1cbf388d69aaf76fd0889d7ee689b9",
+      "sandbox:2358ea3a5ad175639d1504b2d800e4c5ecc00c7825724e01b6f7b0cdcd3803ef"
+    ],
+    "кольцо": [
+      "sandbox:71a0aff288d5d269e2cba918e1ad9e5f28ab1b0cf5cae3fdad02f74e81d58684",
+      "sandbox:c150c438d8e6f1e233698c89b6ab96fefec1f2c38501878fb89b8e20ea239179",
+      "sandbox:36b257e9f427e45bbd669a80391aef086ee9f0e07ff2c7262869659052baba15"
+    ],
+    "конус": [
+      "sandbox:9f1204718a347f2285ac794ddfa8da2d4e02df38cd07967136ae840993a6db2a",
+      "sandbox:22b407258cc073b2cd1da3e4970bed280b05e4fc5c09a9f323c44a3b109028b7",
+      "sandbox:f8bd84f05f1293abb0a96a8b352fbef10b47cbb97f5e9363d1671c0a1272bbbf"
+    ],
+    "коснись": [
+      "sandbox:9f1204718a347f2285ac794ddfa8da2d4e02df38cd07967136ae840993a6db2a",
+      "sandbox:22b407258cc073b2cd1da3e4970bed280b05e4fc5c09a9f323c44a3b109028b7",
+      "sandbox:0b35861b1596077b22d553e5c50d56230709bfd4d66ccb2a877a7b402f5f5e4f"
+    ],
+    "красный": [
+      "sandbox:0b35861b1596077b22d553e5c50d56230709bfd4d66ccb2a877a7b402f5f5e4f",
+      "sandbox:c05b4313eafeb7695042b6afe19f286389c0fbf5f9e0c2120b219d8eaabc897f",
+      "sandbox:e73ff60146d987ccf0e61862053d6354a966c8342947aff3aa50ef9075e467b8"
+    ],
+    "куб": [
+      "sandbox:e97068d50cbe3b1b400e405d48944a30949c78926dd89a9e42a5df2db0c1fe74",
+      "sandbox:fb27af34cfb39442013bb28b82eed2f9cbe7c45b090575cc57941242944fa388",
+      "sandbox:b6ce243a14e8c5de1e31ec3f852579d35fe7f1ca4d6c42f393c23b4b111b222a"
+    ],
+    "лазурный": [
+      "sandbox:3d91adae7f86c0b0d0a0e0dd02c6759ca05a894b9cba98241037ca279c671eff",
+      "sandbox:29261f111ea312ad9cf5f7f8cce4fe1100b3222db720f4e272a5ccfc69271cc5",
+      "sandbox:f202d165c7a7fbfdfe80b7024f66ca562feeb6f0ab0c26202913bcc43d7456ef"
+    ],
+    "линза": [
+      "sandbox:9e436a8885e6c4bf2b618aefa27b0c694e69befc1364ccf46c3d65bec1b4e1a8",
+      "sandbox:b2f9e739d34ddb674817c5b924747aa36e3050b5070a872ecbd96865b3390773",
+      "sandbox:da91ca776f0b80a4149be25838af902ffe883e1727aab269fe9e88a87bb2d811"
+    ],
+    "личный": [
+      "sandbox:02ac91bd1186e014a49613c24be35943de7256212c33732bfc3a1f8ba1d53935",
+      "sandbox:cbe9f72233bc2ff6623ab877c71f827c391068518f931449d224e0abe75e5ec5",
+      "sandbox:52eb4cd517f4fb7cd5452c9e64790e9f2a707503d97763c318fa703d52ad9381"
+    ],
+    "медный": [
+      "sandbox:1f5e372e2e3c7ac0e2769404aa2204383f6aec26c7b9d9a56805bb8d617076fb",
+      "sandbox:e5e9b8abaa628d5bbee1287484fdff3a5a07e8b5879c9d147979b35f15c8724c",
+      "sandbox:7d2e3a2ae98e53767c8f173251cec223455e020d04f45065d44a8c7796c80ba8"
+    ],
+    "накладная": [
+      "sandbox:0b1e09a59a11d944bcfdbea2961614f6f13f941fc347782500fe5d855086a424",
+      "sandbox:717f2c010e21b96fe8adc0ef06bf036a147438fc73ec2b313502ff335f5a5e70",
+      "sandbox:0d674b71d0468959daca10f82082a2ff4a3e747c8a794800014b57305aa256c3"
+    ],
+    "ниже": [
+      "sandbox:3620fc9a63cf9d28723f1d8d03e1febde6998188fda00060ce56ddbc386f03e5",
+      "sandbox:212242e5534328d7186505918c75a75786755fa94ad9411fc55b954b8af3cab6",
+      "sandbox:ac4f72e499ac9b658ca4bd9ff3daad873bc1e8955dd2bf17d1eab7f8fe59bdac"
+    ],
+    "новый": [
+      "sandbox:adae330bf7d9adbf5e3be5526cee4b99847b0bc41accea3b0a10429f7ad991e0",
+      "sandbox:5feef9c75d6c8493ed061b9f863ded57e7a4d85755fccfc8b5ab1ab533283380",
+      "sandbox:8327602cb0f0f2fb71b387ea73cc874670797530bfacc3829864ab7f74d78362"
+    ],
+    "обнови": [
+      "sandbox:ad0116c5eeaa3367627d07aff9a4c11bee74f073817673ca2177cc06d593c0eb",
+      "sandbox:d3325538e895ecac447d71ef62947d8b191811bc8ffd054db2ef2fa1d375c542",
+      "sandbox:f10df20da33f8298767e28290cbb541ba10fc974c1e9b32121c0822b18304f6e"
+    ],
+    "общий": [
+      "sandbox:fd6e4aa8342f972a3e95ea03b1f257a98a481d81303af76d45e8c21cb109e68f",
+      "sandbox:3b2cbcf5926dd4fae1b647c4b062481ee24870a6b30e42a5e43cda659dc1f661",
+      "sandbox:3e2e949652ba87ffe772550510c8e374c042b070944652f706dc001397d955d3"
+    ],
+    "овал": [
+      "sandbox:7db166b3622d3e9b246b015d555c5c0eb9eb2956d574f6b7af2ca15e9d0ac095",
+      "sandbox:39b78586520b800a7c52fea26dbfb2f0cf20eb979f565c75fb65e273a6b8d4be",
+      "sandbox:957511d8d9f50a1e9d8cdf321ed6f20b57be7e4cf286846e6659e34f6ccb1d46"
+    ],
+    "октаэдр": [
+      "sandbox:9608691e60d7979dbb043b61d324e6546701cbd18d8eaae63866172bf5aab4dc",
+      "sandbox:07fe19d83d84d1fed7b00a81b16eb25bdbdafc22d34bf1c4001274fe75d551b8",
+      "sandbox:c1fab2e4df5348d67beedccc3c4d8292dc9fbb0f3badb5f416f4a991130600e4"
+    ],
+    "оранжевый": [
+      "sandbox:ad70d83a7cb9ec2c9340de59bd554e1d45c2a75d4961d71d3624b17c5f3902d9",
+      "sandbox:8ee9bd54270b86526282e6f0f057bb09fbaf3bb8326a5d769d7cea289ff9adfd",
+      "sandbox:b0342a56908e028b9896e1f7789d3ad679e4c06f5f8a7831946f3ed9008642f2"
+    ],
+    "основной": [
+      "sandbox:f2b28e433b5bb5698d02aa20e9be82245d5b843c5bbbe58305c7d48c13b1bc80",
+      "sandbox:3a0340bda4ce1018de750fa6bd995ef40826a0bee76d589fe54895d5c45233d1",
+      "sandbox:09ee9704bd60dca79a54c78595b119a1b748bd4a500f867dfb8ba1a4f449a3c6"
+    ],
+    "отчёт": [
+      "sandbox:9f636be6316123ea9d05b0d924bbd9710d25fbcf5cb8e9cf2e1b67191e544586",
+      "sandbox:0125055efa6b4a47edd5d24f7f1ada79f78f69faf3abb6f3c95ed966bb9175f3",
+      "sandbox:adcec114b577b0bf07870b7766904b1c9d51fcd1ca18be27bf50776b4d72a4c9"
+    ],
+    "параболоид": [
+      "sandbox:bb2f5650879bdaa52c188c6a76fffbc5ab8eaffb6cdb14267811848f28c5c6af",
+      "sandbox:2b2e5db1d0ab087db7fad33d141689b5b663130050e8e0564eb9bfe111caac1c",
+      "sandbox:56ab59f8d414bf867248d43c038323ef1de9de442e7cdd8ad48ca7c68e6a684b"
+    ],
+    "пирамида": [
+      "sandbox:46bafc1fb8370d3149f5de6e76ee9e252560521ca17dcbf536892bb7e78d3229",
+      "sandbox:50b1c782d786118f93eb9d01e03624d6ce5dd815333b988ecb5ee56580a796ff",
+      "sandbox:3ad1c01c29d1896f2ca9c2f55a942276eab7dc6937a49d27265aa09107165c3b"
+    ],
+    "письмо": [
+      "sandbox:082fcb905ac09d11abba5024916db6802770bc8f75e0c35be8d5988584da46a6",
+      "sandbox:415ea64d0c5e134ff25aa6576e485be7731b48f69af03a36e3c85da78e308d63",
+      "sandbox:24c1006faa32a5628b4f882df1f9071102153816fcbd83821346026c6d1d680b"
+    ],
+    "пластина": [
+      "sandbox:ecb1e8b625db84dee528a45b6e9eb2b28dd98721173692ea113eddd50fb96ef8",
+      "sandbox:ecc741eafe15d6a8341208209191081e32c8563ecf6b21254ed7e9439df41114",
+      "sandbox:fc770940c91f80f6b7474c355f4a37876563a7050912e773aad3fb92469b88c0"
+    ],
+    "поверни": [
+      "sandbox:5f403adc7ec44085149bb3183a75b358fddcb669a5d070b340938e776a9a469d",
+      "sandbox:1be9854b2550f9c1fa18c181d53181ce853dc14dac7347738962872b97c2bd57",
+      "sandbox:b7eef6b766e2711a9fe5dacf12a3ed27c86b497be779d8eabe6610b8314c893b"
+    ],
+    "подвинь": [
+      "sandbox:f8bd84f05f1293abb0a96a8b352fbef10b47cbb97f5e9363d1671c0a1272bbbf",
+      "sandbox:c05b4313eafeb7695042b6afe19f286389c0fbf5f9e0c2120b219d8eaabc897f",
+      "sandbox:56893f2b601efc0c2efcf33d3d066b637ecf98f911379176f5ebfaf8bd4a42f6"
+    ],
+    "подними": [
+      "sandbox:1821ecad390e5b35e99b1139571315746e9ff7c4b3ea01c124ef9d3a6903f020",
+      "sandbox:2b5b2ff038187562c48e2585ec2e0578ef4e4a321ad437238a9caba7d957ee88",
+      "sandbox:fb43288234320f92b697d0281b00f305e93a11906d6b195ad9a155c00f2eecb3"
+    ],
+    "подписанный": [
+      "sandbox:23d0a10cac3565cbf8d64cb396d6129d0abd1a70e2e50f1c03311d7ab21615eb",
+      "sandbox:eb73dd564d1ff40846c5e08756cb3a37ea45f2c29da373648feb51b5b0003ccd",
+      "sandbox:ae9ff020f263f841a40daf345fbb020f947d52e191e0d70f4f43e20685024d1c"
+    ],
+    "позади": [
+      "sandbox:b536f8ab264061373fbf076eba623ec61a2488a664410989fc2a641998e79d57",
+      "sandbox:6ad6d9a6ae3e642c0cb4fa475a1c393fb8763fc596d5b19af5dece2c30de5a93",
+      "sandbox:8f88b616a266d4eda4f9663a0cb62117397f0da6680fc43ae5c15b2717e3b654"
+    ],
+    "полусфера": [
+      "sandbox:6b1ae597bcb9a1f32ad6dcde039e091c35d81b2076dff5aa280f2af956906665",
+      "sandbox:867166611fd1ed4c5d14eb8bb8e7b1350bc8d0796b6b551e0142467ca4ef0849",
+      "sandbox:299f5c6e368c6e14428a9dcb4339fd4011b41510d2a8885cb27eb5e981018e34"
+    ],
+    "пометь": [
+      "sandbox:adae330bf7d9adbf5e3be5526cee4b99847b0bc41accea3b0a10429f7ad991e0",
+      "sandbox:02ac91bd1186e014a49613c24be35943de7256212c33732bfc3a1f8ba1d53935",
+      "sandbox:5973fc2885836dda332d5a10114e324037c1f98b540a4f769d81712dd6a2874b"
+    ],
+    "призма": [
+      "sandbox:f12ef594caea2e9d64d8a06445477d9d3e426f5ccfd558c7938fa0bb921ef72f",
+      "sandbox:728ebaa2658d05b86e2f1ce187018260ad8f41efd9c548b4c8ba383b757c4aee",
+      "sandbox:cb151efd55e4cc8015b695e2876934b88ea92a426d8fa8c1b63c41b4f3b59c8a"
+    ],
+    "проверенный": [
+      "sandbox:fcfbb3246e9ce46c6db4a0e0ada58ed780b31290e8dbad553794082b6ac84e06",
+      "sandbox:d35081c811e7723bd80636737170cf9e3018e426ee3753a3379a0771c737a948",
+      "sandbox:4f319f5d959981a8c9e36b8b9ff24349fb81311ecab347a0afc31a00143cc1d5"
+    ],
+    "просмотри": [
+      "sandbox:5feef9c75d6c8493ed061b9f863ded57e7a4d85755fccfc8b5ab1ab533283380",
+      "sandbox:8327602cb0f0f2fb71b387ea73cc874670797530bfacc3829864ab7f74d78362",
+      "sandbox:cbe9f72233bc2ff6623ab877c71f827c391068518f931449d224e0abe75e5ec5"
+    ],
+    "протокол": [
+      "sandbox:6404a0e01decbfcdd0d45bdb3505bc59ffe4bc778833ec1a0ad9e081cd044ee0",
+      "sandbox:c944b2e62648511f72d5474625eee56b74cd6a8ccb29e44791d12a36168ea923",
+      "sandbox:dcccfafa2304e91de3eaef8235e2f95afe707198eb719756291b0ca02fdacecd"
+    ],
+    "рабочий": [
+      "sandbox:88ad2f3f0391c387760665787b1ec6aaa0cbd18e411441a981b6e1d33f5b1c53",
+      "sandbox:0c71c3d65aa9618bba6206a0ac03966b848344c59ace736c0af1762468fa7d87",
+      "sandbox:01bacc34e58935e37fbedea55e01bb19667a4957db83e7959d124ed9098b9dd1"
+    ],
+    "регламент": [
+      "sandbox:b93e542f963c473ff1d4386a71df711ed9df9a8a04fa5e0560714b2d0178f6d9",
+      "sandbox:3508e853a413abbf4ce47d576d79ce4be5ebb258f860a0caf9c6a8941676a710",
+      "sandbox:8663276cdf224bf31abc332e217055bc730e89dcd14fdccef62d7839d1b80189"
+    ],
+    "рисунок": [
+      "sandbox:cbe9f72233bc2ff6623ab877c71f827c391068518f931449d224e0abe75e5ec5",
+      "sandbox:ba14aa1dd687a02a49c1fb46fba5fdb6db9a03c40fefbc3fb26c111f19e987fd",
+      "sandbox:51eb73f9ff1a70ecbb84da1a1bfec11418f3989c89d85fb859c9e610f08c8629"
+    ],
+    "розовый": [
+      "sandbox:925d32d59742811115cf73d391dee21db11b8a90f3459d12af35859f36a97424",
+      "sandbox:5ccc84fbf8d09073f79e2c18f5c5eaf4d49dc112870aa876c04b4934dafd7b6d",
+      "sandbox:c17be71945c048ec9e48071e45f2d9bb03f715c9b21ce79f0659d23d3a139479"
+    ],
+    "ромб": [
+      "sandbox:78ab41187b58e2b7e42e9e890746a675b80c92f315c5fa380cf80c4348f1d72c",
+      "sandbox:c2888378424bdb45945881b3e5622115e27354e326b87ae5f51c55c41a878e43",
+      "sandbox:6e7d198230de7b0970f3f66d3a6315d24db5eddbbdb820e57a1bd86209e94bc4"
+    ],
+    "секретный": [
+      "sandbox:90158b97057ce41211da24423e073699e91d7bab1d12604345c0bde8b446916d",
+      "sandbox:3df8d1bca9dd846aceaec38460b00d9dda4d50a70d94242fcae7a491b11ca2c3",
+      "sandbox:45a524ad6474800c07bdc9b6a01940c4eef0a3dd261ac07dbf42b43a88fc18d3"
+    ],
+    "серебристый": [
+      "sandbox:008eb1a547a6f88fa80f781c01a1a8a7fdf9fac09859bc7a1843baaa2ef090a1",
+      "sandbox:0ad2a70f84398025948585ecef21db48f63198b2c46f885b2d58c68b8593fbad",
+      "sandbox:7ec54302236da70c5c1d163aafcf343534c1d723006d2593fa7b9dc1a3d03fd6"
+    ],
+    "серый": [
+      "sandbox:b47ea37bb5bd73542ebea42981456ef18466c21ad79aadbecf630ed25493a45e",
+      "sandbox:b4b781b70a9c594bb8cca9de0f044323c9fa487ea4e537ffdb29d95a1e720a3c",
+      "sandbox:d2d8fd82fa4e17e3ecf3676218c8497cfbdfa0e8e12d2d1835e96d6d8b35f37a"
+    ],
+    "синий": [
+      "sandbox:22b407258cc073b2cd1da3e4970bed280b05e4fc5c09a9f323c44a3b109028b7",
+      "sandbox:1be9854b2550f9c1fa18c181d53181ce853dc14dac7347738962872b97c2bd57",
+      "sandbox:56893f2b601efc0c2efcf33d3d066b637ecf98f911379176f5ebfaf8bd4a42f6"
+    ],
+    "сиреневый": [
+      "sandbox:3827c435234f2c70143a615355d94df526dadf4c11d5facd6c40ca44d0577b33",
+      "sandbox:5ea5f7404a924ef701f9aea1274ad2d19221c32d62facab07af2e34d81d47bb8",
+      "sandbox:45e6518735e2fac6e709b89eec19c709c2b624d95ab3df747b50580ba58317ef"
+    ],
+    "слева": [
+      "sandbox:f32326fe2d6e467ed4b46743bd981120dc4024f868d424136fd352dcce828a90",
+      "sandbox:e40d6a160a6b69b7e04eab1e06225b796634e253530b94a1e4fe22680e94b52e",
+      "sandbox:f6cd8279b77dc33549490378486070c2c88df2c41a93e5fd1e244fa9a62a858e"
+    ],
+    "спецификация": [
+      "sandbox:99f269a8124bb926ce918613e26c82b9ea17b0a61bae361a8d3ff10b37de7e6d",
+      "sandbox:922bf7d3295f3d837fbb40cbea2b742e6b8f70acd92fdadcbf8619ccd2bf51f7",
+      "sandbox:3b76d5b5e49cb0c9f713052556a7b52bebd968803c474294ccbeba4930444e52"
+    ],
+    "справа": [
+      "sandbox:01507184e2b9f374edd0fc4affd86b58629b2796c05647334cca920521aa614e",
+      "sandbox:6c2fc4fc54d0a84c8ad2d3eda963151e09fbceaea67195118ef5bf7adcc59e91",
+      "sandbox:f4d4b1c8d99c5a44698e6d2ca6c85b7b01876bcbe643aaa174089823c639ea1e"
+    ],
+    "справка": [
+      "sandbox:e05e47c82057dcffa34ecbe4136e4639b51f636633bd5725ee3751f5c7bd22b7",
+      "sandbox:546bddf82275344db6853018557a2f5770d08e1bf11694918650c95ab2ec83e2",
+      "sandbox:2ff1095279510225b02230f72ec2abf9f07ab9104e1ad69bc045bd1a368365c4"
+    ],
+    "срочный": [
+      "sandbox:e3fca010a5982e875ab769121bf82421e05340951788b03e1021d0ab3bfa0640",
+      "sandbox:c94a3874be1738e195d449302678a22c913057bc797689df5594dca3e9ec424a",
+      "sandbox:4e92c073122251a6b50ad1c03ac261ffcfb18a5d14aa630c4c10b2fecf7a663e"
+    ],
+    "схема": [
+      "sandbox:38eb33d2be06539fe2f2f33a0d5fa329e43e378b5010ccbd13abbf2c00e01d25",
+      "sandbox:5e7274cdfd12bd184c077ad2dc638148783bd8fcae99f8cc7b2b775a062dbf61",
+      "sandbox:8e989cfb032818a4439779c601f5dfb1bea363f6c970cb02e9abfdad6ac0e1ff"
+    ],
+    "таблица": [
+      "sandbox:02ac91bd1186e014a49613c24be35943de7256212c33732bfc3a1f8ba1d53935",
+      "sandbox:8327602cb0f0f2fb71b387ea73cc874670797530bfacc3829864ab7f74d78362",
+      "sandbox:fd6e4aa8342f972a3e95ea03b1f257a98a481d81303af76d45e8c21cb109e68f"
+    ],
+    "тор": [
+      "sandbox:be3d63e2d5e3dc9ce681a8171aa1088f37ece2fa7e5678580936fb8b667a3f0d",
+      "sandbox:d4c4d3200a1dfb6dc59e44b388fee3afd9666bd0680b5329f30afc35f50eb210",
+      "sandbox:3887a528d16505496e4ea7ea636844482096c558fbde74036d2c61e2e78b2ae8"
+    ],
+    "трапеция": [
+      "sandbox:98fc3edeab2ce1d8a30075540c49d4204bae9992b4766c618df87e1725ed7a08",
+      "sandbox:b73c2309727bbc9489d456ae33bfca13587fb6eb79bac55f0306a1e57608dc01",
+      "sandbox:db5fae679b143a02e569fffe25b0b737f7b58d1da668f5984d11801969b816f2"
+    ],
+    "устаревший": [
+      "sandbox:14c5713ced610a6f7d8a177561747451b754aa0db2a04de0971339b98ffef0ee",
+      "sandbox:75f6252c245d778ce51ef293be5595dfb75a47e5edea6d4e07236dcdfcf44a16",
+      "sandbox:248427d5bac1daf5d39a71a76696485a73c8f53f761db0fcfd53ef47cab86eeb"
+    ],
+    "утверждённый": [
+      "sandbox:cccda292ccc366143ad4d4107a9f274e809fc82fb72c53313166db5a364e7628",
+      "sandbox:c39a8e152be0e98403a9caf7b7d5fc31907c47349c6644aeed9c3fc1c30cd8c1",
+      "sandbox:3d4667c7e4aedb81e624daa3f8e344043cc27f86e7bfb56860eef255749d4805"
+    ],
+    "фиолетовый": [
+      "sandbox:6755cffb7a1798c68aa9e3f57a79b1ce18a35df5d1ca56378596dedb1b50cce0",
+      "sandbox:8e124490a78d4584643376bc58b414b0e9153d1b16cf76582594d18b43568454",
+      "sandbox:282f349f393c583c41d4e809d8d08d1449f29798655be09ded732b2b73727379"
+    ],
+    "цилиндр": [
+      "sandbox:0b35861b1596077b22d553e5c50d56230709bfd4d66ccb2a877a7b402f5f5e4f",
+      "sandbox:095f6f6ab860263c0631ee427e54ceed008378699d572133ef3fa8e2e1fac908",
+      "sandbox:56893f2b601efc0c2efcf33d3d066b637ecf98f911379176f5ebfaf8bd4a42f6"
+    ],
+    "черновой": [
+      "sandbox:28e42e7fe13fc8ee6d9d1ee31e5e1daf0009fa38208730d10efa3a891385eb18",
+      "sandbox:e7a837bcc91c048c4dcdbaaa41d56480b1420ae7e60edf761dcd5d25841b3d12",
+      "sandbox:ded5d1b3d2c5c9ea2f1f3ce557106683d9cf8f1551537ae55f64a9745d949041"
+    ],
+    "чертёж": [
+      "sandbox:adae330bf7d9adbf5e3be5526cee4b99847b0bc41accea3b0a10429f7ad991e0",
+      "sandbox:e3fca010a5982e875ab769121bf82421e05340951788b03e1021d0ab3bfa0640",
+      "sandbox:4d80909c65aad8d1bfc1cbe329cb75443c4cde9302e5acdd972fdf28f37a8e67"
+    ],
+    "чёрный": [
+      "sandbox:2392fe0349315ca5ae448705f05e1e49baa385dbc354a4aba4e96050dfd86c14",
+      "sandbox:85e793176c40b824c368bb68bf972005ec2c8a35360ce9f4df9bb7073809381f",
+      "sandbox:f702ab8d7d38dbdd595f2de865799799a7e0489db962b02966c6e4a2a01567a5"
+    ],
+    "шар": [
+      "sandbox:5f403adc7ec44085149bb3183a75b358fddcb669a5d070b340938e776a9a469d",
+      "sandbox:c05b4313eafeb7695042b6afe19f286389c0fbf5f9e0c2120b219d8eaabc897f",
+      "sandbox:1be9854b2550f9c1fa18c181d53181ce853dc14dac7347738962872b97c2bd57"
+    ],
+    "эскиз": [
+      "sandbox:e6fda917775d05c0b6ab302e080232f9906988a12a5a4b54a7aba91f0d444c0e",
+      "sandbox:bd4c6a410a3a6e14a2bdd6efb9d487697d964b62a573cd27fa8ed97523f3f198",
+      "sandbox:04bbff1c2318d80ad863c645fcedb0a5ec0541d286e1e6725c298b3e62332ef5"
+    ],
+    "янтарный": [
+      "sandbox:4caba37aa21eb8da617e35d5665cf15ec59779a3dada1a1dbd7afcf7313766b8",
+      "sandbox:91b4ac95888a36129219035e3f187ac74a9d55f544443395c099a1678ebcc44e",
+      "sandbox:49dd6068c206c5feb54c4be8d3f5f544c4dd9c1dc7c67f17022f297c95bd54ec"
+    ]
+  },
+  "scope": "READONLY_G29_GROUNDED_LANGUAGE_EXTRACT_NOT_AN_INDEPENDENT_SENSOR"
+}

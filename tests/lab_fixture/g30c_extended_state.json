@@ -1,0 +1,1400 @@
+{
+  "orthography": [
+    {
+      "active": true,
+      "parts": [
+        "кое",
+        "как"
+      ],
+      "raw": "кое-как",
+      "root": "0f494ac3ea22dbe6c96226a88cb1b34959f917986b9e4bc33ac2ddca1e67d6c5",
+      "separator": "-",
+      "source": "orth-witness-0"
+    },
+    {
+      "active": true,
+      "parts": [
+        "чей",
+        "то"
+      ],
+      "raw": "чей-то",
+      "root": "d204aa910c0df44600c3663d11518cacb0fe84668745be7941df1b7b13849dbe",
+      "separator": "-",
+      "source": "orth-witness-1"
+    },
+    {
+      "active": true,
+      "parts": [
+        "по",
+        "новому"
+      ],
+      "raw": "по-новому",
+      "root": "fd9b6b813648cab2a3d61a1e170d6003ab3bd997bfe1abba44ec5e7f111a0f09",
+      "separator": "-",
+      "source": "orth-witness-2"
+    }
+  ],
+  "parent_index_hash": "fdb777fe7ffab1154af1b76e49ab7eef28d8a7597bae92070145e086e6098db9",
+  "parent_lexicon_hash": "54966e9869908e17b5a9a5891e460cc2d63b6247feb53ef26c499bf64d755992",
+  "reference": [
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Нина",
+          "шкатулка"
+        ],
+        "mentions": [
+          {
+            "entity": "шкатулка",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Нина",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "его",
+        "utterance": "Раньше был шкатулка. Потом появился Нина. Я увидела его."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "7d275b364c6199f52a55f58cdecf04b66f7c69afb73f1c4700c3d214de356fd7",
+      "source": "ref-teacher-0",
+      "surface": "его",
+      "target": "Нина"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Пётр",
+          "ящик"
+        ],
+        "mentions": [
+          {
+            "entity": "ящик",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Пётр",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "его",
+        "utterance": "Раньше был ящик. Потом появился Пётр. Я увидела его."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "3670526e29d830e3cba90e95f86ebf6a32d6b485f9478861e79000143bdfe997",
+      "source": "ref-teacher-1",
+      "surface": "его",
+      "target": "Пётр"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Игорь",
+          "пакет"
+        ],
+        "mentions": [
+          {
+            "entity": "пакет",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Игорь",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "его",
+        "utterance": "Раньше был пакет. Потом появился Игорь. Я увидела его."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "0ed20b5a6e1acc992fb326f98c7fd98b30b8de85b3862f15fa6b788399d6a11a",
+      "source": "ref-teacher-2",
+      "surface": "его",
+      "target": "Игорь"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Алла",
+          "коробка"
+        ],
+        "mentions": [
+          {
+            "entity": "коробка",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Алла",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "его",
+        "utterance": "Раньше был коробка. Потом появился Алла. Я увидела его."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "8fa6d63ea0f9be179c15d81104060a0264e3fbb594e9d648bd676c3f929315d4",
+      "source": "ref-teacher-0",
+      "surface": "его",
+      "target": "Алла"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Лев",
+          "мяч"
+        ],
+        "mentions": [
+          {
+            "entity": "мяч",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Лев",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "его",
+        "utterance": "Раньше был мяч. Потом появился Лев. Я увидела его."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "1780b92d1d1e1c527edb3b837ea2b264463f660fea4b4a8a4ee3183f889a5bf6",
+      "source": "ref-teacher-1",
+      "surface": "его",
+      "target": "Лев"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Таня",
+          "замок"
+        ],
+        "mentions": [
+          {
+            "entity": "замок",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Таня",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "его",
+        "utterance": "Раньше был замок. Потом появился Таня. Я увидела его."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "fdd3e65649ea09e95cb4a4016ee29b726e6c1211b255bae41f63082731db70b3",
+      "source": "ref-teacher-2",
+      "surface": "его",
+      "target": "Таня"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Борис",
+          "конверт"
+        ],
+        "mentions": [
+          {
+            "entity": "конверт",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Борис",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "его",
+        "utterance": "Раньше был конверт. Потом появился Борис. Я увидела его."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "4f3bab39c2068d9054c751f138ff52d80456048421a36cec630608103ba7b121",
+      "source": "ref-teacher-0",
+      "surface": "его",
+      "target": "Борис"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Ева",
+          "торба"
+        ],
+        "mentions": [
+          {
+            "entity": "торба",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Ева",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "его",
+        "utterance": "Раньше был торба. Потом появился Ева. Я увидела его."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "a2f4dd14783d7c9b73944d2dce986a6e886365ec0ccbb0fb90ee2afda8796f87",
+      "source": "ref-teacher-1",
+      "surface": "его",
+      "target": "Ева"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Нина",
+          "шкатулка"
+        ],
+        "mentions": [
+          {
+            "entity": "шкатулка",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Нина",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "она",
+        "utterance": "Раньше был шкатулка. Потом появился Нина. Я увидела она."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "1c42e65f743803f20dbb6a4ca3db0c444109213355cfee927b6fd00af54cf91f",
+      "source": "ref-teacher-0",
+      "surface": "она",
+      "target": "Нина"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Пётр",
+          "ящик"
+        ],
+        "mentions": [
+          {
+            "entity": "ящик",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Пётр",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "она",
+        "utterance": "Раньше был ящик. Потом появился Пётр. Я увидела она."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "790e277a8175c2bbde788855327ed74e77b1b4ce12ff5c57d30024f04c4f3962",
+      "source": "ref-teacher-1",
+      "surface": "она",
+      "target": "Пётр"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Игорь",
+          "пакет"
+        ],
+        "mentions": [
+          {
+            "entity": "пакет",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Игорь",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "она",
+        "utterance": "Раньше был пакет. Потом появился Игорь. Я увидела она."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "b799112cea62f31f5d48c54df7b358a4d2fa0e8681289d5664183ad4c0d0ff35",
+      "source": "ref-teacher-2",
+      "surface": "она",
+      "target": "Игорь"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Алла",
+          "коробка"
+        ],
+        "mentions": [
+          {
+            "entity": "коробка",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Алла",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "она",
+        "utterance": "Раньше был коробка. Потом появился Алла. Я увидела она."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "4614fe709df98d78ca1ec77a86e890b3d6cf7b0222508cffe1049a09796ade02",
+      "source": "ref-teacher-0",
+      "surface": "она",
+      "target": "Алла"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Лев",
+          "мяч"
+        ],
+        "mentions": [
+          {
+            "entity": "мяч",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Лев",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "она",
+        "utterance": "Раньше был мяч. Потом появился Лев. Я увидела она."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "c9c407838532524d1d9dd781520449847b82a6a1923b2d4b304e5229595a00c7",
+      "source": "ref-teacher-1",
+      "surface": "она",
+      "target": "Лев"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Таня",
+          "замок"
+        ],
+        "mentions": [
+          {
+            "entity": "замок",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Таня",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "она",
+        "utterance": "Раньше был замок. Потом появился Таня. Я увидела она."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "e9ca2763c84012d4e9bc1bc4f3f53dd5b8852fa9224845dcec9cd7169308bb68",
+      "source": "ref-teacher-2",
+      "surface": "она",
+      "target": "Таня"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Борис",
+          "конверт"
+        ],
+        "mentions": [
+          {
+            "entity": "конверт",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Борис",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "она",
+        "utterance": "Раньше был конверт. Потом появился Борис. Я увидела она."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "26fc3f0d40329629951a178dd92e25a06e9dc763938c9a8a1fce75d186974ee4",
+      "source": "ref-teacher-0",
+      "surface": "она",
+      "target": "Борис"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Ева",
+          "торба"
+        ],
+        "mentions": [
+          {
+            "entity": "торба",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Ева",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "она",
+        "utterance": "Раньше был торба. Потом появился Ева. Я увидела она."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "c3fe0ef2915998c93275280170be3e88326f3fd196a2dcf92fea9092ea787009",
+      "source": "ref-teacher-1",
+      "surface": "она",
+      "target": "Ева"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Нина",
+          "шкатулка"
+        ],
+        "mentions": [
+          {
+            "entity": "шкатулка",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Нина",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "этого",
+        "utterance": "Раньше был шкатулка. Потом появился Нина. Я увидела этого."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "fcfad4218045a4b130c5695424719aa050ee2c38fa361db82b97c41208733f71",
+      "source": "ref-teacher-0",
+      "surface": "этого",
+      "target": "Нина"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Пётр",
+          "ящик"
+        ],
+        "mentions": [
+          {
+            "entity": "ящик",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Пётр",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "этого",
+        "utterance": "Раньше был ящик. Потом появился Пётр. Я увидела этого."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "e77a2b1f6b717a058970b82ec2de1bc4e7331958ef250966187c3c769fd3e68b",
+      "source": "ref-teacher-1",
+      "surface": "этого",
+      "target": "Пётр"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Игорь",
+          "пакет"
+        ],
+        "mentions": [
+          {
+            "entity": "пакет",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Игорь",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "этого",
+        "utterance": "Раньше был пакет. Потом появился Игорь. Я увидела этого."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "ef672bb9cd9198dc704bb382c6c96d8704fc2da4c79468ef98aa351706911456",
+      "source": "ref-teacher-2",
+      "surface": "этого",
+      "target": "Игорь"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Алла",
+          "коробка"
+        ],
+        "mentions": [
+          {
+            "entity": "коробка",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Алла",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "этого",
+        "utterance": "Раньше был коробка. Потом появился Алла. Я увидела этого."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "6462766a6024ee249e36e3837074883bd051851579fa239c5a9b206733f59829",
+      "source": "ref-teacher-0",
+      "surface": "этого",
+      "target": "Алла"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Лев",
+          "мяч"
+        ],
+        "mentions": [
+          {
+            "entity": "мяч",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Лев",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "этого",
+        "utterance": "Раньше был мяч. Потом появился Лев. Я увидела этого."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "64271b0f5e26dbb810cf3e22659b209b8ebe7bb3ebcfbb4f97cd57115c87d068",
+      "source": "ref-teacher-1",
+      "surface": "этого",
+      "target": "Лев"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Таня",
+          "замок"
+        ],
+        "mentions": [
+          {
+            "entity": "замок",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Таня",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "этого",
+        "utterance": "Раньше был замок. Потом появился Таня. Я увидела этого."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "4d554f82a168f97c06cd8365c3b4d23770117f0d37a2aa2a73971773cbef2a32",
+      "source": "ref-teacher-2",
+      "surface": "этого",
+      "target": "Таня"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Борис",
+          "конверт"
+        ],
+        "mentions": [
+          {
+            "entity": "конверт",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Борис",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "этого",
+        "utterance": "Раньше был конверт. Потом появился Борис. Я увидела этого."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "700296858054e178ad79a8d27ed75efc6c687047ee479956705f723947f68bfe",
+      "source": "ref-teacher-0",
+      "surface": "этого",
+      "target": "Борис"
+    },
+    {
+      "active": true,
+      "case_frame": {
+        "eligible": [
+          "Ева",
+          "торба"
+        ],
+        "mentions": [
+          {
+            "entity": "торба",
+            "event_number": 0,
+            "is_topic": false,
+            "quoted": false
+          },
+          {
+            "entity": "Ева",
+            "event_number": 2,
+            "is_topic": false,
+            "quoted": false
+          }
+        ],
+        "surface": "этого",
+        "utterance": "Раньше был торба. Потом появился Ева. Я увидела этого."
+      },
+      "negative": [],
+      "positive": [
+        "LATEST_MENTION",
+        "LATEST_UNQUOTED_MENTION",
+        "MENTIONED"
+      ],
+      "root": "de5ca6af537f286ef4628d06e58a7245360e5f665617861287ed5f731c76fe79",
+      "source": "ref-teacher-1",
+      "surface": "этого",
+      "target": "Ева"
+    }
+  ],
+  "schema": "G30C_RESEARCH_V1",
+  "scope_operator": [
+    {
+      "active": true,
+      "candidates": [
+        "не"
+      ],
+      "root": "21ab5e1f45e0263d91ff5a75bd55d3648c6b9a9d9c3fc6bf59be21b120796dec",
+      "sentence": "Этот лук и оружие не овощи.",
+      "source": "contrast-teacher-0",
+      "surface": "лук"
+    },
+    {
+      "active": true,
+      "candidates": [
+        "не"
+      ],
+      "root": "57dc59650a89e76b9bc1e9a08d6a03237fa143db5bd334510e92639f6e41b3bc",
+      "sentence": "Этот лук и суп не стрела.",
+      "source": "contrast-teacher-1",
+      "surface": "лук"
+    },
+    {
+      "active": true,
+      "candidates": [
+        "не"
+      ],
+      "root": "b44be4840b8691f5ee2569dfc463992447328737408856a62e4a35569e120b33",
+      "sentence": "Этот ключ и замок не вода.",
+      "source": "contrast-teacher-2",
+      "surface": "ключ"
+    },
+    {
+      "active": true,
+      "candidates": [
+        "не"
+      ],
+      "root": "50dd648343bb43ab76a67a87c39ceae21c625df3e46a89ed9eb7fb1f26ce057f",
+      "sentence": "Этот ключ и вода не замок.",
+      "source": "contrast-teacher-0",
+      "surface": "ключ"
+    },
+    {
+      "active": true,
+      "candidates": [
+        "не"
+      ],
+      "root": "413c625dd3f40af6444e8436f1d8cefe248682f24784861ed70e8d7fdacc6460",
+      "sentence": "Эта коса и волосы не трава.",
+      "source": "contrast-teacher-1",
+      "surface": "коса"
+    },
+    {
+      "active": true,
+      "candidates": [
+        "не"
+      ],
+      "root": "197e2fc3241ea512759696ad6752d75e0d567875870a3dab3c92b16a353378a7",
+      "sentence": "Эта коса и трава не волосы.",
+      "source": "contrast-teacher-2",
+      "surface": "коса"
+    },
+    {
+      "active": true,
+      "candidates": [
+        "не"
+      ],
+      "root": "cfe28ecf9674fcc8cca6e8e0f05cc15534fe8c5c083077002f77b713d8b84f59",
+      "sentence": "Эта ручка и письмо не дверь.",
+      "source": "contrast-teacher-0",
+      "surface": "ручка"
+    },
+    {
+      "active": true,
+      "candidates": [
+        "не"
+      ],
+      "root": "61d37e6a46c7db8922648e3f33705bb26e73f2bdbebb835b3a075394c01b2274",
+      "sentence": "Эта ручка и дверь не письмо.",
+      "source": "contrast-teacher-1",
+      "surface": "ручка"
+    },
+    {
+      "active": true,
+      "candidates": [
+        "не"
+      ],
+      "root": "f11c02ac27bdc5cf44715a7bac54c69b05b64179a6fa9ea9c0a2c1d4e6194ef9",
+      "sentence": "Сначала оружие и лук не овощи.",
+      "source": "contrast-teacher-2",
+      "surface": "лук"
+    },
+    {
+      "active": true,
+      "candidates": [
+        "не"
+      ],
+      "root": "afd7997d13c471fa15a0ea381687e98b69cc7df88659b8211f93b4187325bc3c",
+      "sentence": "Видна вода а ключ не замок.",
+      "source": "contrast-teacher-0",
+      "surface": "ключ"
+    },
+    {
+      "active": true,
+      "candidates": [
+        "не"
+      ],
+      "root": "ba8589b8d6121ca3c217d1c1fde9df976c11cc1a55e074ee9601174346823701",
+      "sentence": "Сено и коса не причёска.",
+      "source": "contrast-teacher-1",
+      "surface": "коса"
+    },
+    {
+      "active": true,
+      "candidates": [
+        "не"
+      ],
+      "root": "f1f79d04368324c0e79d33c3cc1526930bd313225112117110b37f1b157e850a",
+      "sentence": "Мебель и ручка не чернила.",
+      "source": "contrast-teacher-2",
+      "surface": "ручка"
+    }
+  ],
+  "sense_ledger": {
+    "lessons": [
+      {
+        "active": true,
+        "context": [
+          "дверь",
+          "замок"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "bf1d7b3fc8ec155ca0e0697d8d6a44a570fd110323901bf69b057d05ecfb888b",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "LOCK_KEY",
+        "source": "sim-teacher-0",
+        "word": "ключ"
+      },
+      {
+        "active": true,
+        "context": [
+          "дверь",
+          "замок"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "2a839e7a61375c586043f460cb721b77bb0acdf74452be9123627494246f37c6",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "LOCK_KEY",
+        "source": "sim-teacher-1",
+        "word": "ключ"
+      },
+      {
+        "active": true,
+        "context": [
+          "дверь",
+          "замок"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "93122e0fede0e5822c36911b4f0b1754e7e09d0fc5f4d93d0ad03d6a87447f12",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "LOCK_KEY",
+        "source": "sim-teacher-2",
+        "word": "ключ"
+      },
+      {
+        "active": true,
+        "context": [
+          "вода",
+          "ручей"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "4ab43c766af4c3c78388a609b2e7e74191e75ee756ea76d437002693a18b82c0",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "WATER_SPRING",
+        "source": "sim-teacher-0",
+        "word": "ключ"
+      },
+      {
+        "active": true,
+        "context": [
+          "вода",
+          "ручей"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "2a79474bb19c9b15316e0fb2605f663c2c4f137165d5593c9e7b4577cf775ecd",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "WATER_SPRING",
+        "source": "sim-teacher-1",
+        "word": "ключ"
+      },
+      {
+        "active": true,
+        "context": [
+          "вода",
+          "ручей"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "3e2aa5e6e466f34076a5ed63b349a68367b158934e2949cfcfdd70bc858ecf44",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "WATER_SPRING",
+        "source": "sim-teacher-2",
+        "word": "ключ"
+      },
+      {
+        "active": true,
+        "context": [
+          "овощи",
+          "суп"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "b81ccb03562c4f3deb19f3d1a20a690fb6bfb88ff8f750d421d71e0185866184",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "VEGETABLE",
+        "source": "sim-teacher-0",
+        "word": "лук"
+      },
+      {
+        "active": true,
+        "context": [
+          "овощи",
+          "суп"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "664491d287567ff2769237adcc4eab1bcd0d708cc8cfcc2ea5d57362615b4540",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "VEGETABLE",
+        "source": "sim-teacher-1",
+        "word": "лук"
+      },
+      {
+        "active": true,
+        "context": [
+          "овощи",
+          "суп"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "3afadfe51d5b6c3a43dfd123de0655ff2e1861bc9779eafbeb0dda60ed75cd77",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "VEGETABLE",
+        "source": "sim-teacher-2",
+        "word": "лук"
+      },
+      {
+        "active": true,
+        "context": [
+          "оружие",
+          "стрела"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "31dfc67ffd621e3a08d2cdc8b05f39ccc88963f33ff3a51f7921c4b321ed815a",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "BOW",
+        "source": "sim-teacher-0",
+        "word": "лук"
+      },
+      {
+        "active": true,
+        "context": [
+          "оружие",
+          "стрела"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "4df9815b0d409c248c3612530dc4878abe334167c626d2d7fdc6abcf48ba9937",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "BOW",
+        "source": "sim-teacher-1",
+        "word": "лук"
+      },
+      {
+        "active": true,
+        "context": [
+          "оружие",
+          "стрела"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "ae634989941d44685bae94a0df069478e03824bc642247bd4670c44bf1f2dd24",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "BOW",
+        "source": "sim-teacher-2",
+        "word": "лук"
+      },
+      {
+        "active": true,
+        "context": [
+          "волосы",
+          "причёска"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "6b88d04ccac922bf2c9e8125ec7b6a40ea80c67580521cee6c41b10f58318148",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "HAIR_BRAID",
+        "source": "sim-teacher-0",
+        "word": "коса"
+      },
+      {
+        "active": true,
+        "context": [
+          "волосы",
+          "причёска"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "d628b6e11210a88dfe4a345410e7a7d4a6c92374c0b5862ae59503cf97344f91",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "HAIR_BRAID",
+        "source": "sim-teacher-1",
+        "word": "коса"
+      },
+      {
+        "active": true,
+        "context": [
+          "волосы",
+          "причёска"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "2f4b7592c1778356f6349696aed5c401e9b198dd29f1c50fe10f21d26424830c",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "HAIR_BRAID",
+        "source": "sim-teacher-2",
+        "word": "коса"
+      },
+      {
+        "active": true,
+        "context": [
+          "сено",
+          "трава"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "a9628340ce899c48911423675fc6209a802d934c97ba473873bf9afad525a77f",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "TOOL_SCYTHE",
+        "source": "sim-teacher-0",
+        "word": "коса"
+      },
+      {
+        "active": true,
+        "context": [
+          "сено",
+          "трава"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "46c288554cc44e9867a00d88696b3c508ff5f63c2facc36bfc80bbc4bc7d8b9f",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "TOOL_SCYTHE",
+        "source": "sim-teacher-1",
+        "word": "коса"
+      },
+      {
+        "active": true,
+        "context": [
+          "сено",
+          "трава"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "25b0adaade661c544ff07c4acf7e9b88ac16e522c4ef9018e666f71d0e187e5c",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "TOOL_SCYTHE",
+        "source": "sim-teacher-2",
+        "word": "коса"
+      },
+      {
+        "active": true,
+        "context": [
+          "письмо",
+          "чернила"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "270fe6f9e689a1325cf78d10918dcf4f785dc50f6b4172c6e2a3efd5a55d47ac",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "PEN",
+        "source": "sim-teacher-0",
+        "word": "ручка"
+      },
+      {
+        "active": true,
+        "context": [
+          "письмо",
+          "чернила"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "d1e4f811d0a9ccf882ac7d1bc9ede43fffd56b9252f2a3d1b9b94d95724fc60f",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "PEN",
+        "source": "sim-teacher-1",
+        "word": "ручка"
+      },
+      {
+        "active": true,
+        "context": [
+          "письмо",
+          "чернила"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "41c6a9eb96dc8595095e26be52dea7c4fddcda4afede790b8e1edbc8299a9698",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "PEN",
+        "source": "sim-teacher-2",
+        "word": "ручка"
+      },
+      {
+        "active": true,
+        "context": [
+          "дверь",
+          "мебель"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "663e03362848929bf1d0244682a8a7aa7415d631b9adcba2a6907cb8f64635ac",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "HANDLE",
+        "source": "sim-teacher-0",
+        "word": "ручка"
+      },
+      {
+        "active": true,
+        "context": [
+          "дверь",
+          "мебель"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "26913481217dfca1ee26e78d12f1395cb33d1cce9929d3bef6ed844b1d2532c2",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "HANDLE",
+        "source": "sim-teacher-1",
+        "word": "ручка"
+      },
+      {
+        "active": true,
+        "context": [
+          "дверь",
+          "мебель"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "907a6067e901c604ef1c6ecdebb76719dd76997926341e018aca116ba65f2dac",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "HANDLE",
+        "source": "sim-teacher-2",
+        "word": "ручка"
+      },
+      {
+        "active": true,
+        "context": [
+          "животное",
+          "хвост"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "6ff1737b763f67b2e12e76c2013f08792d9f369a0c541a57c03732807dcfc2e9",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "ANIMAL",
+        "source": "new-word-teacher-0",
+        "word": "мышь"
+      },
+      {
+        "active": true,
+        "context": [
+          "животное",
+          "хвост"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "38e299ca6f75c6b6dea0179dc66c78ed42dfcbb929ba5013ba908ad167f0c098",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "ANIMAL",
+        "source": "new-word-teacher-1",
+        "word": "мышь"
+      },
+      {
+        "active": true,
+        "context": [
+          "животное",
+          "хвост"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "eeebe97fbb9124b728c7a078404910533b46f7cb428f09be6ac9a1158944d38d",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "ANIMAL",
+        "source": "new-word-teacher-2",
+        "word": "мышь"
+      },
+      {
+        "active": true,
+        "context": [
+          "компьютер",
+          "курсор"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "c6c8bf4267902ecda4747420be8460d955dd62a0d641830e147c79350eaf0977",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "DEVICE",
+        "source": "new-word-teacher-0",
+        "word": "мышь"
+      },
+      {
+        "active": true,
+        "context": [
+          "компьютер",
+          "курсор"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "233bdd8cfc803bd4061581c4317b1773d6f681be0902a70062d2960c1f50b95b",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "DEVICE",
+        "source": "new-word-teacher-1",
+        "word": "мышь"
+      },
+      {
+        "active": true,
+        "context": [
+          "компьютер",
+          "курсор"
+        ],
+        "epistemic": "ATTESTED_REFERENT_PLUS_TEACHER_LANGUAGE_CLAIM",
+        "root": "997ed097836602464d62b3d51662284a1e403aa3e53cf2a6333245f80530c66c",
+        "scope": "LOCAL_LANGUAGE",
+        "sense": "DEVICE",
+        "source": "new-word-teacher-2",
+        "word": "мышь"
+      }
+    ],
+    "parent_hash": "54966e9869908e17b5a9a5891e460cc2d63b6247feb53ef26c499bf64d755992",
+    "schema": "G30C_SENSE_LEDGER_V1"
+  }
+}

@@ -263,7 +263,7 @@ jobs:
       missing=[x for x in required_java if x not in java]
       if missing:
           raise SystemExit('Android body manifest contract missing: '+repr(missing))
-      if '"BODY_MANIFEST":(' not in py or '"WORLD_EVENT","WORLD_TASK","BODY_MANIFEST"' not in py:
+      if "ResearchHost" not in py:
           raise SystemExit('Python runtime capability routing is incomplete')
       forbidden=['Эмоции:','Любопытство:','Энергия:','Опыт за сегодня:']
       present=[x for x in forbidden if x in html]
@@ -396,7 +396,7 @@ jobs:
       py=Path('app/src/main/python/c4_mobile_bridge.py').read_text()
       need_html=['id="traceSupport"','data-trace-mode="DEEP"','traceNext','cognitiveTrace','C4_NURSERY_TRAINING_BUNDLE_V3']
       need_java=['C4_COGNITIVE_TRACE_V1','configureCognitiveTrace','requestCognitiveTraceSnapshot','cognitive_trace.jsonl','clearDiagnosticTraces']
-      need_py=['TRACE_CONFIG','TRACE_SNAPSHOT']
+      need_py=['ResearchHost','PY_RUNTIME_OPERATION_FAILURE']
       for name,src,need in [('html',html,need_html),('java',java,need_java),('py',py,need_py)]:
           missing=[x for x in need if x not in src]
           if missing: raise SystemExit(f'Cognitive trace {name} contract missing: {missing}')
@@ -422,7 +422,11 @@ jobs:
       if bad:
           raise SystemExit('English trace UI leaked back: '+repr(bad))
       PY
-      python3 -m py_compile app/src/main/python/c4_mobile_bridge.py
+      python3 -m py_compile app/src/main/python/c4_mobile_bridge.py app/src/main/python/c4_research_host.py
+      python3 tests/test_native_host.py
+      python3 tools/check_ui_javascript.py
+      javac -d /tmp/physics-tests app/src/main/java/com/singularity/c4nursery/PhysicsRoom.java tests/PhysicsRoomTest.java
+      java -cp /tmp/physics-tests PhysicsRoomTest
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
      if: always()
@@ -439,16 +443,20 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.64.3-trace-ru.apk
-      BYTES=$(stat -c%s release/C4-Nursery-0.64.3-trace-ru.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.64.3-trace-ru.apk | awk '{print $1}')
+      cp "$APK" release/C4-Nursery-0.65.0-native-research.apk
+      python3 tools/package_research_runtime.py
+      cp docs/NATIVE_RESEARCH_INTEGRATION.md release/
+      BYTES=$(stat -c%s release/C4-Nursery-0.65.0-native-research.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.65.0-native-research.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.64.3-trace-ru.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.65.0-native-research.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.64.3-trace-ru
+      name: C4-Nursery-0.65.0-native-research
       path: |
-       release/C4-Nursery-0.64.3-trace-ru.apk
+       release/C4-Nursery-0.65.0-native-research.apk
        release/SHA256.txt
+       release/C4_G29_G30C_G30D_EMU_RUNTIME_2026-10-11.zip
+       release/NATIVE_RESEARCH_INTEGRATION.md
       if-no-files-found: error
       compression-level: 0

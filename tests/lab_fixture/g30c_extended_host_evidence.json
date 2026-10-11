@@ -1,0 +1,590 @@
+[
+  {
+    "data": {
+      "atom": "LOCK_KEY",
+      "object": "obj_0_0"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "bf1d7b3fc8ec155ca0e0697d8d6a44a570fd110323901bf69b057d05ecfb888b"
+  },
+  {
+    "data": {
+      "atom": "LOCK_KEY",
+      "object": "obj_0_1"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "2a839e7a61375c586043f460cb721b77bb0acdf74452be9123627494246f37c6"
+  },
+  {
+    "data": {
+      "atom": "LOCK_KEY",
+      "object": "obj_0_2"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "93122e0fede0e5822c36911b4f0b1754e7e09d0fc5f4d93d0ad03d6a87447f12"
+  },
+  {
+    "data": {
+      "atom": "WATER_SPRING",
+      "object": "obj_1_0"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "4ab43c766af4c3c78388a609b2e7e74191e75ee756ea76d437002693a18b82c0"
+  },
+  {
+    "data": {
+      "atom": "WATER_SPRING",
+      "object": "obj_1_1"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "2a79474bb19c9b15316e0fb2605f663c2c4f137165d5593c9e7b4577cf775ecd"
+  },
+  {
+    "data": {
+      "atom": "WATER_SPRING",
+      "object": "obj_1_2"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "3e2aa5e6e466f34076a5ed63b349a68367b158934e2949cfcfdd70bc858ecf44"
+  },
+  {
+    "data": {
+      "atom": "VEGETABLE",
+      "object": "obj_2_0"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "b81ccb03562c4f3deb19f3d1a20a690fb6bfb88ff8f750d421d71e0185866184"
+  },
+  {
+    "data": {
+      "atom": "VEGETABLE",
+      "object": "obj_2_1"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "664491d287567ff2769237adcc4eab1bcd0d708cc8cfcc2ea5d57362615b4540"
+  },
+  {
+    "data": {
+      "atom": "VEGETABLE",
+      "object": "obj_2_2"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "3afadfe51d5b6c3a43dfd123de0655ff2e1861bc9779eafbeb0dda60ed75cd77"
+  },
+  {
+    "data": {
+      "atom": "BOW",
+      "object": "obj_3_0"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "31dfc67ffd621e3a08d2cdc8b05f39ccc88963f33ff3a51f7921c4b321ed815a"
+  },
+  {
+    "data": {
+      "atom": "BOW",
+      "object": "obj_3_1"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "4df9815b0d409c248c3612530dc4878abe334167c626d2d7fdc6abcf48ba9937"
+  },
+  {
+    "data": {
+      "atom": "BOW",
+      "object": "obj_3_2"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "ae634989941d44685bae94a0df069478e03824bc642247bd4670c44bf1f2dd24"
+  },
+  {
+    "data": {
+      "atom": "HAIR_BRAID",
+      "object": "obj_4_0"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "6b88d04ccac922bf2c9e8125ec7b6a40ea80c67580521cee6c41b10f58318148"
+  },
+  {
+    "data": {
+      "atom": "HAIR_BRAID",
+      "object": "obj_4_1"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "d628b6e11210a88dfe4a345410e7a7d4a6c92374c0b5862ae59503cf97344f91"
+  },
+  {
+    "data": {
+      "atom": "HAIR_BRAID",
+      "object": "obj_4_2"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "2f4b7592c1778356f6349696aed5c401e9b198dd29f1c50fe10f21d26424830c"
+  },
+  {
+    "data": {
+      "atom": "TOOL_SCYTHE",
+      "object": "obj_5_0"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "a9628340ce899c48911423675fc6209a802d934c97ba473873bf9afad525a77f"
+  },
+  {
+    "data": {
+      "atom": "TOOL_SCYTHE",
+      "object": "obj_5_1"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "46c288554cc44e9867a00d88696b3c508ff5f63c2facc36bfc80bbc4bc7d8b9f"
+  },
+  {
+    "data": {
+      "atom": "TOOL_SCYTHE",
+      "object": "obj_5_2"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "25b0adaade661c544ff07c4acf7e9b88ac16e522c4ef9018e666f71d0e187e5c"
+  },
+  {
+    "data": {
+      "atom": "PEN",
+      "object": "obj_6_0"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "270fe6f9e689a1325cf78d10918dcf4f785dc50f6b4172c6e2a3efd5a55d47ac"
+  },
+  {
+    "data": {
+      "atom": "PEN",
+      "object": "obj_6_1"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "d1e4f811d0a9ccf882ac7d1bc9ede43fffd56b9252f2a3d1b9b94d95724fc60f"
+  },
+  {
+    "data": {
+      "atom": "PEN",
+      "object": "obj_6_2"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "41c6a9eb96dc8595095e26be52dea7c4fddcda4afede790b8e1edbc8299a9698"
+  },
+  {
+    "data": {
+      "atom": "HANDLE",
+      "object": "obj_7_0"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "663e03362848929bf1d0244682a8a7aa7415d631b9adcba2a6907cb8f64635ac"
+  },
+  {
+    "data": {
+      "atom": "HANDLE",
+      "object": "obj_7_1"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "26913481217dfca1ee26e78d12f1395cb33d1cce9929d3bef6ed844b1d2532c2"
+  },
+  {
+    "data": {
+      "atom": "HANDLE",
+      "object": "obj_7_2"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "907a6067e901c604ef1c6ecdebb76719dd76997926341e018aca116ba65f2dac"
+  },
+  {
+    "data": {
+      "parts": [
+        "кое",
+        "как"
+      ],
+      "raw": "кое-как",
+      "source": "orth-witness-0"
+    },
+    "kind": "ORTHOGRAPHIC_DEMONSTRATION",
+    "root": "0f494ac3ea22dbe6c96226a88cb1b34959f917986b9e4bc33ac2ddca1e67d6c5"
+  },
+  {
+    "data": {
+      "parts": [
+        "чей",
+        "то"
+      ],
+      "raw": "чей-то",
+      "source": "orth-witness-1"
+    },
+    "kind": "ORTHOGRAPHIC_DEMONSTRATION",
+    "root": "d204aa910c0df44600c3663d11518cacb0fe84668745be7941df1b7b13849dbe"
+  },
+  {
+    "data": {
+      "parts": [
+        "по",
+        "новому"
+      ],
+      "raw": "по-новому",
+      "source": "orth-witness-2"
+    },
+    "kind": "ORTHOGRAPHIC_DEMONSTRATION",
+    "root": "fd9b6b813648cab2a3d61a1e170d6003ab3bd997bfe1abba44ec5e7f111a0f09"
+  },
+  {
+    "data": {
+      "case": "0c719b314d4944f8913bec3a81514766ce0e6183806a440559ff963a4bd7057b",
+      "source": "ref-teacher-0",
+      "target": "Нина"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "7d275b364c6199f52a55f58cdecf04b66f7c69afb73f1c4700c3d214de356fd7"
+  },
+  {
+    "data": {
+      "case": "6cf07080d61f279a96dcfd2925490023ee77cce34654726b533288de08d44666",
+      "source": "ref-teacher-1",
+      "target": "Пётр"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "3670526e29d830e3cba90e95f86ebf6a32d6b485f9478861e79000143bdfe997"
+  },
+  {
+    "data": {
+      "case": "10ab61fe5d6ae8a08d32422d78fb92b9aad907c25bb67dbffc26d74100793910",
+      "source": "ref-teacher-2",
+      "target": "Игорь"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "0ed20b5a6e1acc992fb326f98c7fd98b30b8de85b3862f15fa6b788399d6a11a"
+  },
+  {
+    "data": {
+      "case": "4760d61d8e5a8a9a0865dbd08acf825405be43785d92bfa41befeb3051fbc180",
+      "source": "ref-teacher-0",
+      "target": "Алла"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "8fa6d63ea0f9be179c15d81104060a0264e3fbb594e9d648bd676c3f929315d4"
+  },
+  {
+    "data": {
+      "case": "48f5c3d12ebe25ae214e5f70fbb2dc73798ee2ea0d27d760fed108904a19fe64",
+      "source": "ref-teacher-1",
+      "target": "Лев"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "1780b92d1d1e1c527edb3b837ea2b264463f660fea4b4a8a4ee3183f889a5bf6"
+  },
+  {
+    "data": {
+      "case": "f0d3365b6ff0cecce1a3862f857187210912655adaab67a1eb099b8793507b9e",
+      "source": "ref-teacher-2",
+      "target": "Таня"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "fdd3e65649ea09e95cb4a4016ee29b726e6c1211b255bae41f63082731db70b3"
+  },
+  {
+    "data": {
+      "case": "eb81f42ddfc8fd4e0c719e577cf1e5913bfaf2d92ee2db1894db781055be76fb",
+      "source": "ref-teacher-0",
+      "target": "Борис"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "4f3bab39c2068d9054c751f138ff52d80456048421a36cec630608103ba7b121"
+  },
+  {
+    "data": {
+      "case": "406092a8e718be0c86664ad32d9511da4e248a40513fb4b501fbd8222eb19f20",
+      "source": "ref-teacher-1",
+      "target": "Ева"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "a2f4dd14783d7c9b73944d2dce986a6e886365ec0ccbb0fb90ee2afda8796f87"
+  },
+  {
+    "data": {
+      "case": "784b2c0987bae58e01b336bf29d5441788ed1cb61c40515e62a6a82aa4c3c025",
+      "source": "ref-teacher-0",
+      "target": "Нина"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "1c42e65f743803f20dbb6a4ca3db0c444109213355cfee927b6fd00af54cf91f"
+  },
+  {
+    "data": {
+      "case": "1efb96da2490f3c0fe0dd0698f13abea9e582a74a744eaabcdb57d1a198b0957",
+      "source": "ref-teacher-1",
+      "target": "Пётр"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "790e277a8175c2bbde788855327ed74e77b1b4ce12ff5c57d30024f04c4f3962"
+  },
+  {
+    "data": {
+      "case": "3cd7d7a1a00b50083cc53ebc0a3217dc0af40a5f2430e3b327b46377d45f9a16",
+      "source": "ref-teacher-2",
+      "target": "Игорь"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "b799112cea62f31f5d48c54df7b358a4d2fa0e8681289d5664183ad4c0d0ff35"
+  },
+  {
+    "data": {
+      "case": "43a06672ddc4784474b12c9f90bcc1f284c05f52d61f609b625930d57e222ac3",
+      "source": "ref-teacher-0",
+      "target": "Алла"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "4614fe709df98d78ca1ec77a86e890b3d6cf7b0222508cffe1049a09796ade02"
+  },
+  {
+    "data": {
+      "case": "eb92a9bfbe21bcaa8e3e761de541699f532b609ce1a2078cb851eaee29c6326d",
+      "source": "ref-teacher-1",
+      "target": "Лев"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "c9c407838532524d1d9dd781520449847b82a6a1923b2d4b304e5229595a00c7"
+  },
+  {
+    "data": {
+      "case": "112cc738451cc3759b731b72119035e8605f48f3a616e0b280ad509cead81f57",
+      "source": "ref-teacher-2",
+      "target": "Таня"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "e9ca2763c84012d4e9bc1bc4f3f53dd5b8852fa9224845dcec9cd7169308bb68"
+  },
+  {
+    "data": {
+      "case": "9f1dd9bac8ff60e5493814b5d2a372531a1635ebc3e1388a59fd7b0a4e5d37af",
+      "source": "ref-teacher-0",
+      "target": "Борис"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "26fc3f0d40329629951a178dd92e25a06e9dc763938c9a8a1fce75d186974ee4"
+  },
+  {
+    "data": {
+      "case": "02d19f087267ccff33e3ec99c30a331a93c11f64f6a3190f2ff7bebbb5b8ca26",
+      "source": "ref-teacher-1",
+      "target": "Ева"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "c3fe0ef2915998c93275280170be3e88326f3fd196a2dcf92fea9092ea787009"
+  },
+  {
+    "data": {
+      "case": "d1b699f4e00cef429e5c794030d12cc78e9b6df7c2b96c80b3d203142750fba5",
+      "source": "ref-teacher-0",
+      "target": "Нина"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "fcfad4218045a4b130c5695424719aa050ee2c38fa361db82b97c41208733f71"
+  },
+  {
+    "data": {
+      "case": "8ccebd7520551e914cac68263237a86f92ad50c971d8930f2f4f8c2caf7536ad",
+      "source": "ref-teacher-1",
+      "target": "Пётр"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "e77a2b1f6b717a058970b82ec2de1bc4e7331958ef250966187c3c769fd3e68b"
+  },
+  {
+    "data": {
+      "case": "6bd86d1b3a6d36c3c0203feb668781e18361e06ae04a44be42e82cc98e20d4b2",
+      "source": "ref-teacher-2",
+      "target": "Игорь"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "ef672bb9cd9198dc704bb382c6c96d8704fc2da4c79468ef98aa351706911456"
+  },
+  {
+    "data": {
+      "case": "4e541c5c8d53ba3979058ba707cfd86b69462691137fc3f122f4ecfa084aa182",
+      "source": "ref-teacher-0",
+      "target": "Алла"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "6462766a6024ee249e36e3837074883bd051851579fa239c5a9b206733f59829"
+  },
+  {
+    "data": {
+      "case": "4613eb801b268ffbe6767d10446764f5a233e48bcc39024cd275df7402250b50",
+      "source": "ref-teacher-1",
+      "target": "Лев"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "64271b0f5e26dbb810cf3e22659b209b8ebe7bb3ebcfbb4f97cd57115c87d068"
+  },
+  {
+    "data": {
+      "case": "338a1be9a4b398eb889ca7b6c0ab85a1bc560a54748f5a2648ab0097c45a3fd5",
+      "source": "ref-teacher-2",
+      "target": "Таня"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "4d554f82a168f97c06cd8365c3b4d23770117f0d37a2aa2a73971773cbef2a32"
+  },
+  {
+    "data": {
+      "case": "f498a726c9e0655f1bbfdbd38cd4563da556eb46c5223ad40454c7992439ecef",
+      "source": "ref-teacher-0",
+      "target": "Борис"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "700296858054e178ad79a8d27ed75efc6c687047ee479956705f723947f68bfe"
+  },
+  {
+    "data": {
+      "case": "0cb1b4426d83fee282daf5e9f3e6b57bda2fd2a2a73bad8bb4e6a015246ce8d2",
+      "source": "ref-teacher-1",
+      "target": "Ева"
+    },
+    "kind": "LANGUAGE_REFERENCE_DEMONSTRATION",
+    "root": "de5ca6af537f286ef4628d06e58a7245360e5f665617861287ed5f731c76fe79"
+  },
+  {
+    "data": {
+      "atom": "BOW",
+      "object": "contrast_observation_0"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "21ab5e1f45e0263d91ff5a75bd55d3648c6b9a9d9c3fc6bf59be21b120796dec"
+  },
+  {
+    "data": {
+      "atom": "VEGETABLE",
+      "object": "contrast_observation_1"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "57dc59650a89e76b9bc1e9a08d6a03237fa143db5bd334510e92639f6e41b3bc"
+  },
+  {
+    "data": {
+      "atom": "LOCK_KEY",
+      "object": "contrast_observation_2"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "b44be4840b8691f5ee2569dfc463992447328737408856a62e4a35569e120b33"
+  },
+  {
+    "data": {
+      "atom": "WATER_SPRING",
+      "object": "contrast_observation_3"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "50dd648343bb43ab76a67a87c39ceae21c625df3e46a89ed9eb7fb1f26ce057f"
+  },
+  {
+    "data": {
+      "atom": "HAIR_BRAID",
+      "object": "contrast_observation_4"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "413c625dd3f40af6444e8436f1d8cefe248682f24784861ed70e8d7fdacc6460"
+  },
+  {
+    "data": {
+      "atom": "TOOL_SCYTHE",
+      "object": "contrast_observation_5"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "197e2fc3241ea512759696ad6752d75e0d567875870a3dab3c92b16a353378a7"
+  },
+  {
+    "data": {
+      "atom": "PEN",
+      "object": "contrast_observation_6"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "cfe28ecf9674fcc8cca6e8e0f05cc15534fe8c5c083077002f77b713d8b84f59"
+  },
+  {
+    "data": {
+      "atom": "HANDLE",
+      "object": "contrast_observation_7"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "61d37e6a46c7db8922648e3f33705bb26e73f2bdbebb835b3a075394c01b2274"
+  },
+  {
+    "data": {
+      "atom": "BOW",
+      "object": "contrast_observation_8"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "f11c02ac27bdc5cf44715a7bac54c69b05b64179a6fa9ea9c0a2c1d4e6194ef9"
+  },
+  {
+    "data": {
+      "atom": "WATER_SPRING",
+      "object": "contrast_observation_9"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "afd7997d13c471fa15a0ea381687e98b69cc7df88659b8211f93b4187325bc3c"
+  },
+  {
+    "data": {
+      "atom": "TOOL_SCYTHE",
+      "object": "contrast_observation_10"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "ba8589b8d6121ca3c217d1c1fde9df976c11cc1a55e074ee9601174346823701"
+  },
+  {
+    "data": {
+      "atom": "HANDLE",
+      "object": "contrast_observation_11"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "f1f79d04368324c0e79d33c3cc1526930bd313225112117110b37f1b157e850a"
+  },
+  {
+    "data": {
+      "atom": "ANIMAL",
+      "object": "new_mouse_0_0"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "6ff1737b763f67b2e12e76c2013f08792d9f369a0c541a57c03732807dcfc2e9"
+  },
+  {
+    "data": {
+      "atom": "ANIMAL",
+      "object": "new_mouse_0_1"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "38e299ca6f75c6b6dea0179dc66c78ed42dfcbb929ba5013ba908ad167f0c098"
+  },
+  {
+    "data": {
+      "atom": "ANIMAL",
+      "object": "new_mouse_0_2"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "eeebe97fbb9124b728c7a078404910533b46f7cb428f09be6ac9a1158944d38d"
+  },
+  {
+    "data": {
+      "atom": "DEVICE",
+      "object": "new_mouse_1_0"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "c6c8bf4267902ecda4747420be8460d955dd62a0d641830e147c79350eaf0977"
+  },
+  {
+    "data": {
+      "atom": "DEVICE",
+      "object": "new_mouse_1_1"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "233bdd8cfc803bd4061581c4317b1773d6f681be0902a70062d2960c1f50b95b"
+  },
+  {
+    "data": {
+      "atom": "DEVICE",
+      "object": "new_mouse_1_2"
+    },
+    "kind": "OBSERVED_OBJECT",
+    "root": "997ed097836602464d62b3d51662284a1e403aa3e53cf2a6333245f80530c66c"
+  }
+]

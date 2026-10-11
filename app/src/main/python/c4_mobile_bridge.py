@@ -1,10 +1,17 @@
 import json, os, sys, zipfile, shutil, importlib, base64, traceback, hashlib
+from pathlib import Path
+from c4_research_host import ResearchHost, atomic, sha
+import threading
+_lock=threading.RLock()
 _runtime=None
 _runtime_root=None
 _checkpoint_path=None
 _h3=None
 _manifest_meta={}
 _last_saved_step=0
+_research=None
+_runtime_build=None
+_profile=json.loads(Path(__file__).with_name("c4_runtime_profile.json").read_text())
 
 def _purge_c4child():
     for name in list(sys.modules):
@@ -12,69 +19,74 @@ def _purge_c4child():
             sys.modules.pop(name,None)
 
 def configure(home):
-    global _runtime_root
+    global _runtime_root,_runtime_build
     dest=os.path.join(home,"c4_runtime")
     if os.path.isfile(os.path.join(dest,"c4child","runtime.py")):
-        _runtime_root=dest
-        if dest not in sys.path: sys.path.insert(0,dest)
-        return json.dumps({"ready":True,"root":dest})
+        build,files=_code_build(dest)
+        if files!=_profile["files"]:
+            _runtime_root=None
+            return json.dumps({"ready":False,"error":"UNSUPPORTED_RUNTIME_BUILD"})
+        _runtime_root=dest;_runtime_build=build
+        if dest not in sys.path:sys.path.insert(0,dest)
+        return json.dumps({"ready":True,"root":dest,"buildSha256":build,"abi":_profile["abi"]})
     _runtime_root=None
     return json.dumps({"ready":False})
 
-def install_runtime(zip_path, home):
-    global _runtime, _runtime_root
-    _runtime=None
-    dest=os.path.join(home,"c4_runtime")
-    tmp=dest+".tmp"
-    shutil.rmtree(tmp,ignore_errors=True); os.makedirs(tmp,exist_ok=True)
-    with zipfile.ZipFile(zip_path) as z:
-        names=z.namelist()
-        hits=[n for n in names if n.endswith("c4child/runtime.py")]
-        if not hits: raise RuntimeError("C4CHILD_RUNTIME_NOT_FOUND")
-        prefix=hits[0][:-len("c4child/runtime.py")]
-        for n in names:
-            if n.startswith(prefix+"c4child/") and not n.endswith("/") and n.endswith(".py"):
-                rel=n[len(prefix):]; out=os.path.join(tmp,rel)
-                os.makedirs(os.path.dirname(out),exist_ok=True)
-                with z.open(n) as src, open(out,"wb") as dst: shutil.copyfileobj(src,dst)
-    if not os.path.isfile(os.path.join(tmp,"c4child","__init__.py")):
-        raise RuntimeError("C4CHILD_PACKAGE_INCOMPLETE")
-    shutil.rmtree(dest,ignore_errors=True); os.replace(tmp,dest)
-    _purge_c4child()
-    _runtime_root=dest
-    if dest not in sys.path: sys.path.insert(0,dest)
-    importlib.invalidate_caches()
-    pkg=importlib.import_module("c4child")
-    required=("C4LivingRuntime","C4ChildDialogue")
-    missing=[x for x in required if not hasattr(pkg,x)]
-    if missing: raise RuntimeError("RUNTIME_API_MISSING:"+",".join(missing))
-    return json.dumps({"installed":True,"root":dest,"api":"C4_LIVING_RUNTIME","override":True})
+def _code_build(root):
+    files={p.relative_to(root).as_posix():sha(p.read_bytes()) for p in Path(root).rglob("*.py")}
+    return sha(json.dumps(files,sort_keys=True).encode()),files
 
-def _load_checkpoint(path):
-    import c4child.checkpoint as cp
-    with zipfile.ZipFile(path) as z:
-        manifest=json.loads(z.read("manifest.json"))
-    schema=str(manifest.get("schema",""))
-    if schema=="C4M_CHILD_V0.4_COMPACT":
-        loader=getattr(cp,"load_c4m_compact",None)
-        if loader is None: raise RuntimeError("COMPACT_LOADER_NOT_AVAILABLE")
-        g,h,m,rs=loader(path,with_runtime=True)
-    else:
-        loader=getattr(cp,"load_c4m",None)
-        if loader is None: raise RuntimeError("LOAD_C4M_NOT_FOUND")
-        g,h,m,rs=loader(path,with_runtime=True)
-    return schema,g,h,m,rs
+def install_runtime(zip_path, home):
+    global _runtime_root, _runtime_build
+    if _runtime is not None or _research is not None:
+        raise RuntimeError("STOP_LIFE_BEFORE_RUNTIME_INSTALL")
+    dest=os.path.join(home,"c4_runtime");tmp=dest+".tmp"
+    shutil.rmtree(tmp,ignore_errors=True);os.makedirs(tmp,exist_ok=True)
+    with zipfile.ZipFile(zip_path) as z:
+        hits=[n for n in z.namelist() if n.endswith("c4child/runtime.py")]
+        if len(hits)!=1:raise RuntimeError("AMBIGUOUS_OR_MISSING_RUNTIME")
+        prefix=hits[0][:-len("c4child/runtime.py")]
+        count=0;total=0
+        for info in z.infolist():
+            n=info.filename
+            if not n.startswith(prefix+"c4child/") or not n.endswith(".py"):continue
+            rel=Path(n[len(prefix):])
+            if rel.is_absolute() or ".." in rel.parts:raise RuntimeError("UNSAFE_ZIP_PATH")
+            count+=1;total+=info.file_size
+            if total>16777216 or count>500:raise RuntimeError("RUNTIME_ZIP_LIMIT")
+            out=Path(tmp)/rel;out.parent.mkdir(parents=True,exist_ok=True)
+            atomic(out,z.read(info))
+    build,files=_code_build(tmp)
+    if files!=_profile["files"]:
+        shutil.rmtree(tmp)
+        raise RuntimeError("UNSUPPORTED_RUNTIME_BUILD: needs an explicit reviewed ABI profile")
+    atomic(Path(tmp)/"host_abi.json",json.dumps({"buildSha256":build,"abi":_profile["abi"],"schema":_profile["schema"]}).encode())
+    backup=dest+".previous"
+    shutil.rmtree(backup,ignore_errors=True)
+    if os.path.isdir(dest):os.replace(dest,backup)
+    try:os.replace(tmp,dest)
+    except Exception:
+        if os.path.isdir(backup):os.replace(backup,dest)
+        raise
+    _purge_c4child();_runtime_root=dest;_runtime_build=build
+    # Remove the old sys.path entry to avoid importing an older runtime.
+    sys.path[:]=[x for x in sys.path if x!=dest and not x.endswith("/c4_runtime.tmp")]
+    sys.path.insert(0,dest);importlib.invalidate_caches()
+    return json.dumps({"installed":True,"ready":False,"requiresOrganismHandshake":True,
+        "root":dest,"buildSha256":build,"abi":_profile["abi"],"schema":_profile["schema"]})
 
 def _boot_diagnostic_payload(code, exc=None, path=None):
     detail = str(exc) if exc is not None else ""
     result = {"running": False, "errorCode": code, "errorDetail": detail,
               "traceback": traceback.format_exc() if exc is not None else "",
-              "runtimeRoot": _runtime_root, "organismPath": path}
+              "runtimeRoot": _runtime_root, "organismPath": path, "runtimeBuildSha256": _runtime_build,
+              "abi": _profile["abi"], "expectedSchema":_profile["schema"]}
     try:
         if _runtime_root and os.path.isfile(os.path.join(_runtime_root,"c4child","runtime.py")):
             with open(os.path.join(_runtime_root,"c4child","runtime.py"),"rb") as source:
                 result["runtimeCodeSha256"] = hashlib.sha256(source.read()).hexdigest()
         if path and os.path.isfile(path):
+            result["organismSha256"]=sha(Path(path).read_bytes())
             with zipfile.ZipFile(path) as archive:
                 m = json.loads(archive.read("manifest.json"))
             result["organismSchema"] = m.get("schema")
@@ -101,123 +113,59 @@ def last_boot_diagnostic():
         return source.read()
 
 def open_organism(path):
-    global _runtime,_checkpoint_path,_h3,_manifest_meta,_last_saved_step
+    global _runtime,_checkpoint_path,_h3,_manifest_meta,_last_saved_step,_research
+    if _runtime is not None or _research is not None:
+        return json.dumps({"running":False,"errorCode":"LIFE_ALREADY_RUNNING"})
     _runtime = None
     if not _runtime_root:
         return json.dumps(_boot_diagnostic_payload("RUNTIME_PACKAGE_NOT_INSTALLED",path=path),ensure_ascii=False)
     try:
         importlib.invalidate_caches()
         pkg = importlib.import_module("c4child")
-        schema,g,h,manifest,rs = _load_checkpoint(path)
-        dialogue = pkg.C4ChildDialogue(g)
-        candidate = pkg.C4LivingRuntime(dialogue)
-        for method in ("load_runtime_state","runtime_state","user_message","tick","poll"):
-            if not callable(getattr(candidate,method,None)):
-                raise RuntimeError("RUNTIME_API_MISSING:" + method)
-        if rs:
-            candidate.load_runtime_state(rs)
-        state = candidate.runtime_state()
-        if not isinstance(state,dict):
-            raise RuntimeError("RUNTIME_STATE_NOT_DICT")
-        _runtime = candidate
-        _checkpoint_path = path
-        _h3 = h
-        _manifest_meta = dict(manifest or {})
-        _last_saved_step = int(state.get("step",0))
-        return json.dumps({"running":True,"schema":schema,
-            "manifestSchema":manifest.get("schema"),"state":state},ensure_ascii=False,default=str)
+        with zipfile.ZipFile(path) as archive:
+            schema=json.loads(archive.read("manifest.json")).get("schema")
+        if schema==_profile["schema"]:
+            build,files=_code_build(_runtime_root)
+            if files!=_profile["files"]:raise RuntimeError("RUNTIME_BUILD_CHANGED")
+            _research=ResearchHost(path,build,pkg)
+            _runtime=_research.runtime;_checkpoint_path=path
+            result={"running":True,"schema":schema,"state":_research.state()}
+            atomic(Path(_runtime_root)/"last_boot_diagnostic.json",json.dumps(result,ensure_ascii=False).encode())
+            return json.dumps(result,ensure_ascii=False)
+        raise RuntimeError("UNSUPPORTED_ORGANISM_SCHEMA:"+str(schema))
     except Exception as exc:
         _runtime = None
+        _research = None
         return json.dumps(_boot_diagnostic_payload("PY_RUNTIME_BOOT_FAILURE",exc,path),ensure_ascii=False,default=str)
 
 def checkpoint():
-    global _last_saved_step
-    if _runtime is None or not _checkpoint_path:
-        return json.dumps({"saved":False,"error":"RUNTIME_NOT_RUNNING"})
-    import c4child.checkpoint as cp
-    tmp=_checkpoint_path+".save.tmp"
-    state=_runtime.runtime_state()
-    save_compact=getattr(cp,"save_c4m_compact",None)
-    if save_compact is None: raise RuntimeError("COMPACT_SAVER_NOT_AVAILABLE")
-    save_compact(tmp,_runtime.dialogue.g,h3=_h3,meta=_manifest_meta,runtime_state=state,include_cold=True)
-    os.replace(tmp,_checkpoint_path)
-    _last_saved_step=int(state.get("step",0))
-    return json.dumps({"saved":True,"path":_checkpoint_path,"step":_last_saved_step})
-
-def _typed_runtime_call(type_,p):
-    generic=("handle_runtime_command","runtime_command")
-    targets=[_runtime,getattr(_runtime,"dialogue",None)]
-    last_type_error=None
-    for target in targets:
-        if target is None: continue
-        for name in generic:
-            fn=getattr(target,name,None)
-            if callable(fn):
-                try:
-                    out=fn(type_,p)
-                    return {"accepted":True,"result":out,"adapterMethod":name}
-                except TypeError as e:
-                    last_type_error=str(e)
-    names={
-        "BEGIN_SOURCE":("begin_source","source_begin"),
-        "APPEND_SOURCE":("append_source","source_append"),
-        "END_SOURCE":("end_source","source_end"),
-        "SENSORY_SESSION_START":("sensory_session_start","start_sensory_session"),
-        "SENSORY_FRAME":("sensory_frame","ingest_sensory_frame"),
-        "SENSORY_SESSION_STOP":("sensory_session_stop","stop_sensory_session"),
-        "ACTION_RECEIPT":("action_receipt","receive_action_receipt"),
-        "WORLD_EVENT":("world_event","observe_world_event","ingest_world_event"),
-        "WORLD_TASK":("world_task","accept_world_task","receive_world_task"),
-        "BODY_MANIFEST":("body_manifest","set_body_manifest","capability_manifest","receive_body_manifest"),
-        "TRACE_CONFIG":("trace_config","configure_trace","set_trace_config"),
-        "TRACE_SNAPSHOT":("trace_snapshot","get_trace_snapshot","diagnostic_snapshot"),
-    }.get(type_,())
-    call_p=dict(p)
-    if type_=="APPEND_SOURCE" and call_p.get("encoding")=="base64" and isinstance(call_p.get("bytes"),str):
-        call_p["bytes"]=base64.b64decode(call_p["bytes"],validate=True)
-        call_p.pop("encoding",None)
-    for target in targets:
-        if target is None: continue
-        for name in names:
-            fn=getattr(target,name,None)
-            if not callable(fn): continue
-            try:
-                out=fn(call_p)
-                return {"accepted":True,"result":out,"adapterMethod":name}
-            except TypeError as e:
-                last_type_error=str(e)
-                try:
-                    out=fn(**call_p)
-                    return {"accepted":True,"result":out,"adapterMethod":name}
-                except TypeError as e2:
-                    last_type_error=str(e2)
-    return {"accepted":False,"error":"RUNTIME_CAPABILITY_UNAVAILABLE","command":type_,"detail":last_type_error}
+    if _research is None:return json.dumps({"saved":False,"error":"RUNTIME_NOT_RUNNING"})
+    return json.dumps(_research.checkpoint(),ensure_ascii=False)
 
 def command(type_, payload_json):
-    if _runtime is None: return json.dumps({"accepted":False,"error":"RUNTIME_NOT_RUNNING"})
-    p=json.loads(payload_json or "{}")
-    if type_=="USER_MESSAGE":
-        out=_runtime.user_message(str(p.get("text","")))
-        events=_runtime.poll(100)
-        return json.dumps({"accepted":True,"result":out,"events":events,"state":_runtime.runtime_state()},ensure_ascii=False,default=str)
-    if type_=="TICK":
-        out=_runtime.tick(int(p.get("n",1)))
-        events=_runtime.poll(100)
-        return json.dumps({"accepted":True,"result":out,"events":events,"state":_runtime.runtime_state()},ensure_ascii=False,default=str)
-    if type_=="POLL":
-        out=_runtime.poll(int(p.get("limit",100)))
-        return json.dumps({"accepted":True,"result":out,"events":out,"state":_runtime.runtime_state()},ensure_ascii=False,default=str)
-    if type_ in ("BEGIN_SOURCE","APPEND_SOURCE","END_SOURCE","SENSORY_SESSION_START","SENSORY_FRAME","SENSORY_SESSION_STOP","ACTION_RECEIPT","WORLD_EVENT","WORLD_TASK","BODY_MANIFEST","TRACE_CONFIG","TRACE_SNAPSHOT"):
-        r=_typed_runtime_call(type_,p)
-        r["events"]=_runtime.poll(100) if r.get("accepted") else []
-        r["state"]=_runtime.runtime_state()
-        return json.dumps(r,ensure_ascii=False,default=str)
-    return json.dumps({"accepted":False,"error":"PY_COMMAND_UNSUPPORTED","command":type_})
+    if _research is None:return json.dumps({"accepted":False,"error":"RUNTIME_NOT_RUNNING"})
+    try:
+        return json.dumps(_research.command(type_,json.loads(payload_json or "{}")),ensure_ascii=False)
+    except Exception as exc:
+        return json.dumps(dict(_boot_diagnostic_payload("PY_RUNTIME_OPERATION_FAILURE",exc,_checkpoint_path),accepted=False),ensure_ascii=False)
 
 def state():
-    return json.dumps(_runtime.runtime_state() if _runtime else {"state":"STOPPED"},ensure_ascii=False,default=str)
+    return json.dumps(_research.state() if _research else (_runtime.runtime_state() if _runtime else {"state":"STOPPED"}),ensure_ascii=False,default=str)
+
+def export_organism(destination):
+    if _research is None:return json.dumps({'exported':False,'error':'RUNTIME_NOT_RUNNING'})
+    return json.dumps(_research.export(destination),ensure_ascii=False)
 
 def close():
-    global _runtime
-    _runtime=None
+    global _runtime,_research
+    if _research is not None:_research.close()
+    _runtime=None;_research=None
     return json.dumps({"closed":True})
+
+
+def _serialized(fn):
+    def call(*args,**kwargs):
+        with _lock:return fn(*args,**kwargs)
+    return call
+for _name in ("configure","install_runtime","open_organism","checkpoint","command","state","close","export_organism","last_boot_diagnostic"):
+    globals()[_name]=_serialized(globals()[_name])

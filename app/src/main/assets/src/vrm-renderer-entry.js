@@ -204,6 +204,7 @@ function disposeCurrent(){
   currentVrm=null;
 }
 function disposeRendererOnly(){
+  physicsMeshes=[];teacherMesh=null;
   if(resizeObserver){try{resizeObserver.disconnect()}catch(_){}resizeObserver=null}
   disposeCurrent();
   if(environmentMap){try{environmentMap.dispose()}catch(_){}environmentMap=null}
@@ -452,5 +453,12 @@ function sync(state={}){
 function setVisible(v){visible=!!v}
 function status(){return {ready:!!currentVrm,action:motion.action,queue:motionQueue.map(x=>x.action),queueLength:motionQueue.length,heldObject,rootX:visualRootX,vocalActive:performance.now()<vocal.until,presence:'PHYSICAL_IDLE_V2',lookAt:!!currentVrm?.lookAt,environment:'CINEMATIC_HOME_3D_V1',ibl:environmentLoadState,qualityMode,targetFps,pixelRatio:renderer?renderer.getPixelRatio():0,shadows:renderer?renderer.shadowMap.enabled:false,roomProps:[...roomProps.keys()],metaVersion:String(currentVrm?.meta?.metaVersion??''),springBones:!!currentVrm?.springBoneManager,expressions:currentVrm?.expressionManager?Object.keys(currentVrm.expressionManager.expressionMap||{}):[],bones:currentVrm?.humanoid?Object.keys(currentVrm.humanoid.normalizedHumanBones||{}):[]}}
 function dispose(){++loadToken;disposeRendererOnly()}
-window.C4VRM={load,motor,vocalize,sync,updateWorld,setQuality,status,setVisible,dispose};
+let physicsMeshes=[],teacherMesh=null;
+function updatePhysics(state){
+ if(!scene)return;
+ for(let i=0;i<(state.bodies||[]).length;i++){const b=state.bodies[i];if(!physicsMeshes[i]){physicsMeshes[i]=new THREE.Mesh(new THREE.SphereGeometry(b.radius,20,16),mat(i===0?0x66dce7:0xeeb078,.4));physicsMeshes[i].castShadow=true;scene.add(physicsMeshes[i])}physicsMeshes[i].position.set(b.x,b.y,b.z)}
+ if(!teacherMesh){teacherMesh=new THREE.Group();const body=new THREE.Mesh(new THREE.CapsuleGeometry(.12,.5,4,12),mat(0x77d9ee,.6));body.position.y=.5;const head=new THREE.Mesh(new THREE.SphereGeometry(.13,16,12),mat(0xbedbde,.6));head.position.y=.93;teacherMesh.add(body,head);scene.add(teacherMesh)}
+ if(state.teacher)teacherMesh.position.set(state.teacher.x,0,state.teacher.z);
+}
+window.C4VRM={updatePhysics,load,motor,vocalize,sync,updateWorld,setQuality,status,setVisible,dispose};
 window.dispatchEvent(new CustomEvent('c4-vrm-ready'));
