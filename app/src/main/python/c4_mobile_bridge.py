@@ -1,4 +1,4 @@
-import json, os, sys, zipfile, shutil, importlib, base64
+import json, os, sys, zipfile, shutil, importlib, base64, traceback, hashlib
 _runtime=None
 _runtime_root=None
 _checkpoint_path=None
@@ -65,22 +65,70 @@ def _load_checkpoint(path):
         g,h,m,rs=loader(path,with_runtime=True)
     return schema,g,h,m,rs
 
+def _boot_diagnostic_payload(code, exc=None, path=None):
+    detail = str(exc) if exc is not None else ""
+    result = {"running": False, "errorCode": code, "errorDetail": detail,
+              "traceback": traceback.format_exc() if exc is not None else "",
+              "runtimeRoot": _runtime_root, "organismPath": path}
+    try:
+        if _runtime_root and os.path.isfile(os.path.join(_runtime_root,"c4child","runtime.py")):
+            with open(os.path.join(_runtime_root,"c4child","runtime.py"),"rb") as source:
+                result["runtimeCodeSha256"] = hashlib.sha256(source.read()).hexdigest()
+        if path and os.path.isfile(path):
+            with zipfile.ZipFile(path) as archive:
+                m = json.loads(archive.read("manifest.json"))
+            result["organismSchema"] = m.get("schema")
+            result["organismId"] = m.get("organismId")
+        if _runtime_root and os.path.isdir(_runtime_root):
+            target = os.path.join(_runtime_root, "last_boot_diagnostic.json")
+            temp = target + ".tmp"
+            with open(temp, "w", encoding="utf-8") as output:
+                json.dump(result, output, ensure_ascii=False, indent=2)
+                output.flush()
+                os.fsync(output.fileno())
+            os.replace(temp, target)
+    except Exception as diag_exc:
+        result["diagnosticCaptureError"] = repr(diag_exc)
+    return result
+
+def last_boot_diagnostic():
+    if not _runtime_root:
+        return json.dumps({"available":False},ensure_ascii=False)
+    name = os.path.join(_runtime_root,"last_boot_diagnostic.json")
+    if not os.path.isfile(name):
+        return json.dumps({"available":False},ensure_ascii=False)
+    with open(name,encoding="utf-8") as source:
+        return source.read()
+
 def open_organism(path):
     global _runtime,_checkpoint_path,_h3,_manifest_meta,_last_saved_step
-    if not _runtime_root: raise RuntimeError("RUNTIME_PACKAGE_NOT_INSTALLED")
-    importlib.invalidate_caches()
-    pkg=importlib.import_module("c4child")
-    schema,g,h,manifest,rs=_load_checkpoint(path)
-    dialogue=pkg.C4ChildDialogue(g)
-    _runtime=pkg.C4LivingRuntime(dialogue)
-    if rs:
-        _runtime.load_runtime_state(rs)
-    _checkpoint_path=path
-    _h3=h
-    _manifest_meta=dict(manifest or {})
-    state=_runtime.runtime_state()
-    _last_saved_step=int(state.get("step",0)) if isinstance(state,dict) else 0
-    return json.dumps({"running":True,"schema":schema,"manifestSchema":manifest.get("schema"),"state":state},ensure_ascii=False,default=str)
+    _runtime = None
+    if not _runtime_root:
+        return json.dumps(_boot_diagnostic_payload("RUNTIME_PACKAGE_NOT_INSTALLED",path=path),ensure_ascii=False)
+    try:
+        importlib.invalidate_caches()
+        pkg = importlib.import_module("c4child")
+        schema,g,h,manifest,rs = _load_checkpoint(path)
+        dialogue = pkg.C4ChildDialogue(g)
+        candidate = pkg.C4LivingRuntime(dialogue)
+        for method in ("load_runtime_state","runtime_state","user_message","tick","poll"):
+            if not callable(getattr(candidate,method,None)):
+                raise RuntimeError("RUNTIME_API_MISSING:" + method)
+        if rs:
+            candidate.load_runtime_state(rs)
+        state = candidate.runtime_state()
+        if not isinstance(state,dict):
+            raise RuntimeError("RUNTIME_STATE_NOT_DICT")
+        _runtime = candidate
+        _checkpoint_path = path
+        _h3 = h
+        _manifest_meta = dict(manifest or {})
+        _last_saved_step = int(state.get("step",0))
+        return json.dumps({"running":True,"schema":schema,
+            "manifestSchema":manifest.get("schema"),"state":state},ensure_ascii=False,default=str)
+    except Exception as exc:
+        _runtime = None
+        return json.dumps(_boot_diagnostic_payload("PY_RUNTIME_BOOT_FAILURE",exc,path),ensure_ascii=False,default=str)
 
 def checkpoint():
     global _last_saved_step
