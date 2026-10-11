@@ -36,6 +36,8 @@ class ResearchHost:
         self.pkg = pkg
         self.source = Path(organism)
         self.source_sha = sha(self.source.read_bytes())
+        if len(self.source.stem)==64 and all(c in '0123456789abcdef' for c in self.source.stem) and self.source.stem!=self.source_sha:
+            raise RuntimeError('CONTENT_ADDRESSED_IMPORT_DIGEST_MISMATCH')
         self.build = build
         self.home = self.source.parent / ('life-' + self.source_sha)
         self.home.mkdir(exist_ok=True)

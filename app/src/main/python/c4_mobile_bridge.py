@@ -21,6 +21,8 @@ def _purge_c4child():
 def configure(home):
     global _runtime_root,_runtime_build
     dest=os.path.join(home,"c4_runtime")
+    if not os.path.isdir(dest) and os.path.isdir(dest+".previous"):
+        os.replace(dest+".previous",dest)
     if os.path.isfile(os.path.join(dest,"c4child","runtime.py")):
         build,files=_code_build(dest)
         if files!=_profile["files"]:

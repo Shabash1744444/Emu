@@ -63,10 +63,10 @@ public class MainActivity extends Activity {
   if(!webReady)return;
   new Thread(()->{try{
    File dir=new File(getFilesDir(),"runtime_inbox");if(!dir.isDirectory())return;
-   File[] files=dir.listFiles((d,n)->n.equals("pending.jsonl")||n.equals("pending.previous.jsonl"));if(files==null)return;
-   Arrays.sort(files,Comparator.comparing(File::getName));
+   File[] files=dir.listFiles((d,n)->n.startsWith("pending")&&(n.endsWith(".jsonl")||n.endsWith(".jsonl.drain")));if(files==null)return;
+   Arrays.sort(files,Comparator.comparingLong(File::lastModified));
    for(File src:files){
-    File drain=new File(dir,src.getName()+".drain");if(!src.renameTo(drain))continue;
+    File drain=src.getName().endsWith(".drain")?src:new File(dir,src.getName()+".drain");if(drain!=src&&!src.renameTo(drain))continue;
     try(BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(drain),StandardCharsets.UTF_8))){String line;while((line=br.readLine())!=null){try{JSONObject e=new JSONObject(line);String type=e.optString("type","STATUS");JSONObject p=e.optJSONObject("payload");if(p==null)p=new JSONObject();emitRuntimeHost(type,p);}catch(Exception ignored){}}}
     drain.delete();
    }

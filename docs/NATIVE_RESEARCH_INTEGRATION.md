@@ -40,12 +40,12 @@ Native output is stored in `outbound.jsonl` as well as native journal. Exactly-o
 
 ## Full-organism verification (local Python)
 
-9/9 integration tests passed on the user's exact full organism (53.502 seconds):
-identity/native-vs-diagnostic events/UNKNOWN; ambiguous raw text without false grammar learning; exact restart head; 12 concurrent messages + 12 ticks with preserved inputs; unsupported-command no-mutation; incompatible runtime preservation; corrupt generation preserved/rejected/full traceback; abrupt subprocess death + deterministic native-tail replay; corrupt native journal preserved/rejected.
+10/10 integration tests passed on the user's exact full organism (see CP-187 build evidence):
+identity/native-vs-diagnostic events/UNKNOWN; ambiguous raw text without false grammar learning; exact restart head; 12 concurrent messages + 12 ticks with preserved inputs; unsupported-command no-mutation; incompatible runtime preservation; corrupt generation preserved/rejected/full traceback; abrupt subprocess death + deterministic native-tail replay; corrupt native journal preserved/rejected; corrupt import/incompatible organism schema rejected.
 
 Initial source kit/old bridge also booted locally without AttributeError. The **original handset AttributeError has not been reproduced or attributed**: full phone traceback is still required. The source evidence does not justify guessing a missing attribute from `C4Li…`. This branch locks exact sources and exposes full ABI/state/traceback to establish the handset cause.
 
-CI uses an explicitly labeled small synthetic transport fixture, never the user's deployed organism. CI additionally checks upstream source hashes, JavaScript syntax/transport binding, existing UI/layout guards and Java physics invariants. CI PASS is separate from the full-organism local tests and from physical Android verification.
+CI uses an explicitly labeled small synthetic transport fixture, never the user's deployed organism. CI additionally checks upstream source hashes, JavaScript syntax/transport binding, existing UI/layout guards, Java physics invariants, and a real headless browser with an isolated Native test double (input queue, ASK deduplication, diagnostic exclusion, 393px viewport). CI PASS is separate from the full-organism local tests and from physical Android verification.
 
 ## World, avatar and voice boundaries
 

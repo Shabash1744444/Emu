@@ -101,6 +101,21 @@ open(sys.argv[4],'w').write(b.state());os._exit(0)
         boot=json.loads(b.open_organism(str(self.organism)));self.assertTrue(boot['running'],boot)
         old=json.loads(expected.read_text());new=json.loads(b.state())
         for k in ('journal_head','journal_len','world_t','provisional_dialogue_explanations','appliedOperations'):self.assertEqual(old[k],new[k],k)
+    def test_corrupt_import_and_incompatible_schema(self):
+        b.close()
+        for mode in ('digest','schema'):
+            dst=self.home/(mode+'.c4m')
+            with zipfile.ZipFile(self.organism) as source,zipfile.ZipFile(dst,'w') as target:
+                for n in source.namelist():
+                    data=source.read(n)
+                    if mode=='digest' and n=='lab/g30d_pragmatics.json':data=b'{}'
+                    if mode=='schema' and n=='manifest.json':
+                        m=json.loads(data);m['schema']='OTHER_ABI';data=json.dumps(m).encode()
+                    target.writestr(n,data)
+            before=dst.read_bytes();r=json.loads(b.open_organism(str(dst)))
+            self.assertFalse(r['running']);self.assertIn('Traceback',r['traceback'])
+            self.assertEqual(dst.read_bytes(),before)
+
     def test_native_tail_corruption_not_silently_truncated(self):
         b.close();home=self.organism.parent/('life-'+hashlib.sha256(self.original).hexdigest())
         journal=home/'journal.jsonl'
