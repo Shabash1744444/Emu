@@ -29,8 +29,19 @@ public final class PhysicsRoom {
    step++;
   }
  }
+ // Expanded furniture footprints match the renderer's bed and desk; user cannot walk through them.
+ private boolean blocked(double x,double z){return (x> -2.39&&x< -.55&&z> -1.38&&z< -.26)||(x>.53&&x<2.15&&z>-.94&&z<-.10);}
+ public synchronized boolean interact(double x,double z){
+  if(!Double.isFinite(x)||!Double.isFinite(z)||Math.hypot(x,z)<.1)throw new IllegalArgumentException("INVALID_INTERACTION_DIRECTION");
+  int nearest=-1;double best=.85;
+  for(int i=0;i<bodies.length;i++){double[] b=bodies[i];double d=Math.hypot(b[0]-teacherX,b[2]-teacherZ);if(d<best&&b[1]<1.5){best=d;nearest=i;}}
+  if(nearest<0)return false;double n=Math.hypot(x,z);impulse(nearest,x/n*1.6,.25,z/n*1.6);return true;
+ }
  public synchronized void moveTeacher(double x,double z){
   if(!Double.isFinite(x)||!Double.isFinite(z)||Math.abs(x)>1||Math.abs(z)>1)throw new IllegalArgumentException("INVALID_TEACHER_MOTION");
-  teacherX=Math.max(-1.6,Math.min(1.6,teacherX+x*.08));teacherZ=Math.max(-1.6,Math.min(1.6,teacherZ+z*.08));
+  double n=Math.max(1,Math.hypot(x,z));
+  double nx=Math.max(-1.6,Math.min(1.6,teacherX+x/n*.08)),nz=Math.max(-1.6,Math.min(1.6,teacherZ+z/n*.08));
+  if(!blocked(nx,teacherZ))teacherX=nx;
+  if(!blocked(teacherX,nz))teacherZ=nz;
  }
 }

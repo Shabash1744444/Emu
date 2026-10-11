@@ -571,3 +571,12 @@ Physical gate: portrait/landscape, soft keyboard, long content, gesture safe-are
 
 ## CP-187 — native research ABI 2026-10-11
 Separate branch experiments/c4-native-nursery-20261011. Core unchanged. Exact profile; immutable imports; native append journal/WAL/generation checkpoints; diagnostics separated from C4 speech; restored runtimeSend; async user/lifecycle queue; host physics and independent teacher marker. Local exact-organism tests 10/10 PASS. APK build, Java physics and browser UI smoke PASS (run 38170650010); final build 38171008409 SUCCESS. Exact-organism 10/10 in 55.926 seconds; packaged ABI JSON verified; APK SHA d18c000169851389864df1f93142d3d0dc1a67693e0f7cb3a031265887758eae. See docs/checkpoints/CP-187_NATIVE_RESEARCH_ABI_RU.md. Original phone AttributeError not reproduced; physical Android NOT VERIFIED. See docs/NATIVE_RESEARCH_INTEGRATION.md for contract, evidence and limitations.
+
+## CP-188 · 2026-10-11 · Player world / Arcade Hub
+
+User confirmed 0.65 starts on their phone; full physical checklist remains unverified.
+Actual Arcade Hub found and read in Shabash1744444/Emul at b0814583, not Emu/github.
+0.66: room-first fullscreen UX, independent humanoid player/model storage, touch movement
+and camera, standard gamepad, saved editable controls, proximity-checked sphere impulse.
+Removed engineering card from primary world view. Core/runtime/life persistence untouched.
+See docs/checkpoints/CP-188_PLAYER_WORLD_ARCADE_HUB_RU.md for tests and limits.

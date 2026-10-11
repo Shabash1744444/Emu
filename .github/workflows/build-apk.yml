@@ -437,6 +437,12 @@ jobs:
      run: |
       npm install --prefix /tmp/c4-ui --no-audit --no-fund playwright@1.56.1
       NODE_PATH=/tmp/c4-ui/node_modules node tools/ui_smoke.cjs
+      CHROME_PATH=/usr/bin/google-chrome NODE_PATH=/tmp/c4-ui/node_modules node tools/player_world_smoke.cjs
+   - name: Upload browser world previews (test host, not Android)
+     uses: actions/upload-artifact@v4
+     with:
+      name: C4-player-world-browser-previews
+      path: /tmp/c4-player-world-*.png
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
      if: always()
@@ -453,18 +459,18 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.65.0-native-research.apk
+      cp "$APK" release/C4-Nursery-0.66.0-player-world.apk
       python3 tools/package_research_runtime.py
       cp docs/NATIVE_RESEARCH_INTEGRATION.md release/
-      BYTES=$(stat -c%s release/C4-Nursery-0.65.0-native-research.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.65.0-native-research.apk | awk '{print $1}')
+      BYTES=$(stat -c%s release/C4-Nursery-0.66.0-player-world.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.66.0-player-world.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.65.0-native-research.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.66.0-player-world.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.65.0-native-research
+      name: C4-Nursery-0.66.0-player-world
       path: |
-       release/C4-Nursery-0.65.0-native-research.apk
+       release/C4-Nursery-0.66.0-player-world.apk
        release/SHA256.txt
        release/C4_G29_G30C_G30D_EMU_RUNTIME_2026-10-11.zip
        release/NATIVE_RESEARCH_INTEGRATION.md

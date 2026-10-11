@@ -204,7 +204,7 @@ function disposeCurrent(){
   currentVrm=null;
 }
 function disposeRendererOnly(){
-  physicsMeshes=[];teacherMesh=null;
+  clearPlayerModel();physicsMeshes=[];teacherMesh=null;playerLimbs=[];playerClothes=[];playerState=null;
   if(resizeObserver){try{resizeObserver.disconnect()}catch(_){}resizeObserver=null}
   disposeCurrent();
   if(environmentMap){try{environmentMap.dispose()}catch(_){}environmentMap=null}
@@ -242,7 +242,7 @@ async function load(url,canvasId='vrmCanvas'){
   try{VRMUtils.combineSkeletons(vrm.scene)}catch(_){}
   try{VRMUtils.combineMorphs(vrm)}catch(_){}
   vrm.scene.traverse(o=>{o.frustumCulled=false;if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});
-  currentVrm=vrm;scene.add(vrm.scene);frameVrm(vrm);
+  currentVrm=vrm;scene.add(vrm.scene);frameVrm(vrm);if(playerWorld)setPlayerWorld(true);
   if(vrm.lookAt)vrm.lookAt.target=lookTarget;
   motion={action:'IDLE',start:performance.now(),duration:0,context:{},fromRootX:0,toRootX:0};motionQueue=[];heldObject=null;disposeHeldProp();presence={nextBlinkAt:performance.now()+2100,blinkStart:0,blinkDuration:135};
   const expressions=vrm.expressionManager?Object.keys(vrm.expressionManager.expressionMap||{}):[];
@@ -354,6 +354,7 @@ function vocalize(durationMs=500,amplitude=.2,f0=220){
 }
 
 function applyIdle(t){
+  rot('leftUpperArm',0,0,1.22,1);rot('rightUpperArm',0,0,-1.22,1);
   const breath=Math.sin(t*1.38),slow=Math.sin(t*.31),counter=Math.sin(t*.23+1.2);
   pos('hips',.0045*slow,.004*(.5+.5*breath),0);
   rot('hips',0,.006*counter,.010*slow,1);
@@ -433,7 +434,8 @@ function loop(now){
   const t=now/1000;
   if(environmentOrb){environmentOrb.position.y=.92+Math.sin(t*.9)*.018;environmentOrb.rotation.y=t*.5}
   if(environmentMonitor?.material)environmentMonitor.material.emissiveIntensity=1.20+.18*Math.sin(t*1.35);
-  if(camera&&currentVrm){if(qualityMode==='ECO'){camera.position.y=baseCameraY;camera.position.x=0}else{camera.position.y=baseCameraY+Math.sin(t*.28)*.008;camera.position.x=Math.sin(t*.17)*.015}}
+  if(camera&&currentVrm&&!playerWorld){if(qualityMode==='ECO'){camera.position.y=baseCameraY;camera.position.x=0}else{camera.position.y=baseCameraY+Math.sin(t*.28)*.008;camera.position.x=Math.sin(t*.17)*.015}}
+  animatePlayer(now,dt);
   renderer.render(scene,camera);
 }
 function updateWorld(state={}){
@@ -451,14 +453,54 @@ function sync(state={}){
   currentVrm.scene.position.x=rootBaseX+visualRootX;emitStatus();return true;
 }
 function setVisible(v){visible=!!v}
-function status(){return {ready:!!currentVrm,action:motion.action,queue:motionQueue.map(x=>x.action),queueLength:motionQueue.length,heldObject,rootX:visualRootX,vocalActive:performance.now()<vocal.until,presence:'PHYSICAL_IDLE_V2',lookAt:!!currentVrm?.lookAt,environment:'CINEMATIC_HOME_3D_V1',ibl:environmentLoadState,qualityMode,targetFps,pixelRatio:renderer?renderer.getPixelRatio():0,shadows:renderer?renderer.shadowMap.enabled:false,roomProps:[...roomProps.keys()],metaVersion:String(currentVrm?.meta?.metaVersion??''),springBones:!!currentVrm?.springBoneManager,expressions:currentVrm?.expressionManager?Object.keys(currentVrm.expressionManager.expressionMap||{}):[],bones:currentVrm?.humanoid?Object.keys(currentVrm.humanoid.normalizedHumanBones||{}):[]}}
+function status(){return {playerWorld,playerModel:!!playerModel,playerAvatar:!!teacherMesh,ready:!!currentVrm,action:motion.action,queue:motionQueue.map(x=>x.action),queueLength:motionQueue.length,heldObject,rootX:visualRootX,vocalActive:performance.now()<vocal.until,presence:'PHYSICAL_IDLE_V2',lookAt:!!currentVrm?.lookAt,environment:'CINEMATIC_HOME_3D_V1',ibl:environmentLoadState,qualityMode,targetFps,pixelRatio:renderer?renderer.getPixelRatio():0,shadows:renderer?renderer.shadowMap.enabled:false,roomProps:[...roomProps.keys()],metaVersion:String(currentVrm?.meta?.metaVersion??''),springBones:!!currentVrm?.springBoneManager,expressions:currentVrm?.expressionManager?Object.keys(currentVrm.expressionManager.expressionMap||{}):[],bones:currentVrm?.humanoid?Object.keys(currentVrm.humanoid.normalizedHumanBones||{}):[]}}
 function dispose(){++loadToken;disposeRendererOnly()}
-let physicsMeshes=[],teacherMesh=null;
+let physicsMeshes=[],teacherMesh=null,playerModel=null,playerVrm=null,playerLimbs=[],playerClothes=[],playerToken=0;
+let playerWorld=false,playerYaw=0,playerPitch=.28,playerMoving=false,playerColor='#50c8ba',playerState=null;
+function createPlayer(){
+ if(!scene||teacherMesh)return;
+ teacherMesh=new THREE.Group();teacherMesh.name='USER_AVATAR';teacherMesh.rotation.y=Math.PI;scene.add(teacherMesh);
+ const skin=mat(0xdab6a1,.85),shirt=mat(playerColor,.7),pants=mat(0x203447,.85),hair=mat(0x26333b,.9),shoe=mat(0x14212a,.8);
+ const body=box(.32,.39,.20,shirt,0,.85,0);body.geometry.dispose();body.geometry=new THREE.CapsuleGeometry(.15,.18,6,16);teacherMesh.add(body);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.135,24,18),skin);head.scale.set(.88,1.12,.9);head.position.y=1.20;teacherMesh.add(head);
+ const cap=new THREE.Mesh(new THREE.SphereGeometry(.137,24,18,0,Math.PI*2,0,Math.PI*.55),hair);cap.position.y=1.23;teacherMesh.add(cap);
+ const nose=new THREE.Mesh(new THREE.SphereGeometry(.025,10,8),skin);nose.position.set(0,1.18,.12);teacherMesh.add(nose);
+ for(const side of [-1,1]){
+  const eye=new THREE.Mesh(new THREE.SphereGeometry(.012,10,8),mat(0x24343b));eye.position.set(side*.044,1.23,.108);teacherMesh.add(eye);
+  const arm=new THREE.Group();arm.position.set(side*.21,1.0,0);const sleeve=box(.12,.23,.13,shirt,0,-.12,0),hand=box(.10,.22,.11,skin,0,-.32,0);arm.add(sleeve,hand);teacherMesh.add(arm);playerLimbs.push({node:arm,side,arm:true});
+  const leg=new THREE.Group();leg.position.set(side*.095,.64,0);leg.add(box(.135,.50,.15,pants,0,-.25,0),box(.14,.10,.23,shoe,0,-.56,.035));teacherMesh.add(leg);playerLimbs.push({node:leg,side,arm:false});playerClothes.push(sleeve.material);
+ }
+ const pack=box(.23,.29,.11,mat(0x364a56,.9),0,.87,-.16);teacherMesh.add(pack);playerClothes.push(shirt);
+
+}
+function clearPlayerModel(){++playerToken;if(playerModel){scene?.remove(playerModel);try{VRMUtils.deepDispose(playerModel)}catch(_){}playerModel=null;playerVrm=null}if(teacherMesh)teacherMesh.visible=playerWorld}
+async function loadPlayer(url){
+ createPlayer();const token=++playerToken;const loader=new GLTFLoader();loader.register(parser=>new VRMLoaderPlugin(parser));const gltf=await loader.loadAsync(url);
+ if(token!==playerToken){VRMUtils.deepDispose(gltf.scene);return}
+ if(playerModel){scene.remove(playerModel);VRMUtils.deepDispose(playerModel)}playerVrm=gltf.userData.vrm||null;playerModel=gltf.scene;
+ if(playerVrm){try{VRMUtils.rotateVRM0(playerVrm)}catch(_){}playerVrm.humanoid?.resetNormalizedPose();}
+ const bounds=new THREE.Box3().setFromObject(playerModel),height=bounds.max.y-bounds.min.y;if(!Number.isFinite(height)||height<.01){VRMUtils.deepDispose(playerModel);playerModel=null;throw Error('INVALID_PLAYER_MODEL_BOUNDS')}
+ playerModel.scale.multiplyScalar(1.35/height);playerModel.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}o.frustumCulled=false});scene.add(playerModel);if(teacherMesh)teacherMesh.visible=false;playerModel.visible=playerWorld;
+}
+function setPlayerColor(color){playerColor=color;for(const m of playerClothes)m.color.set(color)}
+function setPlayerWorld(on){
+ playerWorld=!!on;if(on){ensure(document.getElementById('vrmCanvas'));createPlayer();camera.fov=58;camera.updateProjectionMatrix()}else if(currentVrm){frameVrm(currentVrm)}else{camera.fov=28;camera.position.set(0,1.05,3.15);camera.lookAt(0,1,0);camera.updateProjectionMatrix()}
+ if(teacherMesh)teacherMesh.visible=on&&!playerModel;if(playerModel)playerModel.visible=on;for(const m of physicsMeshes)m.visible=on;resize();
+}
+function playerView({yaw=0,pitch=.28,moving=false}={}){playerYaw=yaw;playerPitch=pitch;playerMoving=moving}
+function animatePlayer(now,dt){
+ if(!playerWorld||!teacherMesh||!playerState)return;
+ const p=playerState,root=playerModel||teacherMesh;root.position.set(p.x,0,p.z);if(playerMoving)root.rotation.y=playerYaw+Math.PI;
+ const stride=playerMoving?Math.sin(now*.012)*.42:0;
+ for(const l of playerLimbs)l.node.rotation.x=stride*l.side*(l.arm?-1:1);
+ if(playerVrm){for(const side of ['left','right']){const sign=side==='left'?1:-1;const leg=playerVrm.humanoid?.getNormalizedBoneNode(side+'UpperLeg'),arm=playerVrm.humanoid?.getNormalizedBoneNode(side+'UpperArm');if(leg)leg.rotation.x=stride*sign;if(arm){arm.rotation.z=sign*1.15;arm.rotation.x=-stride*sign}}try{playerVrm.update(dt)}catch(_){}}
+ const distance=3.8,dy=1.40+Math.sin(playerPitch)*distance;
+ camera.position.set(clamp(p.x+Math.sin(playerYaw)*distance,-2.6,2.6),dy,clamp(p.z+Math.cos(playerYaw)*distance,-1.85,5.4));camera.lookAt(p.x,.95,p.z);
+}
 function updatePhysics(state){
  if(!scene)return;
- for(let i=0;i<(state.bodies||[]).length;i++){const b=state.bodies[i];if(!physicsMeshes[i]){physicsMeshes[i]=new THREE.Mesh(new THREE.SphereGeometry(b.radius,20,16),mat(i===0?0x66dce7:0xeeb078,.4));physicsMeshes[i].castShadow=true;scene.add(physicsMeshes[i])}physicsMeshes[i].position.set(b.x,b.y,b.z)}
- if(!teacherMesh){teacherMesh=new THREE.Group();const body=new THREE.Mesh(new THREE.CapsuleGeometry(.12,.5,4,12),mat(0x77d9ee,.6));body.position.y=.5;const head=new THREE.Mesh(new THREE.SphereGeometry(.13,16,12),mat(0xbedbde,.6));head.position.y=.93;teacherMesh.add(body,head);scene.add(teacherMesh)}
- if(state.teacher)teacherMesh.position.set(state.teacher.x,0,state.teacher.z);
+ for(let i=0;i<(state.bodies||[]).length;i++){const b=state.bodies[i];if(!physicsMeshes[i]){physicsMeshes[i]=new THREE.Mesh(new THREE.SphereGeometry(b.radius,20,16),mat(i===0?0x66dce7:0xeeb078,.4));physicsMeshes[i].castShadow=true;scene.add(physicsMeshes[i])}physicsMeshes[i].position.set(b.x,b.y,b.z);physicsMeshes[i].visible=playerWorld}
+ createPlayer();if(state.teacher){playerState=state.teacher;teacherMesh.position.set(state.teacher.x,0,state.teacher.z)}teacherMesh.visible=playerWorld&&!playerModel;
 }
-window.C4VRM={updatePhysics,load,motor,vocalize,sync,updateWorld,setQuality,status,setVisible,dispose};
+window.C4VRM={updatePhysics,setPlayerWorld,playerView,setPlayerColor,loadPlayer,clearPlayerModel,load,motor,vocalize,sync,updateWorld,setQuality,status,setVisible,dispose};
 window.dispatchEvent(new CustomEvent('c4-vrm-ready'));

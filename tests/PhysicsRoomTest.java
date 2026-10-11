@@ -8,6 +8,10 @@ public class PhysicsRoomTest {
   for(double[] b:r.bodies)if(!Double.isFinite(b[1])||b[1]<b[6]-.000001||Math.abs(b[0])>1.8||Math.abs(b[2])>1.8)throw new AssertionError("bounds");
   r.moveTeacher(1,-1);if(r.teacherX<=0||r.teacherZ>=1.3)throw new AssertionError("teacher motion");
   try{r.impulse(0,Double.NaN,0,0);throw new AssertionError("NaN accepted");}catch(IllegalArgumentException expected){}
+  PhysicsRoom user=new PhysicsRoom();
+  if(user.interact(0,-1))throw new AssertionError("remote interaction accepted");
+  user.teacherX=-.6;user.teacherZ=.6;if(!user.interact(0,-1)||user.bodies[0][5]>=0)throw new AssertionError("nearby interaction failed");
+  user.teacherX=-.56;user.teacherZ=0;for(int i=0;i<30;i++)user.moveTeacher(0,-1);if(user.teacherZ<-.26)throw new AssertionError("walked through bed");
   System.out.println("PHYSICS HOST PASS: mass, gravity, room bounds, teacher, invalid impulse");
  }
 }
