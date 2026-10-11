@@ -3,9 +3,9 @@ Do not claim this is the approved CODE_UPGRADE into canonical knowledge.
 """
 import json, os, hashlib, zipfile, tempfile
 from pathlib import Path
-SCHEMA='C4M_G29_G30C_G30D_DIALOGUE_LAB_V1'
+SCHEMA='C4M_G29_G30C_G30D_G30G_BINDING_LIVE_LAB_V1'
 REQUIRED=('organism/snapshot.json','organism/journal.jsonl','lab/g29_semantic_index.json',
-          'lab/g30c_extended_state.json','lab/g30c_extended_host_evidence.json','lab/g30d_pragmatics.json')
+          'lab/g30c_extended_state.json','lab/g30c_extended_host_evidence.json','lab/g30d_pragmatics.json','lab/g30g_open_questions.json')
 
 def digest(b):return hashlib.sha256(b).hexdigest()
 
@@ -32,9 +32,9 @@ def verified_read(z):
     return m,raw
 
 class G29Graph:
-    def __init__(self,home,metadata,lab_payload,pragmatics_state):
+    def __init__(self,home,metadata,lab_payload,pragmatics_state,binding_state):
         self.home=home;self.metadata=metadata;self.lab_payload=lab_payload
-        self.pragmatics_state=pragmatics_state;self.life=None;self.lab=None;self.pragmatics=None
+        self.pragmatics_state=pragmatics_state;self.binding_state=binding_state;self.life=None;self.lab=None;self.pragmatics=None;self.binding=None
 
 def load_c4m_compact(path,with_runtime=False,**kw):
     with zipfile.ZipFile(path) as z:m,raw=verified_read(z)
@@ -42,7 +42,7 @@ def load_c4m_compact(path,with_runtime=False,**kw):
     for internal,dest in [('organism/snapshot.json','snapshot.json'),('organism/journal.jsonl','journal.jsonl')]:
         Path(home,dest).write_bytes(raw[internal])
     payload=tuple(json.loads(raw[key]) for key in (REQUIRED[2],REQUIRED[4],REQUIRED[3]))
-    g=G29Graph(home,m,payload,json.loads(raw['lab/g30d_pragmatics.json']))
+    g=G29Graph(home,m,payload,json.loads(raw['lab/g30d_pragmatics.json']),json.loads(raw['lab/g30g_open_questions.json']))
     state={'schema':SCHEMA,'step':m.get('world_t',0),'journal_len':m.get('journal_len')}
     if with_runtime:return g,None,m,state
     return g,None,m
@@ -50,7 +50,7 @@ def load_c4m_compact(path,with_runtime=False,**kw):
 def load_c4m(path,with_runtime=False,**kw):return load_c4m_compact(path,with_runtime=with_runtime,**kw)
 
 def save_c4m_compact(path,g,h3=None,meta=None,runtime_state=None,include_cold=True,**kw):
-    if not isinstance(g,G29Graph) or g.life is None or g.lab is None or g.pragmatics is None:raise ValueError('RUNTIME_NOT_BOUND')
+    if not isinstance(g,G29Graph) or g.life is None or g.lab is None or g.pragmatics is None or g.binding is None:raise ValueError('RUNTIME_NOT_BOUND')
     g.life.snapshot()
     index,observations,state=g.lab.memory_state()
     raw={
@@ -59,10 +59,11 @@ def save_c4m_compact(path,g,h3=None,meta=None,runtime_state=None,include_cold=Tr
       'lab/g29_semantic_index.json':json.dumps(index,ensure_ascii=False,sort_keys=True).encode('utf8'),
       'lab/g30c_extended_state.json':json.dumps(state,ensure_ascii=False,sort_keys=True).encode('utf8'),
       'lab/g30c_extended_host_evidence.json':json.dumps(observations,ensure_ascii=False,sort_keys=True).encode('utf8'),
-      'lab/g30d_pragmatics.json':json.dumps(g.pragmatics.state(),ensure_ascii=False,sort_keys=True).encode('utf8')}
+      'lab/g30d_pragmatics.json':json.dumps(g.pragmatics.state(),ensure_ascii=False,sort_keys=True).encode('utf8'),
+      'lab/g30g_open_questions.json':json.dumps(g.binding.state(),ensure_ascii=False,sort_keys=True).encode('utf8')}
     snap=json.loads(raw['organism/snapshot.json'])
     m={'schema':SCHEMA,'organismId':'c4-g29-and-g30c-separated-live-research',
-       'researchOnly':True,'g30cMergedIntoG29':False,'g30dProvenanceOnlyDialogue':True,
+       'researchOnly':True,'g30cMergedIntoG29':False,'g30dProvenanceOnlyDialogue':True,'g30gIsolatedResearchBinding':True,
        'world_t':int(g.life.world_t),'journal_len':snap['journal_len'],
        'journal_head':snap['journal_head'], 'files':{key:digest(blob) for key,blob in raw.items()},
        'originalG29Life':'G2.9 2026-10-11', 'originalG30CLanguage':'G3.0C 2026-10-11'}

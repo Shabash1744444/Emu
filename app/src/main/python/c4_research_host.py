@@ -103,7 +103,7 @@ class ResearchHost:
         metadata = {'build': self.build, 'sourceSha256': self.source_sha,
                     'manifest': self.manifest, 'applied': self.applied,
                     'payload': [index, observations, lab], 'pragmatics': r.pragmatics.state(),
-                    'binding': r.binding.state(), 'context': self._context(), 'state': r.runtime_state()}
+                    'binding': r.binding.state() if hasattr(r,'binding') else None, 'context': self._context(), 'state': r.runtime_state()}
         atomic(folder / 'metadata.json', encode(metadata))
         digests = {n: sha((folder / n).read_bytes()) for n in ('snapshot.json', 'metadata.json')}
         sync_dir(folder)
@@ -146,7 +146,12 @@ class ResearchHost:
         if head != snap['journal_head']:
             raise RuntimeError('NATIVE_SNAPSHOT_JOURNAL_MISMATCH')
         atomic(self.home / 'snapshot.json', (folder / 'snapshot.json').read_bytes())
-        g = cp.G29Graph(str(self.home), meta['manifest'], tuple(meta['payload']), meta['pragmatics'], meta['binding'])
+        args=[str(self.home),meta['manifest'],tuple(meta['payload']),meta['pragmatics']]
+        import inspect
+        if 'binding_state' in inspect.signature(cp.G29Graph).parameters:
+            if meta.get('binding') is None:raise RuntimeError('MISSING_BINDING_STATE_PRESERVED')
+            args.append(meta['binding'])
+        g=cp.G29Graph(*args)
         self.runtime = self.pkg.C4LivingRuntime(self.pkg.C4ChildDialogue(g))
         for k, v in meta['context'].items(): setattr(self.runtime, k, v)
         self.manifest = meta['manifest']; self.applied = meta['applied']

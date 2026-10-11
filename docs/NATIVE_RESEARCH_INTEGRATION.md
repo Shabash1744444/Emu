@@ -1,3 +1,11 @@
+# C4 Nursery World 0.67.0 — evolving runtime profiles
+
+Current G30G instructions and compatibility limits: [CP-189](checkpoints/CP-189_ADAPTIVE_ABI_G30G_RU.md).
+Use the original G30G ZIP and organism already downloaded; neither needs replacing.
+The Actions test runtime artifact is a repack of exact upstream sources, not the original ZIP bytes.
+
+The older G30D integration documentation follows for provenance and persistence design.
+
 # C4 Nursery 0.65.0 — native research ABI integration
 
 C4 is primary; Emu is a host. EVAL / COMMIT / DRIVE / MEDIATE and every upstream Python source are unchanged. G2.9 living life and G3.0C/G3.0D research states remain separate. This release does not claim free Russian conversation, canonical language merge, speech recognition, or sensor/world learning.

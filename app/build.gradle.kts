@@ -19,8 +19,8 @@ android {
         applicationId="com.singularity.c4nursery.world"
         minSdk=26
         targetSdk=35
-        versionCode=71
-        versionName="0.66.1-player-world"
+        versionCode=72
+        versionName="0.67.0-adaptive-abi"
         ndk { abiFilters += listOf("arm64-v8a") }
     }
 }

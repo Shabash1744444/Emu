@@ -584,3 +584,9 @@ See docs/checkpoints/CP-188_PLAYER_WORLD_ARCADE_HUB_RU.md for tests and limits.
 CP188 signing verification: old 0.65 and new APK certificates differ. Never uninstall the old life.
 World 0.66.1 uses separate package com.singularity.c4nursery.world, explicit cached CI key,
 fullSensor orientation and documented portable migration/context limitation.
+
+CP189: World 0.67.0 adaptive ABI profiles, exact original G30G sources and binding
+persistence; backward G30D serialization retained. Developer profiles permit only
+reviewed same-contract source variants; new state/API requires adapter changes.
+Original runtime ZIP/.c4m remain immutable. No main/core cognition changes.
+See docs/checkpoints/CP-189_ADAPTIVE_ABI_G30G_RU.md for evidence and limitations.
