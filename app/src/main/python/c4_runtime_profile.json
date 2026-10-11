@@ -1,14 +1,14 @@
 {
-  "abi": "C4_G29_G30C_G30D_PROVENANCE_DIALOGUE_RESEARCH_V1",
-  "schema": "C4M_G29_G30C_G30D_DIALOGUE_LAB_V1",
+  "abi": "C4_G29_G30C_G30D_G30G_BINDING_RESEARCH_V1",
+  "schema": "C4M_G29_G30C_G30D_G30G_BINDING_LIVE_LAB_V1",
   "files": {
     "c4child/__init__.py": "d2aea13447257ba2f86b18af11611c3fa77b7c70ea064d340a520fe80e778e9e",
     "c4child/g30b.py": "c211633b1ff3f826cf7fef39934849d328bc959a2714bdac2324643e4b913394",
-    "c4child/checkpoint.py": "0cb8a2313b7077c9614384f0a6160ad9a8c6143d46b3cb7a466e70393ad155d4",
+    "c4child/checkpoint.py": "b3439e3517208a8c4f2eb2de32219224ea9b7fc84bf93df1886fb9e0751326a7",
     "c4child/dialogue_learning.py": "08a949f905ffe5116d694fb5bdabe44bb7ed4530e780e3c64884722e36ae76fa",
     "c4child/language_live.py": "a8d2cb2bb4ffdd610d60b8a60850d945689ff476df2d0ee55c8f5b417e278e62",
     "c4child/g30c.py": "463c580fd2b9c5468f76c4485dfd06a744e48c9396a5df4534964e2ae63c29da",
-    "c4child/runtime.py": "c37268f6a8c1be957b2d3a3a4ad3f40c650ff612342a65a9bf20dd5a7a6d9aac",
+    "c4child/runtime.py": "9dc54bdbcb24fc8cf599cb5648a25eb09685d77c9719f6cb07404102e78514de",
     "c4child/c4life/context_reference.py": "cc3ab46c7387cad52de044772a924ec8b23ede71b0cccf2d5210a2eb45b64e71",
     "c4child/c4life/discourse_induction.py": "a22bf814d14aacc609568b997ba876b135645485c68443e04ce99f37dd6f9efc",
     "c4child/c4life/world.py": "3dd3c4929c27d6d1ab35af401d02ac0813fc326d9f5674b6fadd59057d470e12",
@@ -43,6 +43,7 @@
     "c4child/c4life/audit.py": "7de00d9b832efed2bb043c40fe7b7a7aa2c60406fb394a5756d693644e787d75",
     "c4child/c4life/kernel.py": "323149d5ab143054f6144412308e394b8e749cec01a172015aebe8e615e8b5e2",
     "c4child/c4life/text_story_induction.py": "179c17dbaf213c9b1b85b5e6f709f2fc680e703d2b55cd4868fc23746b47b48a",
-    "c4child/c4life/story_meanings.py": "4d52d0ac543f5b89e3b66dd67dd524c320e175060d8d8c291dd1ab517dbb5003"
+    "c4child/c4life/story_meanings.py": "4d52d0ac543f5b89e3b66dd67dd524c320e175060d8d8c291dd1ab517dbb5003",
+    "c4child/dialogue_binding.py": "47e32d476063f9676c8ca3d4f41c075c93906e2d97c0c5f29d226fc0007b9df9"
   }
 }
