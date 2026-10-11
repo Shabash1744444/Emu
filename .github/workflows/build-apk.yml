@@ -43,6 +43,7 @@ jobs:
       test -s "$GITHUB_WORKSPACE/app/src/main/assets/vendor/vrm-renderer.bundle.js"
       printf 'three-vrm 3.5.5 + three 0.180.0 bundle · '
       sha256sum "$GITHUB_WORKSPACE/app/src/main/assets/vendor/vrm-renderer.bundle.js"
+   - run: python3 -m pip install numpy==2.4.2
    - name: Validate WebView JavaScript syntax
      run: |
       python3 - <<'PY'
@@ -427,6 +428,10 @@ jobs:
       python3 tools/check_ui_javascript.py
       javac -d /tmp/physics-tests app/src/main/java/com/singularity/c4nursery/PhysicsRoom.java tests/PhysicsRoomTest.java
       java -cp /tmp/physics-tests PhysicsRoomTest
+   - name: Browser UI smoke (test Native, not Android)
+     run: |
+      npm install --prefix /tmp/c4-ui --no-audit --no-fund playwright@1.56.1
+      NODE_PATH=/tmp/c4-ui/node_modules node tools/ui_smoke.cjs
    - run: set -o pipefail; gradle :app:assembleDebug --stacktrace 2>&1 | tee /tmp/gradle.log
    - name: Upload build log
      if: always()
