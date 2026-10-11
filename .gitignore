@@ -3,3 +3,8 @@ __pycache__/
 .gradle/
 app/build/
 release/
+
+ci-signing/
+app/src/main/assets/vendor/
+app/src/main/assets/defaults/*.glb
+app/src/main/assets/defaults/*.hdr

@@ -580,3 +580,7 @@ Actual Arcade Hub found and read in Shabash1744444/Emul at b0814583, not Emu/git
 and camera, standard gamepad, saved editable controls, proximity-checked sphere impulse.
 Removed engineering card from primary world view. Core/runtime/life persistence untouched.
 See docs/checkpoints/CP-188_PLAYER_WORLD_ARCADE_HUB_RU.md for tests and limits.
+
+CP188 signing verification: old 0.65 and new APK certificates differ. Never uninstall the old life.
+World 0.66.1 uses separate package com.singularity.c4nursery.world, explicit cached CI key,
+fullSensor orientation and documented portable migration/context limitation.

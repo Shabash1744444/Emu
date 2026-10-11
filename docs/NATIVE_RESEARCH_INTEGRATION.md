@@ -4,7 +4,7 @@ C4 is primary; Emu is a host. EVAL / COMMIT / DRIVE / MEDIATE and every upstream
 
 ## Use on Android
 
-1. Install the APK from this branch's Actions artifact. Keep existing app data; uninstalling destroys private working lives unless exported first. Development signing key is cached for future updates from this workflow. Older APKs from uncached jobs can have a different certificate; if Android reports a signature conflict, export the old app data before considering uninstall.
+1. Install the APK from this branch's Actions artifact. Keep existing app data; uninstalling destroys private working lives unless exported first. The original signing cache did not persist. World 0.66.1 uses a separate package to preserve the old installation, and an explicitly cached ci-signing key for future World updates; see CP-188 for migration. Older APKs from uncached jobs can have a different certificate; if Android reports a signature conflict, export the old app data before considering uninstall.
 2. Import `C4_G29_G30C_G30D_EMU_RUNTIME_2026-10-11.zip` from the artifact or the original kit. Sources are identical and verified against all 42 source-file hashes (see actual profile for the authoritative count).
 3. Import the original `C4_G29_G30C_G30D_DIALOGUE_RESEARCH_ORGANISM_2026-10-11.c4m`.
    Original SHA-256: `e33115a59f5521ede0e6a2dafdad5e862bb7827af329618d823103aacca1efb0`.

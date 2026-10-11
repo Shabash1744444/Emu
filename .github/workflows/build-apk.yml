@@ -8,14 +8,20 @@ jobs:
    - name: Preserve development signing key for future updates
      uses: actions/cache@v4
      with:
-      path: ~/.android/debug.keystore
-      key: c4-nursery-debug-signing-v1
+      path: ci-signing/debug.keystore
+      key: c4-nursery-world-debug-signing-v1
    - uses: actions/setup-java@v4
      with: {distribution: temurin, java-version: '17'}
    - uses: actions/setup-python@v5
      with: {python-version: '3.13'}
    - uses: gradle/actions/setup-gradle@v4
      with: {gradle-version: '8.9'}
+   - name: Ensure cached World development signing key
+     run: |
+      mkdir -p ci-signing
+      if [ ! -s ci-signing/debug.keystore ]; then
+       keytool -genkeypair -keystore ci-signing/debug.keystore -storepass android -keypass android -alias androiddebugkey -dname "CN=Android Debug,O=Android,C=US" -keyalg RSA -keysize 2048 -validity 10000
+      fi
    - name: Vendor pinned 3D viewer
      run: |
       set -euo pipefail
@@ -459,18 +465,18 @@ jobs:
       test -s "$APK"
       unzip -t "$APK"
       mkdir -p release
-      cp "$APK" release/C4-Nursery-0.66.0-player-world.apk
+      cp "$APK" release/C4-Nursery-0.66.1-player-world.apk
       python3 tools/package_research_runtime.py
       cp docs/NATIVE_RESEARCH_INTEGRATION.md release/
-      BYTES=$(stat -c%s release/C4-Nursery-0.66.0-player-world.apk)
-      SHA=$(sha256sum release/C4-Nursery-0.66.0-player-world.apk | awk '{print $1}')
+      BYTES=$(stat -c%s release/C4-Nursery-0.66.1-player-world.apk)
+      SHA=$(sha256sum release/C4-Nursery-0.66.1-player-world.apk | awk '{print $1}')
       test "$BYTES" -gt 10000
-      printf 'file=C4-Nursery-0.66.0-player-world.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
+      printf 'file=C4-Nursery-0.66.1-player-world.apk\nbytes=%s\nsha256=%s\n' "$BYTES" "$SHA" | tee release/SHA256.txt
    - uses: actions/upload-artifact@v4
      with:
-      name: C4-Nursery-0.66.0-player-world
+      name: C4-Nursery-0.66.1-player-world
       path: |
-       release/C4-Nursery-0.66.0-player-world.apk
+       release/C4-Nursery-0.66.1-player-world.apk
        release/SHA256.txt
        release/C4_G29_G30C_G30D_EMU_RUNTIME_2026-10-11.zip
        release/NATIVE_RESEARCH_INTEGRATION.md
