@@ -1,4 +1,4 @@
-"""Infrastructure for the pinned G29/G30C/G30D research ABI. No cognition here.
+"""Infrastructure for the pinned G29/G30C/G30D/G30G research ABI. No cognition here.
 Native journal is append-only. Write-ahead transport operations recover an
 interrupted native tick against the kernel's own hash-verified journal tail.
 A checkpoint publishes an immutable native snapshot + lab/transport state,
@@ -103,7 +103,7 @@ class ResearchHost:
         metadata = {'build': self.build, 'sourceSha256': self.source_sha,
                     'manifest': self.manifest, 'applied': self.applied,
                     'payload': [index, observations, lab], 'pragmatics': r.pragmatics.state(),
-                    'context': self._context(), 'state': r.runtime_state()}
+                    'binding': r.binding.state(), 'context': self._context(), 'state': r.runtime_state()}
         atomic(folder / 'metadata.json', encode(metadata))
         digests = {n: sha((folder / n).read_bytes()) for n in ('snapshot.json', 'metadata.json')}
         sync_dir(folder)
@@ -146,7 +146,7 @@ class ResearchHost:
         if head != snap['journal_head']:
             raise RuntimeError('NATIVE_SNAPSHOT_JOURNAL_MISMATCH')
         atomic(self.home / 'snapshot.json', (folder / 'snapshot.json').read_bytes())
-        g = cp.G29Graph(str(self.home), meta['manifest'], tuple(meta['payload']), meta['pragmatics'])
+        g = cp.G29Graph(str(self.home), meta['manifest'], tuple(meta['payload']), meta['pragmatics'], meta['binding'])
         self.runtime = self.pkg.C4LivingRuntime(self.pkg.C4ChildDialogue(g))
         for k, v in meta['context'].items(): setattr(self.runtime, k, v)
         self.manifest = meta['manifest']; self.applied = meta['applied']
