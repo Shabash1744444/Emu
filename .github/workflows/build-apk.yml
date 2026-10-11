@@ -5,6 +5,11 @@ jobs:
   runs-on: ubuntu-latest
   steps:
    - uses: actions/checkout@v4
+   - name: Preserve development signing key for future updates
+     uses: actions/cache@v4
+     with:
+      path: ~/.android/debug.keystore
+      key: c4-nursery-debug-signing-v1
    - uses: actions/setup-java@v4
      with: {distribution: temurin, java-version: '17'}
    - uses: actions/setup-python@v5
