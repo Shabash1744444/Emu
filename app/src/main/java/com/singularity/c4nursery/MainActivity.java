@@ -11,7 +11,7 @@ public class MainActivity extends Activity {
  private final java.util.concurrent.ExecutorService transportQueue=java.util.concurrent.Executors.newSingleThreadExecutor();
  private final PhysicsRoom physicsRoom=new PhysicsRoom();
  private File audioFile; private Uri cameraUri; private final Object organismLock=new Object(); private final Object vocalLock=new Object(); private final Set<String> vocalPending=Collections.synchronizedSet(new HashSet<>());
- private static final int PICK=4101,CAMERA=4102,MIC=4103,SCREEN=4104,STREAM=4105,ORGANISM=4106,EXPORT_LOG=4107,RUNTIME_PACKAGE=4108,CAMERA_LIVE=4109,NOTIFY=4110,AVATAR=4111,AVATAR_MODEL=4112,EXPORT_LIFE=4113,TEACHER_MODEL=4114,ABI_PROFILE=4115; private MediaProjectionManager projectionManager;
+ private static final int PICK=4101,CAMERA=4102,MIC=4103,SCREEN=4104,STREAM=4105,ORGANISM=4106,EXPORT_LOG=4107,RUNTIME_PACKAGE=4108,CAMERA_LIVE=4109,NOTIFY=4110,AVATAR=4111,AVATAR_MODEL=4112,EXPORT_LIFE=4113,TEACHER_MODEL=4114,ABI_PROFILE=4115,LINKED_BUNDLE=4150; private MediaProjectionManager projectionManager;
 
  @Override public void onCreate(Bundle b){
   super.onCreate(b); if(!Python.isStarted())Python.start(new AndroidPlatform(this)); prefs=getSharedPreferences("c4_nursery",MODE_PRIVATE);reconcileStartup();configurePythonRuntime();
@@ -384,6 +384,35 @@ public class MainActivity extends Activity {
   @JavascriptInterface public String verifySandboxReceipt(String json){try{JSONObject q=new JSONObject(json);String experiment=q.optString("experiment","");JSONObject o=new JSONObject();o.put("accepted",false);o.put("origin","SANDBOX");o.put("phase","LIVE");o.put("executionSuccess",true);if("CAUSAL_MECHANICS_V2".equals(experiment)){String m=q.optString("mechanism","");int force=q.optInt("force",0);boolean valid=("PUSH".equals(m)||"RAMP".equals(m)||"SPRING".equals(m))&&(force==1||force==2);if(!valid){o.put("error","INVALID_WORLD_ACTION");return o.toString();}boolean outcome="PUSH".equals(m)?force==2:"RAMP".equals(m)?force==1:force==2;boolean prediction=q.optBoolean("prediction");String variant=m+"_F"+force;o.put("accepted",true);o.put("experiment",experiment);o.put("mechanism",m);o.put("challengeVariant",variant);o.put("prediction",prediction);o.put("outcome",outcome);o.put("predictionCorrect",prediction==outcome);String sig=sha256Text(experiment+"|"+variant+"|"+outcome);boolean first=!prefs.getBoolean("sandbox_sig_"+sig,false);if(first)prefs.edit().putBoolean("sandbox_sig_"+sig,true).commit();o.put("evidenceSignature",sig);o.put("independentEvidence",first);o.put("replay",!first);return o.toString();}if("SEQUENCE_MEMORY_V1".equals(experiment)){JSONArray seq=q.optJSONArray("sequence"),input=q.optJSONArray("input");if(seq==null||input==null||seq.length()<1||seq.length()>6){o.put("error","INVALID_MEMORY_CHALLENGE");return o.toString();}boolean match=seq.length()==input.length();if(match)for(int i=0;i<seq.length();i++)if(seq.optInt(i,-1)!=input.optInt(i,-2)){match=false;break;}o.put("accepted",true);o.put("experiment",experiment);o.put("challengeId",q.optString("challengeId",""));o.put("challengeVariant","L"+seq.length());o.put("outcome",match?"match":"mismatch");o.put("solved",match);o.put("independentEvidence",false);o.put("evidenceSignature",sha256Text(experiment+"|"+q.optString("challengeId","")+"|"+match));return o.toString();}o.put("error","UNKNOWN_EXPERIMENT");return o.toString();}catch(Exception e){return "{\"accepted\":false,\"error\":\"INVALID_RECEIPT_REQUEST\"}";}}
   private String sha256Text(String s)throws Exception{MessageDigest md=MessageDigest.getInstance("SHA-256");byte[] d=md.digest(s.getBytes(StandardCharsets.UTF_8));StringBuilder b=new StringBuilder();for(byte x:d)b.append(String.format("%02x",x));return b.toString();}
   private String pyCall(String fn,Object...args)throws Exception{return pyCallHost(fn,args);}
+  @JavascriptInterface public void pickLinkedResearchBundle(){
+    runOnUiThread(()->{
+      Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);
+      i.addCategory(Intent.CATEGORY_OPENABLE);
+      i.setType("application/zip");
+      startActivityForResult(i,LINKED_BUNDLE);
+    });
+  }
+  @JavascriptInterface public String linkedResearchStatus(){
+    try{return pyCallHost("linked_status",getFilesDir().getAbsolutePath());}
+    catch(Exception e){return "{\\"installed\\":false,\\"error\\":\\"STATUS_UNAVAILABLE\\"}";}
+  }
+  @JavascriptInterface public void linkedResearchAsync(String requestJson){
+    transportQueue.execute(()->{
+      String answer;
+      try{
+        answer=pyCallHost("linked_operation",getFilesDir().getAbsolutePath(),requestJson);
+        // Canonical JSON re-serialization before crossing WebView boundary.
+        answer=new JSONObject(answer).toString();
+      }catch(Exception e){
+        try{answer=new JSONObject().put("ok",false)
+             .put("error","LINKED_TRANSPORT:"+e.getClass().getSimpleName()+":"+e.getMessage()).toString();}
+        catch(Exception ignored){answer="{\\"ok\\":false}";}
+      }
+      final String json=answer;
+      runOnUiThread(()->web.evaluateJavascript(
+        "window.C4LinkedResponse&&window.C4LinkedResponse("+json+")",null));
+    });
+  }
   @JavascriptInterface public void pickRuntimePackage(){runOnUiThread(()->{Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);i.addCategory(Intent.CATEGORY_OPENABLE);i.setType("application/zip");startActivityForResult(i,RUNTIME_PACKAGE);});}
   @JavascriptInterface public void pickRuntimeProfile(){runOnUiThread(()->{Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*");startActivityForResult(i,ABI_PROFILE);});}
   private JSONObject physicsState()throws Exception{
@@ -458,6 +487,40 @@ emitRuntime("STATUS",new JSONObject().put("state","RUNNING").put("sessionId",sid
   if(r==ORGANISM&&c==RESULT_OK&&d!=null&&d.getData()!=null){Uri u=d.getData();try{getContentResolver().takePersistableUriPermission(u,d.getFlags()&Intent.FLAG_GRANT_READ_URI_PERMISSION);}catch(SecurityException ignored){}final String us=u.toString();final String organismName=displayName(u,"organism.c4m");try{emit("ORGANISM_IMPORTING",new JSONObject().put("name",organismName));}catch(Exception ignored){}new Thread(()->{try{if(prefs.getBoolean("runtime_running",false))throw new IOException("STOP_LIFE_BEFORE_ORGANISM_IMPORT");String lowerName=organismName.toLowerCase(Locale.ROOT);if(!lowerName.endsWith(".c4m"))throw new IOException("EXPECTED_C4M_FILE");InputStream in=getContentResolver().openInputStream(u);if(in==null)throw new IOException("ORGANISM_OPEN_FAILED");MessageDigest md=MessageDigest.getInstance("SHA-256");byte[] b=new byte[65536];int n;long total=0;while((n=in.read(b))>0){total+=n;if(total>67108864L)throw new IOException("ORGANISM_TOO_LARGE");md.update(b,0,n);}in.close();if(total<=0)throw new IOException("ORGANISM_EMPTY");StringBuilder s=new StringBuilder();for(byte x:md.digest())s.append(String.format("%02x",x));File dir=new File(getFilesDir(),"organisms");if(!dir.exists()&&!dir.mkdirs())throw new IOException("ORGANISM_DIR_FAILED");File tmp=new File(dir,"import.tmp");File store=new File(dir,"store");if(!store.exists()&&!store.mkdirs())throw new IOException("ORGANISM_STORE_FAILED");File dst=new File(store,s.toString()+".c4m");synchronized(organismLock){try(InputStream src=getContentResolver().openInputStream(u);FileOutputStream out=new FileOutputStream(tmp)){if(src==null)throw new IOException("ORGANISM_REOPEN_FAILED");byte[] cp=new byte[65536];int z;while((z=src.read(cp))>0)out.write(cp,0,z);out.getFD().sync();}if(tmp.length()!=total)throw new IOException("ORGANISM_COPY_SIZE_MISMATCH");if(dst.exists()){if(tmp.length()!=dst.length())throw new IOException("DIGEST_COLLISION_SIZE_MISMATCH");if(!tmp.delete())throw new IOException("TEMP_CLEANUP_FAILED");}else if(!tmp.renameTo(dst))throw new IOException("ORGANISM_ATOMIC_MOVE_FAILED");}prefs.edit().putString("organism_uri",us).putString("organism_name",organismName).putString("organism_sha",s.toString()).putLong("organism_size",total).putString("organism_private_path",dst.getAbsolutePath()).putString("organism_status","IMPORTED_UNVERIFIED").commit();JSONObject p=new JSONObject();p.put("active",true);p.put("name",organismName);p.put("sha256",s.toString());p.put("size",total);p.put("validationState","IMPORTED_UNVERIFIED");p.put("runtimeAvailable",prefs.getBoolean("runtime_package_installed",false));p.put("formatProbe","DISPLAY_NAME_EXTENSION");emit("ORGANISM_CHANGED",p);}catch(Exception e){JSONObject p=new JSONObject();try{p.put("name",organismName);p.put("error",e.getMessage()==null?e.getClass().getSimpleName():e.getMessage());}catch(Exception ignored){}emit("ORGANISM_ERROR",p);}}).start();}
   if(r==EXPORT_LIFE&&c==RESULT_OK&&d!=null&&d.getData()!=null){final Uri dest=d.getData();transportQueue.execute(()->{try(InputStream in=new FileInputStream(new File(getFilesDir(),"export_life.c4m"));OutputStream out=getContentResolver().openOutputStream(dest)){if(out==null)throw new IOException("EXPORT_DESTINATION_FAILED");byte[] buf=new byte[65536];int n;while((n=in.read(buf))>0)out.write(buf,0,n);out.flush();emit("LIFE_EXPORTED",new JSONObject().put("journalPreserved",true));}catch(Exception e){try{emit("MEDIA_ERROR",new JSONObject().put("error","LIFE_EXPORT:"+e.getMessage()));}catch(Exception ignored){}}});}
   if(r==ABI_PROFILE&&c==RESULT_OK&&d!=null&&d.getData()!=null){final Uri u=d.getData();transportQueue.execute(()->{try{File dst=new File(getCacheDir(),"import-runtime-profile.json");try(InputStream in=getContentResolver().openInputStream(u);FileOutputStream out=new FileOutputStream(dst)){if(in==null)throw new IOException("PROFILE_OPEN_FAILED");byte[] b=new byte[16384];int n,total=0;while((n=in.read(b))>0){total+=n;if(total>1048576)throw new IOException("PROFILE_TOO_LARGE");out.write(b,0,n);}out.getFD().sync();}JSONObject result=new JSONObject(pyCallHost("register_runtime_profile",dst.getAbsolutePath(),getFilesDir().getAbsolutePath()));configurePythonRuntime();emit("RUNTIME_PROFILE_CHANGED",result);}catch(Exception e){try{emit("RUNTIME_PROFILE_ERROR",new JSONObject().put("error",String.valueOf(e.getMessage())));}catch(Exception ignored){}}});}
+  if(r==LINKED_BUNDLE&&c==RESULT_OK&&d!=null&&d.getData()!=null){
+    final Uri u=d.getData();
+    transportQueue.execute(()->{
+      JSONObject result=new JSONObject();
+      try{
+        File dir=new File(getFilesDir(),"linked_research_import");
+        if(!dir.exists()&&!dir.mkdirs())throw new IOException("LINKED_IMPORT_DIR_FAILED");
+        File archive=new File(dir,"linked_research.zip");
+        long count=0;
+        try(InputStream in=getContentResolver().openInputStream(u);
+            FileOutputStream out=new FileOutputStream(archive)){
+          if(in==null)throw new IOException("LINKED_INPUT_UNAVAILABLE");
+          byte[] buf=new byte[65536];int len;
+          while((len=in.read(buf))>0){
+            count+=len;
+            if(count>26000000L)throw new IOException("LINKED_ARCHIVE_TOO_LARGE");
+            out.write(buf,0,len);
+          }
+          out.getFD().sync();
+        }
+        result=new JSONObject(pyCallHost("linked_install",
+                         archive.getAbsolutePath(),getFilesDir().getAbsolutePath()));
+        if(result.optBoolean("installed",false))prefs.edit()
+          .putBoolean("linked_r18i_installed",true).commit();
+      }catch(Exception e){
+        try{result.put("installed",false).put("error",
+          e.getClass().getSimpleName()+":"+e.getMessage());}catch(Exception ignored){}
+      }
+      final JSONObject payload=result;
+      emit("LINKED_BUNDLE_IMPORTED",payload);
+      runOnUiThread(()->web.evaluateJavascript(
+        "window.C4LinkedResponse&&window.C4LinkedResponse("+payload.toString()+")",null));
+    });
+  }
   if(r==RUNTIME_PACKAGE&&c==RESULT_OK&&d!=null&&d.getData()!=null){Uri u=d.getData();new Thread(()->{try{File dir=new File(getFilesDir(),"runtime_packages");if(!dir.exists())dir.mkdirs();File dst=new File(dir,"active_runtime.zip");try(InputStream in=getContentResolver().openInputStream(u);FileOutputStream out=new FileOutputStream(dst)){byte[] b=new byte[65536];int n;while((n=in.read(b))>0)out.write(b,0,n);out.getFD().sync();}JSONObject py=new JSONObject(pyCallHost("install_runtime",dst.getAbsolutePath(),getFilesDir().getAbsolutePath()));prefs.edit().putBoolean("runtime_package_installed",py.optBoolean("installed",false)).putString("runtime_package_name","active_runtime.zip").commit();emit("RUNTIME_PACKAGE_CHANGED",py);}catch(Exception e){try{emit("RUNTIME_PACKAGE_ERROR",new JSONObject().put("error",e.getMessage()));}catch(Exception ignored){}}}).start();}
   if(r==PICK&&c==RESULT_OK&&d!=null&&d.getData()!=null){Uri u=d.getData();try{getContentResolver().takePersistableUriPermission(u,d.getFlags()&(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION));}catch(SecurityException ignored){}String mime=getContentResolver().getType(u);importDiscreteSource("file",displayName(u,"Документ"),mime==null?"application/octet-stream":mime,u);}
   if(r==CAMERA){if(c==RESULT_OK&&cameraUri!=null){observeVisualUri(cameraUri,"CAMERA");importDiscreteSource("image","Фото","image/jpeg",cameraUri);}else if(cameraUri!=null)getContentResolver().delete(cameraUri,null,null);cameraUri=null;}
