@@ -394,7 +394,7 @@ public class MainActivity extends Activity {
   }
   @JavascriptInterface public String linkedResearchStatus(){
     try{return pyCallHost("linked_status",getFilesDir().getAbsolutePath());}
-    catch(Exception e){return "{\\"installed\\":false,\\"error\\":\\"STATUS_UNAVAILABLE\\"}";}
+    catch(Exception e){return "{}";}
   }
   @JavascriptInterface public void linkedResearchAsync(String requestJson){
     transportQueue.execute(()->{
@@ -406,7 +406,7 @@ public class MainActivity extends Activity {
       }catch(Exception e){
         try{answer=new JSONObject().put("ok",false)
              .put("error","LINKED_TRANSPORT:"+e.getClass().getSimpleName()+":"+e.getMessage()).toString();}
-        catch(Exception ignored){answer="{\\"ok\\":false}";}
+        catch(Exception ignored){answer="{}";}
       }
       final String json=answer;
       runOnUiThread(()->web.evaluateJavascript(
