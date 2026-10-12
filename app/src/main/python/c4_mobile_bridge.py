@@ -204,3 +204,19 @@ def _serialized(fn):
     return call
 for _name in ("configure","install_runtime","open_organism","checkpoint","command","state","close","export_organism","last_boot_diagnostic","register_runtime_profile"):
     globals()[_name]=_serialized(globals()[_name])
+
+
+# Linked R18I research overlay is explicitly separate from the pinned G30G ABI.
+# The user imports the exact SHA-256-reviewed linked research ZIP; it never
+# changes _runtime_root, _profile, or the original organism.
+def linked_install(archive,home):
+    from c4_linked_overlay import install
+    return install(archive,home)
+
+def linked_status(home):
+    from c4_linked_overlay import status
+    return status(home)
+
+def linked_operation(home,request_json):
+    from c4_linked_overlay import operation
+    return operation(home,request_json)
